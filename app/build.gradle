@@ -25,4 +25,36 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    //网络请求框架
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    //字体图标
+    compile 'com.joanzapata.iconify:android-iconify-ionicons:2.2.2'
+    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+
+    //旧版动画效果
+    compile files('libs/nineoldandroids-2.4.0.jar')
+
+    //网络请求框架
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    //RecyclerView
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    //volley
+    implementation 'com.mcxiaoke.volley:library:1.0.19'
+    //base64加密
+    compile files('libs/bcprov-jdk16-146.jar')
+    //json转xml
+    compile files('libs/android-xml-json.jar')
+    implementation files('libs/BaiduLBS_Android.jar')
+    implementation files('libs/MobCommons-2018.0704.1311.jar')
+    implementation files('libs/MobTools-2018.0704.1157.jar')
+    implementation files('libs/ShareSDK-Core-3.2.0.jar')
+    implementation files('libs/ShareSDK-Email-3.2.0.jar')
+    implementation files('libs/ShareSDK-QQ-3.2.0.jar')
+    implementation files('libs/ShareSDK-ShortMessage-3.2.0.jar')
+    implementation files('libs/ShareSDK-SinaWeibo-3.2.0.jar')
+    implementation files('libs/SDKWrapper-2018.0201.1609.jar')
+    implementation files('libs/ShareSDK-QZone-3.2.0.jar')
+    implementation files('libs/ShareSDK-QZone-3.2.0.jar')
 }
