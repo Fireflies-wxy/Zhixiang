@@ -1,3 +1,46 @@
 <resources>
-    <string name="app_name">zhixiang</string>
+    <string name="app_name">智享公交</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="home_image_view_text">首页</string>
+    <string name="route_image_view_text">路线规划</string>
+    <string name="ar_image_view_text">公交AR</string>
+    <string name="buscircle_image_view_text">公交圈</string>
+    <string name="status_image_view_text">拥挤度</string>
+    <string name="message_image_view_text">消息</string>
+
+    <string name="share">快来下载《智享公交》应用吧</string>
+
+    <string name="text_near">附近站点</string>
+    <string name="text_collect">收藏线路</string>
+    <string name="text_concern">提醒线路</string>
+
+    <string name="home_edittext_hint">请输入搜索的线路或站点名称</string>
+
+    <string name="loading">加载中...</string>
+
+    <string name="distance">距离：%s m</string>
+    <string name="startTime">首班车：%s</string>
+    <string name="endTime">末班车：%s</string>
+
+    <string name="please_wait">加载中...</string>
+
+    <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="user_svg">
+        M512 0c159.06 0 287.998 143.277 287.998 320.008 0 176.726-128.938 320-287.998 320s-287.998-143.274-287.998-320C224.002 143.278 352.94 0 512 0z m160.002 1024h-320C245.963 1024 160 938.046 160 832.001v-128c0-61.081 28.934-114.854 73.488-149.785C297.861 645.173 398.524 704 512 704s214.135-58.828 278.512-149.785C835.066 589.152 864 642.92 864 704v128c0 106.046-85.958 192-191.998 192z"
+    </string>
+
+    <string name="about_desc" translatable="false">\t\t<p2>智享公交  V1.0</p2>     \n\n\t\t这是一款基于北京地区公交车信息的手机软件，本软件可以向用户提供到站提醒、每一路公交车运行轨迹以及沿途站点、用户附近的公交车站等信息。该软件提供的信息除了地图和提醒全是离线形式，大大节约了用户的数据流量。
+	\n\t\t1. 到站提醒功能的实现可以是用户在坐公交车时，通过上网、听音乐或者其他活动打发时间而且不用怕坐过站。
+	\n\t\t2.通过查看每一路公交车运行轨迹和沿途站点，可以让用户足不出户就掌握公交车信息。
+	\n\t\t3.当您到达一个陌生的地方或需要在换乘其他公交车时，此时用该软件您可以快速的了解到附近有哪些公交车站。
+	\n\t\t4.针对当用iPhone开启GPS定位时耗电量比较大这一特点，我们做了很好的优化，使得即能提供准确的到站提醒功能以及用户位置的定位，又能在开启定位功能时大大节省电量。
+	\n\t\t如果您平时上下班经常坐公交车，您应该装一款该软件，它能让你不再害怕坐过站；如果您经常来北京，您应该装一款该软件，为您来京提供很大便利。
+	\n\t\t如果您有什么建议，请联系我们。
+	\n\t\t注意：在后台运行的GPS可能会大大降低电池的使用寿命。
+	\n\t\t本软件的创新点之一就是通过对GPS定位进行优化达到省电目的，故请您正常使用即可。
+	 \n
+</string>
 </resources>

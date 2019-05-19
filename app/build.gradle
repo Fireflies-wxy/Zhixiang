@@ -22,6 +22,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -29,11 +31,11 @@ dependencies {
     //网络请求框架
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     //字体图标
-    compile 'com.joanzapata.iconify:android-iconify-ionicons:2.2.2'
-    compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    implementation 'com.joanzapata.iconify:android-iconify-ionicons:2.2.2'
+    implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
 
     //旧版动画效果
-    compile files('libs/nineoldandroids-2.4.0.jar')
+    implementation files('libs/nineoldandroids-2.4.0.jar')
 
     //网络请求框架
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -43,9 +45,9 @@ dependencies {
     //volley
     implementation 'com.mcxiaoke.volley:library:1.0.19'
     //base64加密
-    compile files('libs/bcprov-jdk16-146.jar')
+    implementation files('libs/bcprov-jdk16-146.jar')
     //json转xml
-    compile files('libs/android-xml-json.jar')
+    implementation files('libs/android-xml-json.jar')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/MobCommons-2018.0704.1311.jar')
     implementation files('libs/MobTools-2018.0704.1157.jar')
