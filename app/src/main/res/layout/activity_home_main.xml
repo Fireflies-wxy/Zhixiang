@@ -53,7 +53,7 @@
         android:layout_above="@id/tab_host"
         android:background="@color/color_b4b4b4" />
 
-    <com.bnrc.bnrcsdk.ui.tabhost.RTabHost
+    <com.bnrc.bnrcbus.ui.RTabHost
         android:id="@+id/tab_host"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -70,7 +70,7 @@
 
             <com.joanzapata.iconify.widget.IconTextView
                 android:id="@+id/home_image_view"
-                android:text="{icon-home}"
+                android:text="{icon-index}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -127,7 +127,7 @@
             android:paddingBottom="4dp"
             android:layout_gravity="bottom">
 
-            <com.bnrc.bnrcsdk.ui.circleimage.CircleImageView
+            <com.bnrc.bnrcbus.ui.CircleImageView
                 android:id="@+id/ar_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -211,5 +211,5 @@
 
 
 
-    </com.bnrc.bnrcsdk.ui.tabhost.RTabHost>
+    </com.bnrc.bnrcbus.ui.RTabHost>
 </RelativeLayout>

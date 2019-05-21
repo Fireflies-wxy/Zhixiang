@@ -13,9 +13,9 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.constant.Constants;
-import com.bnrc.bnrcbus.module.rtBus.Child;
-import com.bnrc.bnrcbus.module.rtBus.Group;
-import com.bnrc.bnrcbus.module.rtBus.historyItem;
+import com.bnrc.bnrcbus.model.Child;
+import com.bnrc.bnrcbus.model.Group;
+import com.bnrc.bnrcbus.model.historyItem;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 
 import java.io.File;

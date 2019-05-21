@@ -33,6 +33,8 @@ dependencies {
     //字体图标
     implementation 'com.joanzapata.iconify:android-iconify-ionicons:2.2.2'
     implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.2'
 
     //旧版动画效果
     implementation files('libs/nineoldandroids-2.4.0.jar')

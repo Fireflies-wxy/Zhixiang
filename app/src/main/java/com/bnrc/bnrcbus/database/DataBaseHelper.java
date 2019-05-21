@@ -12,8 +12,8 @@ import android.util.Log;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.bnrc.bnrcbus.R;
-import com.bnrc.bnrcbus.module.rtBus.Child;
-import com.bnrc.bnrcbus.module.rtBus.Group;
+import com.bnrc.bnrcbus.model.Child;
+import com.bnrc.bnrcbus.model.Group;
 import com.bnrc.bnrcbus.util.MostSimilarString;
 
 import java.io.File;

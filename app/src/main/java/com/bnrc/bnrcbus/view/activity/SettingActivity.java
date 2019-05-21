@@ -7,6 +7,7 @@ import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.ui.ActionSheetDialog;
 import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;

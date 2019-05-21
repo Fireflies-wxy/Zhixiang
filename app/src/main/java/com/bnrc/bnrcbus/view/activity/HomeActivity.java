@@ -19,14 +19,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bnrc.bnrcbus.R;
+import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.ui.CircleImageView;
+import com.bnrc.bnrcbus.ui.LoadingDialog;
 import com.bnrc.bnrcbus.ui.RTabHost;
 import com.bnrc.bnrcbus.ui.SelectPicPopupWindow;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 import com.bnrc.bnrcbus.view.fragment.BaseFragment;
+import com.bnrc.bnrcbus.view.fragment.HomeFragment;
+import com.bnrc.bnrcbus.view.fragment.RouteFragment;
 import com.joanzapata.iconify.widget.IconTextView;
 
 import java.lang.reflect.Constructor;
@@ -234,7 +239,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         switch(view.getId()){
             case R.id.ar_layout_view:
                 Intent arIntent = new Intent(HomeActivity.this,
-                        ArActivity.class);
+                        ARActivity.class);
                 startActivity(arIntent);
                 break;
             case R.id.icon_user:
@@ -252,7 +257,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
                 break;
             case R.id.menu_railway:
                 Intent subwayIntent = new Intent(HomeActivity.this,
-                        SubWayActivity.class);
+                        SubwayActivity.class);
                 startActivity(subwayIntent);
                 break;
             case R.id.menu_setting:
@@ -349,6 +354,16 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     @Override
     public void onLoginClick() {
+
+    }
+
+    @Override
+    public LoadingDialog showLoading() {
+        return null;
+    }
+
+    @Override
+    public void dismissLoading() {
 
     }
 

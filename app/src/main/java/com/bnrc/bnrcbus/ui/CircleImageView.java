@@ -21,6 +21,8 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.util.AttributeSet;
 
+import com.bnrc.bnrcbus.R;
+
 
 public class CircleImageView extends android.support.v7.widget.AppCompatImageView {
 
