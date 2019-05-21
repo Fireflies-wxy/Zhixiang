@@ -3,7 +3,6 @@ package com.bnrc.bnrcbus.network;
 
 
 import com.bnrc.bnrcbus.model.bus.BusModel;
-import com.bnrc.bnrcbus.model.bus.ErrorBusModel;
 import com.bnrc.bnrcbus.model.user.LoginInfo;
 import com.bnrc.bnrcbus.model.user.RegisterInfo;
 import com.bnrc.bnrcbus.model.version.VersionModel;
@@ -53,10 +52,6 @@ public class RequestCenter {
         params.put("T", Long.toString(new Date().getTime()));
 
         RequestCenter.dealPostRequest(HttpConstants.BUS_URL, params, listener, BusModel.class);
-    }
-
-    public static void requestErrorBusData(DisposeDataListener listener,String URL) {
-        RequestCenter.dealGetRequest(URL, null, listener, ErrorBusModel.class);
     }
 
     public static void register(String uid, String pwd, DisposeDataListener listener) {

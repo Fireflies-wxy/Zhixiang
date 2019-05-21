@@ -23,8 +23,6 @@ public class BaseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.i(TAG, this.getClass().getSimpleName() + "onCreateView");
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

@@ -8,7 +8,7 @@ public class DtModel {
 
     public String Nsn;  //下一站编号，即某一站在整条线路中的编号
     public String Nsd;  //下一站距离
-    public String Lat;
-    public String Lon;
+    public float Lat;
+    public float Lon;
 
 }

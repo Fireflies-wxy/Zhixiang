@@ -10,6 +10,11 @@ public class BusModel {
     public String Beforethis;
     public String NextStationNum;
     public String NextStationDistance;
-    public String Lat;
-    public String Lon;
+    public float Lat;
+    public float Lon;
+
+    //失败时返回数据
+    public String msg;
+    public String errorCode;
+    public String requestURL;
 }

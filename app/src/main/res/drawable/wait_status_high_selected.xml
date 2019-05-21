@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/wait_status_high" />
+    <item
+        android:top="6dp" android:bottom="6dp"
+        android:left="6dp" android:right="6dp"
+        android:drawable="@drawable/status_icon_bg"
+        android:gravity="center_horizontal|center_vertical" />
+</layer-list>
