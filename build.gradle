@@ -25,6 +25,12 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'http://oss.jfrog.org/artifactory/oss-snapshot-local'
+        }
+        //Bmob的maven仓库地址--必填
+        maven { url "https://raw.github.com/bmob/bmob-android-sdk/master" }
+        maven { url 'https://jitpack.io' }
     }
 }
 

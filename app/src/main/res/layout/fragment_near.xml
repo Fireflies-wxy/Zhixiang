@@ -1,14 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true"
-    android:orientation="vertical" >
+    android:layout_height="wrap_content"
+    android:background="@color/colorBackground">
 
+   <RelativeLayout
+       android:id="@+id/rLayout_near"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:background="#eeeeee"
+       android:visibility="gone" >
 
-   <TextView
-       android:layout_width="wrap_content"
+      <ImageView
+          android:id="@+id/iv_near"
+          android:layout_width="120dp"
+          android:layout_height="120dp"
+          android:layout_alignParentTop="true"
+          android:layout_centerHorizontal="true"
+          android:layout_marginTop="50dp"
+          android:alpha="0.6"
+          android:src="@drawable/icon_no_position" />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/iv_near"
+          android:layout_marginTop="15dp"
+          android:background="#eeeeee"
+          android:gravity="center"
+          android:hint="暂时没有附近线路\n请检查网络"
+          android:textSize="18sp"
+          android:typeface="serif" />
+   </RelativeLayout>
+
+   <com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView
+       android:id="@+id/explistview_near"
+       android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:text="附近线路"/>
+       android:cacheColorHint="#00000000"
+       android:childDivider="@color/white"
+       android:divider="@color/white"
+       android:dividerHeight="0dp"
+       android:drawSelectorOnTop="false"
+       android:fastScrollEnabled="false"
+       android:footerDividersEnabled="true"
+       android:groupIndicator="@null"
+       android:scrollbars="vertical"
+       android:scrollingCache="true" />
 
-</LinearLayout>
+</FrameLayout>

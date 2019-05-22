@@ -18,13 +18,14 @@ import com.baidu.location.LocationClientOption.LocationMode;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
+import com.bnrc.bnrcbus.application.BnrcApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LocationUtil extends Application {
+public class LocationUtil extends BnrcApplication {
 	private static final String TAG = LocationUtil.class.getSimpleName();
 	private static LocationUtil mInstance = null;
 	private static LocationClient mLocationClient;

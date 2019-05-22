@@ -10,6 +10,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
+
 /**********************************************************
  * @文件名称：ResponseEntityToModule.java
  * @文件作者：qndroid

@@ -22,7 +22,7 @@ public class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        requestPermission(Constants.WRITE_READ_EXTERNAL_CODE);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

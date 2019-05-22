@@ -16,7 +16,7 @@ public enum IconFonts implements Icon {
     icon_alert('\ue708'),
     icon_alert_fill('\ue707'),
     icon_menu('\ue647'),
-    icon_target('\ue607'),
+    icon_final('\ue607'),
     icon_sina('\ue6e5'),
     icon_qq('\ue614'),
     icon_wechat('\ue65b'),
@@ -25,7 +25,7 @@ public enum IconFonts implements Icon {
     icon_geton('\ue6ed'),
     icon_home('\ue681'),
     icon_bus('\ue72b'),
-    icon_subway('\ue662'),
+    icon_railway('\ue662'),
     icon_reversal('\ue62a'),
     icon_food('\ue606'),
     icon_car('\ue622'),
@@ -48,7 +48,8 @@ public enum IconFonts implements Icon {
     icon_filling('\ue63c'),
     icon_cafe('\ue98f'),
     icon_setting('\ue676'),
-    icon_edit('\ue61d');
+    icon_edit('\ue61d'),
+    icon_about('\ue629');
 
 
     private char character;
