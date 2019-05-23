@@ -25,6 +25,7 @@ import com.bnrc.bnrcbus.adapter.CollectAdapter;
 import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
@@ -41,7 +42,6 @@ import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.MyCipher;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.view.activity.BuslineListActivity;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,9 +86,15 @@ public class HomeFragSwipe extends BaseFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mOnSelectBtn.showLoading();
 		mLocationUtil = LocationUtil.getInstance(mContext
 				.getApplicationContext());
-		mLocationUtil.startLocation();
+		mLocationUtil.startLocation(new GetLocationListener() {
+			@Override
+			public void onGetLocation() {
+				mOnSelectBtn.dismissLoading();
+			}
+		});
 	}
 
 	private SwipeMenuExpandableListView.OnGroupExpandListener mOnGroupExpandListener = new SwipeMenuExpandableListView.OnGroupExpandListener() {
@@ -104,6 +110,27 @@ public class HomeFragSwipe extends BaseFragment {
 				// mHomeConcernExplistview.setSelectedGroup(pos);
 			}
 		}
+	};
+
+	private SwipeMenuExpandableListView.OnChildClickListener mOnChildExpandListener = new SwipeMenuExpandableListView.OnChildClickListener() {
+
+		@Override
+		public boolean onChildClick(ExpandableListView paramExpandableListView,
+                                    View paramView, int paramInt1, int paramInt2, long paramLong) {
+			// TODO Auto-generated method stub
+			Group group = mGroups.get(paramInt1);
+			Child child = group.getChildItem(paramInt2);
+			Intent intent = new Intent(mContext, BuslineListActivity.class);
+			intent.putExtra("LineID", child.getLineID());
+			intent.putExtra("StationID", child.getStationID());
+			intent.putExtra("FullName", child.getLineFullName());
+			intent.putExtra("Sequence", child.getSequence());
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			mContext.startActivity(intent);
+			AnimationUtil.activityZoomAnimation((Activity) mContext);
+			return false;
+		}
+
 	};
 
 	private SwipeMenuCreator mMenuCreator = new SwipeMenuCreator() {
@@ -139,7 +166,7 @@ public class HomeFragSwipe extends BaseFragment {
 	private SwipeMenuExpandableListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuExpandableListView.OnMenuItemClickListener() {
 		@Override
 		public boolean onMenuItemClick(int groupPosition, int childPosition,
-				SwipeMenu menu, int index) {
+									   SwipeMenu menu, int index) {
 
 			if (groupPosition < mGroups.size() && groupPosition >= 0) {
 				Group group = mGroups.get(groupPosition);
@@ -238,6 +265,7 @@ public class HomeFragSwipe extends BaseFragment {
 
 	@Override
 	public void refresh() {
+		Log.i("refresh", "refreshed in HomeFragSwipe");
 		loadDataBase();
 	}
 
@@ -692,7 +720,7 @@ public class HomeFragSwipe extends BaseFragment {
 									if (child != null) {
 										child.setRtInfo(showText);
 										child.setRtRank(Child.NOTEXIST);
-										child.setDataChanged(true);
+									child.setDataChanged(true);
 
 									}
 									sortGroup();
@@ -1128,6 +1156,7 @@ public class HomeFragSwipe extends BaseFragment {
 		private Context mContext = null;
 
 		public DownloadTask(Context context) {
+			Log.i("testContext", "Home : context == null? : "+(context==null));
 			this.mContext = context;
 		}
 

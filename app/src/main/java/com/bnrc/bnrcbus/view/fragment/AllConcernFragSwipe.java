@@ -24,12 +24,15 @@ import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.adapter.CollectAdapter;
 import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
+
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
 import com.bnrc.bnrcbus.network.MyVolley;
 import com.bnrc.bnrcbus.network.VolleyNetwork;
+import com.bnrc.bnrcbus.ui.LoadingDialog;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenu;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenuCreator;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenuExpandableListView;
@@ -83,12 +86,22 @@ public class AllConcernFragSwipe extends BaseFragment {
 	private NetAndGpsUtil mNetAndGpsUtil;
 	private CoordinateConverter mCoordConventer;
 
+	private LoadingDialog mLoading;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mLocationUtil = LocationUtil.getInstance(mContext.getApplicationContext());
-		if(mLocationUtil==null)
-			mLocationUtil.startLocation();
+
+		showLoading();
+
+		mLocationUtil = LocationUtil.getInstance(mContext
+				.getApplicationContext());
+		mLocationUtil.startLocation(new GetLocationListener() {
+			@Override
+			public void onGetLocation() {
+				dismissLoading();
+			}
+		});
 	}
 
 	private SwipeMenuExpandableListView.OnGroupExpandListener mOnGroupExpandListener = new SwipeMenuExpandableListView.OnGroupExpandListener() {
@@ -135,26 +148,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 			}
 		}
 	};
-	private SwipeMenuExpandableListView.OnChildClickListener mOnChildExpandListener = new SwipeMenuExpandableListView.OnChildClickListener() {
-
-		@Override
-		public boolean onChildClick(ExpandableListView paramExpandableListView,
-                                    View paramView, int paramInt1, int paramInt2, long paramLong) {
-			// TODO Auto-generated method stub
-			Group group = mGroups.get(paramInt1);
-			Child child = group.getChildItem(paramInt2);
-			Intent intent = new Intent(mContext, BuslineListActivity.class);
-			intent.putExtra("LineID", child.getLineID());
-			intent.putExtra("StationID", child.getStationID());
-			intent.putExtra("FullName", child.getLineFullName());
-			intent.putExtra("Sequence", child.getSequence());
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			mContext.startActivity(intent);
-			AnimationUtil.activityZoomAnimation((Activity) mContext);
-			return false;
-		}
-
-	};
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
@@ -163,9 +156,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 		View view = inflater.inflate(
 				R.layout.activity_allconcern_frag_swipemenu,
 				(ViewGroup) getActivity().findViewById(R.id.content), false);
-
-		mBDLocation = mLocationUtil.getmLocation();
-
 		mAllConcernExplistview = (PullLoadMenuListView) view
 				.findViewById(R.id.explistview_all_concern);
 		mAllConcernHint = (RelativeLayout) view
@@ -196,6 +186,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 						pullToRefresh();
 					}
 				});
+		mBDLocation = mLocationUtil.getmLocation();
 		mCoordConventer = new CoordinateConverter();
 
 		return view;
@@ -220,7 +211,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 			public void run() {
 				// TODO Auto-generated method stub
 				String position = "暂时没有定位信息";
-
 				if (mBDLocation != null) {
 					String addr = mBDLocation.getAddrStr();
 					if (addr != null && addr.length() > 0)
@@ -242,7 +232,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 
 	@Override
 	public void refresh() {
-		Log.i("MainActivity", "AllFragment refresh()");
+        Log.i("refresh", "refreshed in AllConcernFragSwipe");
 		loadDataBase();
 	}
 
@@ -1087,6 +1077,9 @@ public class AllConcernFragSwipe extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		if(mLocationUtil==null){
+			mLocationUtil = LocationUtil.getInstance(mContext);
+		}
 		loadDataBase();
 		Log.i(TAG, TAG + " onResume");
 	}
@@ -1113,6 +1106,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 		private Context mContext = null;
 
 		public DownloadTask(Context context) {
+			Log.i("testContext", "All : context == null? : "+(context==null));
 			this.mContext = context;
 		}
 
@@ -1126,6 +1120,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "onPreExecute");
+			showLoading();
 			super.onPreExecute();
 		}
 
@@ -1165,7 +1160,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "onProgressUpdate");
 			// mTextView.setText(values[0] + "%");
-			mOnSelectBtn.showLoading();
 			super.onProgressUpdate(values);
 		}
 
@@ -1179,7 +1173,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 		protected void onPostExecute(List<Group> result) {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "onPostExecute");
-			mOnSelectBtn.dismissLoading();
+			dismissLoading();
 			if (result != null && result.size() > 0) {
 				mGroups = result;
 				mAllConcernAdapter.updateData(mGroups);
@@ -1197,6 +1191,23 @@ public class AllConcernFragSwipe extends BaseFragment {
 			}
 		}
 
+	}
+
+	public synchronized LoadingDialog showLoading() {
+		if (mLoading == null) {
+			mLoading = new LoadingDialog(mContext, R.layout.view_tips_loading);
+			mLoading.setCancelable(false);
+			mLoading.setCanceledOnTouchOutside(true);
+		}
+		mLoading.show();
+		return mLoading;
+	}
+
+	public synchronized void dismissLoading() {
+		if (!getActivity().isFinishing() && this.mLoading != null
+				&& this.mLoading.isShowing()) {
+			mLoading.dismiss();
+		}
 	}
 
 }

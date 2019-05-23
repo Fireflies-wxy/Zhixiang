@@ -19,6 +19,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.bnrc.bnrcbus.application.BnrcApplication;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class LocationUtil extends BnrcApplication{
 	private double oldLongitude = 0.0;
 	private long timeStamp;
 
+	private GetLocationListener mGetLocationListener;
+
 	@SuppressLint("MissingPermission")
 	public String getDeviceID() {
 		if (deviceID.length() == 0)
@@ -69,6 +72,8 @@ public class LocationUtil extends BnrcApplication{
 	}
 
 	public static LocationUtil getInstance(Context ctx) {
+
+
 		if (mInstance == null) {
 			SDKInitializer.initialize(ctx.getApplicationContext());
 			mInstance = new LocationUtil(ctx.getApplicationContext());
@@ -171,7 +176,6 @@ public class LocationUtil extends BnrcApplication{
 				.getApplicationContext());
 		mNetAndGpsUtil = NetAndGpsUtil.getInstance(context);
 		initLocation();
-		startLocation();
 	}
 
 	private void changeBatteryOption() {
@@ -243,6 +247,11 @@ public class LocationUtil extends BnrcApplication{
 			timeStamp = System.currentTimeMillis();
 			Log.i(TAG, map.toString()+" map");
 			postMessage.add(map);
+
+			if(mGetLocationListener!=null){
+				mGetLocationListener.onGetLocation();
+			}
+
 		}
 	}
 
@@ -274,7 +283,10 @@ public class LocationUtil extends BnrcApplication{
 
 	}
 
-	public void startLocation() {
+	public void startLocation( GetLocationListener getLocationListene) {
+
+		mGetLocationListener = getLocationListene;
+
 		mLocationClient.start();
 		mLocationClient.requestLocation();
 	}

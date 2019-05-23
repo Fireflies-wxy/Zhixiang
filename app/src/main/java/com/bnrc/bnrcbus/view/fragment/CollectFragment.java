@@ -28,7 +28,6 @@ import com.bnrc.bnrcbus.util.PollingUtils;
 import com.bnrc.bnrcbus.util.ServiceUtils;
 import com.bnrc.bnrcbus.view.SegmentedGroup;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +59,16 @@ public class CollectFragment extends BaseFragment {
         mContext = (Context) getActivity();
         View view = LayoutInflater.from(mContext).inflate(
                 R.layout.nav_collect, null);
+        // initAD();
+        // LatLng myPoint = new LatLng(mBDLocation.getLatitude(),
+        // mBDLocation.getLongitude());
         mUserDB = UserDataDBHelper.getInstance(mContext);
+        // mUserDB.AcquireFavInfoWithLocation(myPoint);
+        // initTitleRightLayout();
 
         segmented = view.findViewById(R.id.segmentedGroup);
         segmented.setTintColor(getResources().getColor(
                 R.color.radio_button_selected_color));
-
         mAllFrag = new AllConcernFragSwipe();
         mWorkFrag = new WorkFragSwipe();
         mHomeFrag = new HomeFragSwipe();
@@ -73,17 +76,15 @@ public class CollectFragment extends BaseFragment {
         mFragmentList.add(mAllFrag);
         mFragmentList.add(mWorkFrag);
         mFragmentList.add(mHomeFrag);
-
         mPager = (MyViewPager) view.findViewById(R.id.content);
-
         segmented.setOnCheckedChangeListener(new CheckedChangeListener());
-
-        mPagerAdapter = new MyViewPagerAdapter(getFragmentManager());
-
+        mPagerAdapter = new MyViewPagerAdapter(getChildFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setOnPageChangeListener(new PageChangeListener());
         mPager.setOffscreenPageLimit(3);
-
+        Log.i(TAG,
+                TAG + " onCreateView " + "fraglist.size: "
+                        + mFragmentList.size());
         segmented.check(R.id.radBtn_all);
         TABLE = new ArrayList<Integer>();
         TABLE.add(0);
@@ -148,6 +149,9 @@ public class CollectFragment extends BaseFragment {
             super.destroyItem(container, position, object);
 
             if (position <= getCount()) {
+                // FragmentManager manager = ((Fragment)
+                // object).getFragmentManager();
+                // FragmentTransaction trans = manager.beginTransaction();
                 if (mCurTransaction == null)
                     mCurTransaction = mFragmentManager.beginTransaction();
                 mCurTransaction.remove((Fragment) object);
@@ -162,17 +166,14 @@ public class CollectFragment extends BaseFragment {
             switch (checkedId) {
                 case R.id.radBtn_all:
                     mPager.setCurrentItem(0);
-                    Log.i(TAG, "onCheckedChanged: "+0);
                     mLastIndex = 0;
                     break;
                 case R.id.radBtn_work:
                     mPager.setCurrentItem(1);
-                    Log.i(TAG, "onCheckedChanged: "+1);
                     mLastIndex = 1;
                     break;
                 case R.id.radBtn_home:
                     mPager.setCurrentItem(2);
-                    Log.i(TAG, "onCheckedChanged: "+2);
                     mLastIndex = 2;
                     break;
 
@@ -228,6 +229,7 @@ public class CollectFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        Log.i(TAG, TAG + " onStart");
 
     }
 
@@ -237,6 +239,7 @@ public class CollectFragment extends BaseFragment {
         super.onAttach(activity);
         mContext = (Context) activity;
         mChooseListener = (IPopWindowListener) activity;
+        Log.i(TAG, TAG + " onAttach");
     }
 
     @Override
@@ -248,12 +251,14 @@ public class CollectFragment extends BaseFragment {
                 PollingService.ACTION);
         ServiceUtils.stopPollingService(mContext.getApplicationContext(),
                 ScanService.class, Constants.SERVICE_ACTION);
+        Log.i(TAG, TAG + " onDestroy");
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, TAG + " onActivityCreated");
 
     }
 
@@ -261,6 +266,7 @@ public class CollectFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
+        Log.i(TAG, TAG + " onCreate");
 
     }
 
@@ -268,6 +274,7 @@ public class CollectFragment extends BaseFragment {
     public void onDestroyView() {
         // TODO Auto-generated method stub
         super.onDestroyView();
+        Log.i(TAG, TAG + " onDestroyView");
 
     }
 
@@ -275,6 +282,7 @@ public class CollectFragment extends BaseFragment {
     public void onDetach() {
         // TODO Auto-generated method stub
         super.onDetach();
+        Log.i(TAG, TAG + " onDetach");
         mPagerAdapter.destroyAllItem();
 
     }
@@ -283,6 +291,8 @@ public class CollectFragment extends BaseFragment {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        Log.i(TAG,
+                TAG + " onResume" + "  fraglist.size: " + mFragmentList.size());
 
     }
 
@@ -290,6 +300,7 @@ public class CollectFragment extends BaseFragment {
     public void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
+        Log.i(TAG, TAG + " onStop");
 
     }
 

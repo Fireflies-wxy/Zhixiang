@@ -46,6 +46,7 @@ import com.bnrc.bnrcbus.constant.Constants;
 
 import com.bnrc.bnrcbus.database.PCDataBaseHelper;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
@@ -177,7 +178,7 @@ public class StationListActivity extends BaseActivity implements IPopWindowListe
         setContentView(R.layout.activity_station_list);
 
         mLocationUtil = LocationUtil.getInstance(getApplicationContext());
-        mLocationUtil.startLocation();
+        mLocationUtil.startLocation(null);
         mDataManager = PCDataBaseHelper.getInstance(StationListActivity.this);
         mNetAndGpsUtil = NetAndGpsUtil
                 .getInstance(this.getApplicationContext());

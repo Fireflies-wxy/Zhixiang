@@ -42,9 +42,6 @@ public class SplashActivity extends BaseActivity implements PermissionInterface 
 
     @Override
     public void requestPermissionsSuccess() {
-        mLocationUtil = LocationUtil.getInstance(this
-                .getApplicationContext());
-        mLocationUtil.startLocation();
 
         new Handler().postDelayed(new Runnable() {
             public void run() {

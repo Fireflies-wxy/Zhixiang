@@ -34,6 +34,7 @@ import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
 
 import com.bnrc.bnrcbus.database.PCDataBaseHelper;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
@@ -147,10 +148,17 @@ public class NearFragment extends BaseFragment{
 
 		mContext = getActivity();
 
+		mChooseListener.showLoading();
+
 		mLocationUtil = LocationUtil.getInstance(mContext
 				.getApplicationContext());
         if(mLocationUtil==null)
-            mLocationUtil.startLocation();
+            mLocationUtil.startLocation(new GetLocationListener() {
+				@Override
+				public void onGetLocation() {
+					mChooseListener.dismissLoading();
+				}
+			});
 		mBDLocation = mLocationUtil.getmLocation();
 
 		if (mBDLocation != null)
@@ -191,62 +199,6 @@ public class NearFragment extends BaseFragment{
 		loadDataBase();
 
 		return mContentView;
-	}
-
-	public void initUtils(){
-
-		if(hasPermission(Constants.ACCESS_LOCATION_PERMISSION)){
-			mLocationUtil = LocationUtil.getInstance(mContext
-					.getApplicationContext());
-			mLocationUtil.startLocation();
-			mBDLocation = mLocationUtil.getmLocation();
-
-			if (mBDLocation != null)
-				mOldPoint = new LatLng(mBDLocation.getLatitude(),
-						mBDLocation.getLongitude());
-		}else{
-			requestPermission(Constants.ACCESS_LOCATION_CODE,Constants.ACCESS_LOCATION_PERMISSION);
-		}
-
-		mVolleyNetwork = VolleyNetwork.getInstance(mContext);
-
-		mNetAndGpsUtil = NetAndGpsUtil.getInstance(mContext
-				.getApplicationContext());
-
-		mCoordConventer = new CoordinateConverter();
-
-		mOkHttpClient = new OkHttpClient();
-	}
-
-	public void initView(){
-
-//    	buildProgressDialog("定位中，请稍后...");
-
-		mNearExplistview = mContentView
-				.findViewById(R.id.explistview_near);
-		mNearHint = mContentView.findViewById(R.id.rLayout_near);
-		mNearGroups = new ArrayList<Group>();
-		mNearGroups = Collections.synchronizedList(mNearGroups);
-		mNearAdapter = new NearAdapter(mNearGroups, mContext,
-				mNearExplistview.listView,mChooseListener);
-		mNearExplistview.setAdapter(mNearAdapter);
-		mNearExplistview.setMenuCreator(mMenuCreator);
-
-		//mNearExplistview.setOnGroupExpandListener(mOnGroupExpandListener);
-
-		mNearExplistview.setPullToRefreshEnable(true);
-		mNearExplistview
-				.setPullRefreshListener(new IPullRefresh.PullRefreshListener() {
-
-					@Override
-					public void onRefresh() {
-						// TODO Auto-generated method stub
-						MyVolley.sharedVolley(mContext.getApplicationContext())
-								.reStart();
-						pullToRefresh();
-					}
-				});
-
 	}
 
 //	/**

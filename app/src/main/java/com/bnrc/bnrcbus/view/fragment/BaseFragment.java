@@ -11,13 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.constant.Constants;
+import com.bnrc.bnrcbus.ui.LoadingDialog;
 
 public class BaseFragment extends Fragment{
 
     private static final String TAG = BaseFragment.class.getSimpleName();
 
     protected Activity mContext;
+
+    private LoadingDialog mLoading;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,5 +93,6 @@ public class BaseFragment extends Fragment{
     public void refreshConcern() {
 
     }
+
 
 }

@@ -25,6 +25,7 @@ import com.bnrc.bnrcbus.adapter.CollectAdapter;
 import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
@@ -41,7 +42,6 @@ import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.MyCipher;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.view.activity.BuslineListActivity;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,9 +86,15 @@ public class WorkFragSwipe extends BaseFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mOnSelectBtn.showLoading();
 		mLocationUtil = LocationUtil.getInstance(mContext
 				.getApplicationContext());
-		mLocationUtil.startLocation();
+		mLocationUtil.startLocation(new GetLocationListener() {
+			@Override
+			public void onGetLocation() {
+				mOnSelectBtn.dismissLoading();
+			}
+		});
 	}
 
 	private SwipeMenuExpandableListView.OnGroupExpandListener mOnGroupExpandListener = new SwipeMenuExpandableListView.OnGroupExpandListener() {
@@ -158,7 +164,7 @@ public class WorkFragSwipe extends BaseFragment {
 	private SwipeMenuExpandableListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuExpandableListView.OnMenuItemClickListener() {
 		@Override
 		public boolean onMenuItemClick(int groupPosition, int childPosition,
-				SwipeMenu menu, int index) {
+									   SwipeMenu menu, int index) {
 
 			if (groupPosition < mGroups.size() && groupPosition >= 0) {
 				Group group = mGroups.get(groupPosition);
@@ -255,7 +261,8 @@ public class WorkFragSwipe extends BaseFragment {
 
 	@Override
 	public void refresh() {
-		Log.i("MainActivity", "AllFragment refresh()");
+		Log.i("refresh", "refreshed in WorkFragSwipe");
+
 		loadDataBase();
 	}
 
@@ -1155,6 +1162,7 @@ public class WorkFragSwipe extends BaseFragment {
 		private Context mContext = null;
 
 		public DownloadTask(Context context) {
+			Log.i("testContext", "Work : context == null? : "+(mContext==null));
 			this.mContext = context;
 		}
 

@@ -65,7 +65,7 @@ public class AlertService extends Service {
 		keySet = new HashSet<String>();
 		mUserDataDBHelper = PCUserDataDBHelper.getInstance(this);
 		mLocationUtil = LocationUtil.getInstance(AlertService.this);
-		mLocationUtil.startLocation();
+		mLocationUtil.startLocation(null);
 		mBdLocation = mLocationUtil.getmLocation();
 		mSharePrefrenceUtil = SharedPreferenceUtil
 				.getInstance(getApplicationContext());

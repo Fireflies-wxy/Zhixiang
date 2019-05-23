@@ -62,6 +62,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     private List<Class<? extends BaseFragment>> classList = null;
     Class<? extends BaseFragment> fragClass = null;
     private RTabHost mTabHost;
+
     private int mLastIndex = 0;  //初始化时默认加载第一项"首页"
     private TextView tv_toolbar;
     private String[] titleList = {"智享公交","附近热点"};
@@ -121,7 +122,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mLocationUtil = LocationUtil.getInstance(this
                 .getApplicationContext());
         if(mLocationUtil==null)
-            mLocationUtil.startLocation();
+            mLocationUtil.startLocation(null);
     }
 
     private void initDB(){
@@ -421,7 +422,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
             }
             menuWindow.dismiss();
             mFragment.refresh();
-            Log.i("refresh", "refreshed!");
         }
     };
 
