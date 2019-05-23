@@ -5,20 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.widget.NestedScrollView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bnrc.bnrcbus.R;
-import com.bnrc.bnrcbus.ui.RTabHost;
+import com.bnrc.bnrcbus.ui.viewpager.NoScrollViewPager;
+import com.bnrc.bnrcbus.ui.viewpager.ViewpagerIndicator;
+import com.bnrc.bnrcbus.ui.viewpager.VpAdapter;
+import com.bnrc.bnrcbus.view.activity.SearchActivity;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,17 +27,18 @@ import java.util.List;
 
 public class HomeFragment extends BaseFragment {
 
-    private static final String TAG = "HomeFragment";
-
     private View mContentView;
-    private FragmentManager fm;
-    private List<BaseFragment> fragmentList = new ArrayList<>();
-    private List<Class<? extends BaseFragment>> classList = null;
-    Class<? extends BaseFragment> fragClass = null;
-    private int mLastIndex = 0;  //初始化时默认加载第一项"首页"
-    private RTabHost mTabHost;
 
-    private BaseFragment mFragment;
+    //viewpager相关
+    private ViewpagerIndicator indicator;
+    private NoScrollViewPager viewPager;
+    private VpAdapter mAdapter;
+    private List<BaseFragment> mFragment;
+    private List<String> mTitle;
+    private TextView search_view;
+
+    //滑动控件
+    private NestedScrollView nestedScrollView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,11 +50,61 @@ public class HomeFragment extends BaseFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mContext = getActivity();
         mContentView = inflater.inflate(R.layout.fragment_home,container,false);
-
-        initFragments();
-        initTabHost();
-
+        initView();
         return mContentView;
+    }
+
+    public void initView(){
+        viewPager = mContentView.findViewById(R.id.viewpager);
+
+        search_view = mContentView.findViewById(R.id.search_view);
+        search_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                /** 加这个判断，防止该事件被执行两次 */
+                if (v.getId() == R.id.search_view) {
+                    Intent intent = new Intent(getActivity(),
+                            SearchActivity.class);   //搜索界面
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mTitle = new ArrayList<>();
+        mTitle.add(getString(R.string.text_collect));
+        mTitle.add(getString(R.string.text_near));
+        mTitle.add(getString(R.string.text_concern));
+
+        mFragment = new ArrayList<>();
+        mFragment.add(new CollectFragment());
+        mFragment.add(new NearFragment());
+        mFragment.add(new ConcernFragment());
+
+        //设置适配器
+        viewPager.setAdapter(new FragmentPagerAdapter(getChildFragmentManager()) {
+            //选中的item
+            @Override
+            public Fragment getItem(int position) {
+                return mFragment.get(position);
+            }
+
+            //返回item的个数
+            @Override
+            public int getCount() {
+                return mFragment.size();
+            }
+
+            //设置标题
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return mTitle.get(position);
+            }
+        });
+
+        //设置indicator
+        indicator = mContentView.findViewById(R.id.indicator);
+        indicator.setViewPager(viewPager);
     }
 
 
@@ -64,76 +114,9 @@ public class HomeFragment extends BaseFragment {
         if (this != null && !this.isDetached() && this.isVisible()) {
             if (mFragment == null)
                 return;
-            for (BaseFragment frag : fragmentList)
+            for (BaseFragment frag : mFragment)
                 frag.refresh();
         }
-    }
-
-    private void initFragments(){
-        fragmentList.clear();
-        classList = new ArrayList<>();
-        classList.add(CollectFragment.class);
-        classList.add(NearFragment.class);
-        classList.add(ConcernFragment.class);
-
-        fm = getFragmentManager();
-        FragmentTransaction transcation = fm.beginTransaction();
-
-        fragClass = classList.get(mLastIndex);
-        mFragment = createFragmentByClass(fragClass);
-        transcation.replace(R.id.page_conatainer, mFragment).commit();
-    }
-
-    private BaseFragment createFragmentByClass(
-            Class<? extends BaseFragment> fragClass) {
-        BaseFragment frag = null;
-        try {
-            try {
-                Constructor<? extends BaseFragment> cons = null;
-                cons = fragClass.getConstructor();
-                frag = cons.newInstance();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        } catch (Throwable e) {
-            throw new RuntimeException("Can not create instance for class "
-                    + fragClass.getName(), e);
-        }
-        return frag;
-    }
-
-    private void initTabHost() {
-        mTabHost = mContentView.findViewById(R.id.rtabhost);
-
-        mTabHost.setQQTabHostListener(new RTabHost.RTabHostListener() {
-
-            @Override
-            public void onTabSelected(int index) {
-                selectTab(index);
-                Log.i(TAG, "onTabSelected: "+index);
-            }
-        });
-
-        mTabHost.selectTab(mLastIndex);
-    }
-
-    private void selectTab(int index) {
-        if (mLastIndex == index) {
-            return;
-        }
-        Log.i(TAG, "selectTab: "+index);
-        mLastIndex = index;
-        selectFragment(index);
-    }
-
-    private void selectFragment(int index) {
-
-        Log.i(TAG, "selectFragment: "+index);
-
-        FragmentTransaction transcation = getFragmentManager().beginTransaction();
-        fragClass = classList.get(index);
-        mFragment = createFragmentByClass(fragClass);
-        transcation.replace(R.id.page_conatainer, mFragment).commit();
     }
 
 }

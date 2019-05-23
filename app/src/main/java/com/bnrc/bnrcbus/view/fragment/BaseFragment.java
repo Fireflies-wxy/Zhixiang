@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.bnrc.bnrcbus.constant.Constants;
 
-public class BaseFragment extends Fragment {
+public class BaseFragment extends Fragment{
 
     private static final String TAG = BaseFragment.class.getSimpleName();
 
@@ -22,7 +22,9 @@ public class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        requestPermission(Constants.WRITE_READ_EXTERNAL_CODE);
+
+        Log.i(TAG, this.getClass().getSimpleName() + "onCreateView");
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

@@ -1,5 +1,6 @@
 package com.bnrc.bnrcbus.view.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.constant.Constants;
@@ -27,6 +29,10 @@ import com.bnrc.bnrcbus.ui.CircleImageView;
 import com.bnrc.bnrcbus.ui.LoadingDialog;
 import com.bnrc.bnrcbus.ui.RTabHost;
 import com.bnrc.bnrcbus.ui.SelectPicPopupWindow;
+import com.bnrc.bnrcbus.util.LocationUtil;
+import com.bnrc.bnrcbus.util.Permissions.PermissionHelper;
+import com.bnrc.bnrcbus.util.Permissions.PermissionInterface;
+import com.bnrc.bnrcbus.util.Permissions.PermissionUtil;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 import com.bnrc.bnrcbus.view.fragment.BaseFragment;
@@ -90,17 +96,35 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     //登录状态
     private String isLogin;
 
+    private LocationUtil mLocationUtil = null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        init();
+    }
 
+    private void init(){
         //初始化页面中所有控件
         initView();
         initFragments();
         initTabHost();
+        initLocationUtil();
+        initDB();
+    }
 
+
+    private void initLocationUtil(){
+        mLocationUtil = LocationUtil.getInstance(this
+                .getApplicationContext());
+        if(mLocationUtil==null)
+            mLocationUtil.startLocation();
+    }
+
+    private void initDB(){
         mUserDB = PCUserDataDBHelper.getInstance(HomeActivity.this);
     }
 
@@ -166,7 +190,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
         fragClass = classList.get(mLastIndex);
         mFragment = createFragmentByClass(fragClass);
-        transcation.replace(R.id.content_layout, mFragment).commit();
+        transcation.replace(R.id.content_layout, mFragment).commitAllowingStateLoss();
     }
 
     private BaseFragment createFragmentByClass(
@@ -400,4 +424,5 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
             Log.i("refresh", "refreshed!");
         }
     };
+
 }

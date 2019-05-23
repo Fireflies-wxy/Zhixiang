@@ -3,6 +3,7 @@ package com.bnrc.bnrcbus.view.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.SQLException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,21 +15,29 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 import com.bnrc.bnrcbus.R;
+
 import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
+
 import com.bnrc.bnrcbus.database.PCDataBaseHelper;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
+import com.bnrc.bnrcbus.model.bus.BusModel;
 import com.bnrc.bnrcbus.network.MyVolley;
 import com.bnrc.bnrcbus.network.VolleyNetwork;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenu;
@@ -39,6 +48,12 @@ import com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView;
 import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.MyCipher;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
+
+import com.bnrc.bnrcbus.view.fragment.BaseFragment;
+
+
+import com.bnrc.bnrcbus.network.VolleyNetwork.*;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,78 +82,75 @@ import okhttp3.Response;
  * Created by apple on 2018/6/4.
  */
 
-public class NearFragment extends BaseFragment {
+public class NearFragment extends BaseFragment{
 
-    private static final String TAG = "NearFragment";
+	private static final String TAG = "NearFragment";
 
-    private PullLoadMenuListView mNearExplistview;
-    private NearAdapter mNearAdapter;//adapter
-    private RelativeLayout mNearHint;
-    private List<Group> mNearGroups;
-    private Context mContext;
-    private View mContentView;
-    public LocationUtil mLocationUtil = null;
-    private BDLocation mBDLocation = null;
-    private IPopWindowListener mChooseListener;
-    private DownloadTask mTask;
-    private int mChildrenSize = 0;
-    public static boolean isFirstLoad = true;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
-    private VolleyNetwork mVolleyNetwork;
-    private LatLng mOldPoint;
-    private NetAndGpsUtil mNetAndGpsUtil;
-    private CoordinateConverter mCoordConventer;
-    private OkHttpClient mOkHttpClient;
-
-
-
-    private ProgressDialog progressDialog;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
-    }
-
-    private SwipeMenuCreator mMenuCreator = new SwipeMenuCreator() {
-        @Override
-        public void create(SwipeMenu menu) {
-            switch (menu.getViewType()) {
-                case NearAdapter.FAV:
-                    SwipeMenuItem item1 = new SwipeMenuItem(getActivity());
-                    item1.setBackground(R.drawable.bg_circle_drawable_notstar);
-                    item1.setWidth(220);
-                    item1.setTitleColor(getResources().getColor(R.color.white));
-                    item1.setTitleSize(50);
-                    item1.setTitle("修改");
-                    menu.addMenuItem(item1);
-                    break;
-                case NearAdapter.NORMAL:
-                    SwipeMenuItem item2 = new SwipeMenuItem(getActivity());
-                    item2.setBackground(R.drawable.bg_circle_drawable);
-                    item2.setWidth(220);
-                    item2.setTitleColor(getResources().getColor(R.color.white));
-                    item2.setTitleSize(50);
-                    item2.setTitle("收藏");
-                    menu.addMenuItem(item2);
-                    break;
-            }
-        }
-    };
+	private PullLoadMenuListView mNearExplistview;
+	private NearAdapter mNearAdapter;//adapter
+	private RelativeLayout mNearHint;
+	private List<Group> mNearGroups;
+	private Context mContext;
+	private View mContentView;
+	public LocationUtil mLocationUtil = null;
+	private BDLocation mBDLocation = null;
+	private IPopWindowListener mChooseListener;
+	private DownloadTask mTask;
+	private int mChildrenSize = 0;
+	public static boolean isFirstLoad = true;
+	private Handler mHandler = new Handler(Looper.getMainLooper());
+	private VolleyNetwork mVolleyNetwork;
+	private LatLng mOldPoint;
+	private NetAndGpsUtil mNetAndGpsUtil;
+	private CoordinateConverter mCoordConventer;
+	private OkHttpClient mOkHttpClient;
 
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mContentView = inflater.inflate(R.layout.fragment_near,container,false);
+	private ProgressDialog progressDialog;
 
-        mContext = getActivity();
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mContext = getActivity();
+	}
 
-		Log.i(TAG, "onCreateView: "+(mContext == null));
+	private SwipeMenuCreator mMenuCreator = new SwipeMenuCreator() {
+		@Override
+		public void create(SwipeMenu menu) {
+			switch (menu.getViewType()) {
+				case NearAdapter.FAV:
+					SwipeMenuItem item1 = new SwipeMenuItem(getActivity());
+					item1.setBackground(R.drawable.bg_circle_drawable_notstar);
+					item1.setWidth(220);
+					item1.setTitleColor(getResources().getColor(R.color.white));
+					item1.setTitleSize(50);
+					item1.setTitle("修改");
+					menu.addMenuItem(item1);
+					break;
+				case NearAdapter.NORMAL:
+					SwipeMenuItem item2 = new SwipeMenuItem(getActivity());
+					item2.setBackground(R.drawable.bg_circle_drawable);
+					item2.setWidth(220);
+					item2.setTitleColor(getResources().getColor(R.color.white));
+					item2.setTitleSize(50);
+					item2.setTitle("收藏");
+					menu.addMenuItem(item2);
+					break;
+			}
+		}
+	};
+
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		mContentView = inflater.inflate(R.layout.fragment_near,container,false);
+
+		mContext = getActivity();
 
 		mLocationUtil = LocationUtil.getInstance(mContext
 				.getApplicationContext());
-		mLocationUtil.startLocation();
+        if(mLocationUtil==null)
+            mLocationUtil.startLocation();
 		mBDLocation = mLocationUtil.getmLocation();
 
 		if (mBDLocation != null)
@@ -176,97 +188,97 @@ public class NearFragment extends BaseFragment {
 		Log.i(TAG, TAG + " onCreateView");
 		mCoordConventer = new CoordinateConverter();
 
-        loadDataBase();
+		loadDataBase();
 
-        return mContentView;
-    }
+		return mContentView;
+	}
 
-    public void initUtils(){
+	public void initUtils(){
 
-        if(hasPermission(Constants.ACCESS_LOCATION_PERMISSION)){
-            mLocationUtil = LocationUtil.getInstance(mContext
-                    .getApplicationContext());
-            mLocationUtil.startLocation();
-            mBDLocation = mLocationUtil.getmLocation();
+		if(hasPermission(Constants.ACCESS_LOCATION_PERMISSION)){
+			mLocationUtil = LocationUtil.getInstance(mContext
+					.getApplicationContext());
+			mLocationUtil.startLocation();
+			mBDLocation = mLocationUtil.getmLocation();
 
-            if (mBDLocation != null)
-                mOldPoint = new LatLng(mBDLocation.getLatitude(),
-                        mBDLocation.getLongitude());
-        }else{
-            requestPermission(Constants.ACCESS_LOCATION_CODE,Constants.ACCESS_LOCATION_PERMISSION);
-        }
+			if (mBDLocation != null)
+				mOldPoint = new LatLng(mBDLocation.getLatitude(),
+						mBDLocation.getLongitude());
+		}else{
+			requestPermission(Constants.ACCESS_LOCATION_CODE,Constants.ACCESS_LOCATION_PERMISSION);
+		}
 
 		mVolleyNetwork = VolleyNetwork.getInstance(mContext);
 
-        mNetAndGpsUtil = NetAndGpsUtil.getInstance(mContext
-                .getApplicationContext());
+		mNetAndGpsUtil = NetAndGpsUtil.getInstance(mContext
+				.getApplicationContext());
 
-        mCoordConventer = new CoordinateConverter();
+		mCoordConventer = new CoordinateConverter();
 
-        mOkHttpClient = new OkHttpClient();
-    }
+		mOkHttpClient = new OkHttpClient();
+	}
 
-    public void initView(){
+	public void initView(){
 
 //    	buildProgressDialog("定位中，请稍后...");
 
-        mNearExplistview = mContentView
-                .findViewById(R.id.explistview_near);
-        mNearHint = mContentView.findViewById(R.id.rLayout_near);
-        mNearGroups = new ArrayList<Group>();
-        mNearGroups = Collections.synchronizedList(mNearGroups);
-        mNearAdapter = new NearAdapter(mNearGroups, mContext,
-                mNearExplistview.listView,mChooseListener);
-        mNearExplistview.setAdapter(mNearAdapter);
-        mNearExplistview.setMenuCreator(mMenuCreator);
+		mNearExplistview = mContentView
+				.findViewById(R.id.explistview_near);
+		mNearHint = mContentView.findViewById(R.id.rLayout_near);
+		mNearGroups = new ArrayList<Group>();
+		mNearGroups = Collections.synchronizedList(mNearGroups);
+		mNearAdapter = new NearAdapter(mNearGroups, mContext,
+				mNearExplistview.listView,mChooseListener);
+		mNearExplistview.setAdapter(mNearAdapter);
+		mNearExplistview.setMenuCreator(mMenuCreator);
 
-        //mNearExplistview.setOnGroupExpandListener(mOnGroupExpandListener);
+		//mNearExplistview.setOnGroupExpandListener(mOnGroupExpandListener);
 
-        mNearExplistview.setPullToRefreshEnable(true);
-        mNearExplistview
-                .setPullRefreshListener(new IPullRefresh.PullRefreshListener() {
+		mNearExplistview.setPullToRefreshEnable(true);
+		mNearExplistview
+				.setPullRefreshListener(new IPullRefresh.PullRefreshListener() {
 
-                    @Override
-                    public void onRefresh() {
-                        // TODO Auto-generated method stub
-                        MyVolley.sharedVolley(mContext.getApplicationContext())
-                                .reStart();
-                        pullToRefresh();
-                    }
-                });
-
-    }
-
-	/**
-	 * 加载框
-	 */
-	public void buildProgressDialog(String str) {
-		if (progressDialog == null) {
-			progressDialog = new ProgressDialog(mContext);
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		}
-		progressDialog.setMessage(str);
-		progressDialog.setCancelable(true);
-		progressDialog.show();
-	}
-
-	/**
-	 * @Description: TODO 取消加载框
-	 */
-	public void cancelProgressDialog() {
-		if (progressDialog != null)
-			if (progressDialog.isShowing()) {
-				progressDialog.dismiss();
-			}
+					@Override
+					public void onRefresh() {
+						// TODO Auto-generated method stub
+						MyVolley.sharedVolley(mContext.getApplicationContext())
+								.reStart();
+						pullToRefresh();
+					}
+				});
 
 	}
 
-    private void loadDataBase() {
-        if (mTask != null)
-            mTask.cancel(true);
-        mTask = new DownloadTask(getActivity());
-        mTask.execute();
-    }
+//	/**
+//	 * 加载框
+//	 */
+//	public void buildProgressDialog(String str) {
+//		if (progressDialog == null) {
+//			progressDialog = new ProgressDialog(mContext);
+//			progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//		}
+//		progressDialog.setMessage(str);
+//		progressDialog.setCancelable(true);
+//		progressDialog.show();
+//	}
+//
+//	/**
+//	 * @Description: TODO 取消加载框
+//	 */
+//	public void cancelProgressDialog() {
+//		if (progressDialog != null)
+//			if (progressDialog.isShowing()) {
+//				progressDialog.dismiss();
+//			}
+//
+//	}
+
+	private void loadDataBase() {
+		if (mTask != null)
+			mTask.cancel(true);
+		mTask = new DownloadTask(getActivity());
+		mTask.execute();
+	}
 
 	private void pullToRefresh() {   //下拉刷新
 		Log.i(TAG, "测试刷新");
@@ -284,7 +296,7 @@ public class NearFragment extends BaseFragment {
 						if (addr != null && addr.length() > 0)
 							position = addr;
 					}
-					Toast.makeText(mContext, position, Toast.LENGTH_SHORT)
+					Toast.makeText(mContext.getApplicationContext(), position, Toast.LENGTH_SHORT)
 							.show();
 					mNearExplistview.stopRefresh();
 				}
@@ -294,68 +306,68 @@ public class NearFragment extends BaseFragment {
 
 	}
 
-    private boolean checkPositionChange() {
-        // LatLng newPoint = new LatLng(mBDLocation.getLatitude(),
-        // mBDLocation.getLongitude());
-        double distance = mLocationUtil.getDistanceWithLocation(mOldPoint);
-        if (mBDLocation != null)
-            mOldPoint = new LatLng(mBDLocation.getLatitude(),
-                    mBDLocation.getLongitude());
-        Log.i(TAG, "getNearbyStationsAndBuslines " + "mOldPoint " + mOldPoint);
-        if (distance > 200)
-            return true;
-        return false;
-    }
+	private boolean checkPositionChange() {
+		// LatLng newPoint = new LatLng(mBDLocation.getLatitude(),
+		// mBDLocation.getLongitude());
+		double distance = mLocationUtil.getDistanceWithLocation(mOldPoint);
+		if (mBDLocation != null)
+			mOldPoint = new LatLng(mBDLocation.getLatitude(),
+					mBDLocation.getLongitude());
+		Log.i(TAG, "getNearbyStationsAndBuslines " + "mOldPoint " + mOldPoint);
+		if (distance > 200)
+			return true;
+		return false;
+	}
 
-    @Override
-    public void refresh() {
+	@Override
+	public void refresh() {
 
-    	mNearAdapter.notifyDataSetChanged();
+		mNearAdapter.notifyDataSetChanged();
 
-    } //此行仅对适配器起作用
+	} //此行仅对适配器起作用
 
-    // 刷新实时数据
-    @Override
-    public void refreshConcern() {
-        if (this != null && !this.isDetached() && this.isVisible())
-            pullToRefresh();
-    }
+	// 刷新实时数据
+	@Override
+	public void refreshConcern() {
+		if (this != null && !this.isDetached() && this.isVisible())
+			pullToRefresh();
+	}
 
-    public List<Group> getNearbyStationsAndBuslines() {
-        mBDLocation = mLocationUtil.getmLocation();
-        if (mBDLocation != null) {
-            LatLng newPoint = new LatLng(mBDLocation.getLatitude(),
-                    mBDLocation.getLongitude());
+	public List<Group> getNearbyStationsAndBuslines() {
+		mBDLocation = mLocationUtil.getmLocation();
+		if (mBDLocation != null) {
+			LatLng newPoint = new LatLng(mBDLocation.getLatitude(),
+					mBDLocation.getLongitude());
 
-            Log.i("mBDLocation: ",mBDLocation.getLatitude()+" "+mBDLocation.getLongitude());
-            mNearGroups = PCDataBaseHelper.getInstance(
-                    mContext.getApplicationContext()).acquireStationAndBusline(  //关键点！
-                    newPoint);
-            mOldPoint = newPoint;
-        }
-        Log.i(TAG, "getNearbyStationsAndBuslines " + "mChildrenSize: "
-                + mChildrenSize);
-        return mNearGroups;
-    }
+			Log.i("mBDLocation: ",mBDLocation.getLatitude()+" "+mBDLocation.getLongitude());
+			mNearGroups = PCDataBaseHelper.getInstance(
+					mContext.getApplicationContext()).acquireStationAndBusline(  //关键点！
+					newPoint);
+			mOldPoint = newPoint;
+		}
+		Log.i(TAG, "getNearbyStationsAndBuslines " + "mChildrenSize: "
+				+ mChildrenSize);
+		return mNearGroups;
+	}
 
-    /**
-     * 检测是否联网
-     * @return
-     */
-    public boolean isNetworkConnected() {
-        if (mContext != null) {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) mContext
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mNetworkInfo = mConnectivityManager
-                    .getActiveNetworkInfo();
-            if (mNetworkInfo != null) {
-                return mNetworkInfo.isAvailable();
-            }
-        }
-        return false;
-    }
+	/**
+	 * 检测是否联网
+	 * @return
+	 */
+	public boolean isNetworkConnected() {
+		if (mContext != null) {
+			ConnectivityManager mConnectivityManager = (ConnectivityManager) mContext
+					.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo mNetworkInfo = mConnectivityManager
+					.getActiveNetworkInfo();
+			if (mNetworkInfo != null) {
+				return mNetworkInfo.isAvailable();
+			}
+		}
+		return false;
+	}
 
-    private void getServerInfo(List<Group> groups) {
+	private void getServerInfo(List<Group> groups) {
 
 		for (Group group : groups) {
 			if (group.getChildrenCount() <= 0)
@@ -375,7 +387,7 @@ public class NearFragment extends BaseFragment {
 					child.setDataChanged(true);
 				} else
 					mVolleyNetwork.getNearestBusWithLineAndOneStation(LineID,
-							StationID, new VolleyNetwork.requestListener() {
+							StationID, new requestListener() {
 
 								@Override
 								public void onSuccess(JSONObject data) {
@@ -543,13 +555,13 @@ public class NearFragment extends BaseFragment {
 	}
 
 	private void getRtInfo(final Child child) throws JSONException,
-            UnsupportedEncodingException {
+			UnsupportedEncodingException {
 		final int sequence = child.getSequence();
 		int offlineID = child.getOfflineID();
 		String Url =
 				"http://223.72.210.21:8512/ssgj/bus.php?city="
-				+ URLEncoder.encode("北京", "utf-8") + "&id=" + offlineID
-				+ "&no=" + sequence + "&type=2&encrypt=1&versionid=2";
+						+ URLEncoder.encode("北京", "utf-8") + "&id=" + offlineID
+						+ "&no=" + sequence + "&type=2&encrypt=1&versionid=2";
 		Log.i("Test single getRtInfo", "url:" + Url);// 创建okHttpClient对象
 		final List<Map<String, ?>> tmp = child.getRtInfoList();
 		// 创建一个Request
@@ -562,7 +574,7 @@ public class NearFragment extends BaseFragment {
 		// 请求加入调度
 		call.enqueue(new Callback() {
 
-            @Override
+			@Override
 			public void onFailure(Call call, IOException arg1) {
 				// TODO Auto-generated method stub
 
@@ -699,7 +711,7 @@ public class NearFragment extends BaseFragment {
 
 			@Override
 			public void onFailure(Call call,
-                                  IOException arg1) {
+								  IOException arg1) {
 				// TODO Auto-generated method stub
 				if (child != null && tmp != null && tmp.size() == 0
 						|| !mNetAndGpsUtil.isNetworkAvailable()) {
@@ -932,7 +944,7 @@ public class NearFragment extends BaseFragment {
 						list.add(map);
 					}
 				}
-				mVolleyNetwork.upLoadRtInfo(uploadJson, new VolleyNetwork.upLoadListener() {
+				mVolleyNetwork.upLoadRtInfo(uploadJson, new upLoadListener() {
 
 					@Override
 					public void onSuccess() {
@@ -1045,67 +1057,67 @@ public class NearFragment extends BaseFragment {
 		}
 	}
 
-    @Override
-    public void onAttach(Activity activity) {
-        // TODO Auto-generated method stub
-        super.onAttach(activity);
+	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
 		mChooseListener = (IPopWindowListener) activity;
-        Log.i(TAG, TAG + " onAttach");
+		Log.i(TAG, TAG + " onAttach");
 
-    }
+	}
 
 
 	@Override
-    public void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        // getNearbyStationsAndBuslines();
-        Log.i(TAG, TAG + " onStart");
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		// getNearbyStationsAndBuslines();
+		Log.i(TAG, TAG + " onStart");
 
-    }
+	}
 
-    @Override
-    public void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        Log.i(TAG, TAG + " onDestroy");
-    }
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.i(TAG, TAG + " onDestroy");
+	}
 
-    @Override
-    public void onDestroyView() {
-        // TODO Auto-generated method stub
-        super.onDestroyView();
-        Log.i(TAG, TAG + " onDestroyView");
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		Log.i(TAG, TAG + " onDestroyView");
 
-    }
+	}
 
-    @Override
-    public void onDetach() {
-        // TODO Auto-generated method stub
-        super.onDetach();
-        Log.i(TAG, TAG + " onDetach");
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		super.onDetach();
+		Log.i(TAG, TAG + " onDetach");
 
-    }
+	}
 
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
 //		loadDataBase();
-        Log.i(TAG, TAG + " onResume");
-    }
+		Log.i(TAG, TAG + " onResume");
+	}
 
-    @Override
-    public void onStop() {
-        // TODO Auto-generated method stub
-        super.onStop();
-        Log.i(TAG, TAG + " onStop");
-        if (mTask != null) {
-            mTask.cancel(true); // 如果Task还在运行，则先取消它
-        }
-        mChooseListener.dismissLoading();
-        mHandler.removeCallbacksAndMessages(null);
-    }
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		super.onStop();
+		Log.i(TAG, TAG + " onStop");
+		if (mTask != null) {
+			mTask.cancel(true); // 如果Task还在运行，则先取消它
+		}
+		mChooseListener.dismissLoading();
+		mHandler.removeCallbacksAndMessages(null);
+	}
 
 	class DownloadTask extends AsyncTask<Integer, Integer, List<Group>> {
 		// 后面尖括号内分别是参数（线程休息时间），进度(publishProgress用到)，返回值 类型
@@ -1128,7 +1140,6 @@ public class NearFragment extends BaseFragment {
 			Log.i(TAG, "onPreExecute");
 			super.onPreExecute();
 //			mChooseListener.showLoading();
-			buildProgressDialog("加载中...");
 
 		}
 
@@ -1185,7 +1196,6 @@ public class NearFragment extends BaseFragment {
 			Log.i(TAG, "onPostExecute");
 			mNearExplistview.stopRefresh();
 //			mChooseListener.dismissLoading();
-			cancelProgressDialog();
 			if (result != null && result.size() > 0) {
 				mNearGroups = result;
 				mNearHint.setVisibility(View.GONE);

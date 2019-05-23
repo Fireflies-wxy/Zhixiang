@@ -2,7 +2,7 @@ package com.bnrc.bnrcbus.application;
 
 import android.app.Application;
 
-import com.bnrc.bnrcbus.view.icon.IconFontModule;
+import com.bnrc.bnrcbus.ui.icon.IconFontModule;
 import com.joanzapata.iconify.Iconify;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.joanzapata.iconify.fonts.IoniconsModule;

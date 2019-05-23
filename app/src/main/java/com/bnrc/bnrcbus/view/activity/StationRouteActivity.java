@@ -153,7 +153,7 @@ public class StationRouteActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 if (result == null
                         || result.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(StationRouteActivity.this, "抱歉，未找到结果",
+                    Toast.makeText(StationRouteActivity.this.getApplicationContext(), "抱歉，未找到结果",
                             Toast.LENGTH_SHORT).show();
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
@@ -249,7 +249,7 @@ public class StationRouteActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 if (result == null
                         || result.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(StationRouteActivity.this, "抱歉，未找到结果",
+                    Toast.makeText(StationRouteActivity.this.getApplicationContext(), "抱歉，未找到结果",
                             Toast.LENGTH_SHORT).show();
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
@@ -342,7 +342,7 @@ public class StationRouteActivity extends BaseActivity {
                 // TODO Auto-generated method stub
                 if (result == null
                         || result.error != SearchResult.ERRORNO.NO_ERROR) {
-                    Toast.makeText(StationRouteActivity.this, "抱歉，未找到结果",
+                    Toast.makeText(StationRouteActivity.this.getApplicationContext(), "抱歉，未找到结果",
                             Toast.LENGTH_SHORT).show();
                 }
                 if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
@@ -412,7 +412,7 @@ public class StationRouteActivity extends BaseActivity {
             }
         });
         if (mPoint == null) {
-            Toast.makeText(this, "无法定位，请检查网络或打开GPS！", Toast.LENGTH_SHORT);
+            Toast.makeText(this.getApplicationContext(), "无法定位，请检查网络或打开GPS！", Toast.LENGTH_SHORT);
         }
         PlanNode st = PlanNode.withLocation(mPoint);
         PlanNode ed = PlanNode.withLocation(stationPoint);

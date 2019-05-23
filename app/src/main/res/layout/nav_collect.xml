@@ -1,0 +1,59 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_top_background" >
+
+            <com.bnrc.bnrcbus.view.SegmentedGroup
+                android:id="@+id/segmentedGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="#eeeeee"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/radBtn_all"
+                    style="@style/RadioButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="全部" />
+
+                <RadioButton
+                    android:id="@+id/radBtn_work"
+                    style="@style/RadioButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="上班" />
+
+                <RadioButton
+                    android:id="@+id/radBtn_home"
+                    style="@style/RadioButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="回家" />
+            </com.bnrc.bnrcbus.view.SegmentedGroup>
+        </FrameLayout>
+
+        <!-- 这里可以把PagerTabStrip替换成PagerTitleStrip看看效果有何不同 -->
+
+        <com.bnrc.bnrcbus.ui.viewpager.MyViewPager
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

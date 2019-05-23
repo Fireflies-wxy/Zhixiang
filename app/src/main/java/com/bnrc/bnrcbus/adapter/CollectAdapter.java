@@ -353,8 +353,10 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 		}
 		if (isExpanded) {
 			holder.icon.setImageResource(R.drawable.down_arrow);
+			holder.icon.setMaxWidth(16);
 		} else {
 			holder.icon.setImageResource(R.drawable.right_arrow);
+			holder.icon.setMaxWidth(16);
 		}
 		final Group group = groups.get(groupPosition);
 		holder.title.setText(group.getStationName());

@@ -34,98 +34,19 @@
         android:orientation="vertical"
         android:background="@color/colorPrimary">
 
-        <com.bnrc.bnrcbus.ui.RTabHost
-            android:id="@+id/rtabhost"
+        <com.bnrc.bnrcbus.ui.viewpager.ViewpagerIndicator
+            android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
+            />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:src="@drawable/fragment_tab_view"
-                    android:layout_below="@+id/tv_collect"
-                    android:layout_centerHorizontal="true"/>
-
-                <TextView
-                    android:id="@+id/tv_collect"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="收藏线路"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:src="@drawable/fragment_tab_view"
-                    android:layout_below="@+id/tv_near"
-                    android:layout_centerHorizontal="true"/>
-
-                <TextView
-                    android:id="@+id/tv_near"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="附近线路"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="2dp"
-                    android:src="@drawable/fragment_tab_view"
-                    android:layout_below="@+id/tv_concern"
-                    android:layout_centerHorizontal="true"/>
-
-                <TextView
-                    android:id="@+id/tv_concern"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="提醒线路"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-
-            </RelativeLayout>
-
-        </com.bnrc.bnrcbus.ui.RTabHost>
-
-        <FrameLayout
-            android:id="@+id/page_conatainer"
+        <com.bnrc.bnrcbus.ui.viewpager.NoScrollViewPager
+            android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#EDEDED" >
-        </FrameLayout>
-
+            android:layout_height="wrap_content"
+            android:background="@color/white" />
 
     </LinearLayout>
 

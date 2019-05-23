@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LocationUtil extends BnrcApplication {
+public class LocationUtil extends BnrcApplication{
 	private static final String TAG = LocationUtil.class.getSimpleName();
 	private static LocationUtil mInstance = null;
 	private static LocationClient mLocationClient;
@@ -247,7 +247,6 @@ public class LocationUtil extends BnrcApplication {
 	}
 
 	public BDLocation getmLocation() {
-		// Log.i(TAG, "mLocation==null " + (mLocation == null));
 		return mLocation;
 	}
 

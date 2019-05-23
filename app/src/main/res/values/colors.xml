@@ -36,7 +36,7 @@
 
     <color name="green">#284</color>
 
-    <color name="radio_button_selected_color">#ff33b5e5</color>
+    <color name="radio_button_selected_color">#35ACD4</color>
     <color name="radio_button_unselected_color">@android:color/transparent</color>
 
     <color name="actionsheet_blue">#037BFF</color>

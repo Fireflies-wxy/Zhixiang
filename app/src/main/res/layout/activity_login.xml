@@ -1,9 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.activity.LoginActivity">
+    android:orientation="vertical">
 
-</android.support.constraint.ConstraintLayout>
+    <!-- 标题栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="10dp">
+
+        <com.joanzapata.iconify.widget.IconTextView
+            android:id="@+id/back_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="{icon-back}"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:padding="5dp"
+            android:clickable="true"
+            android:onClick="onBackPressed"/>
+
+        <TextView
+            android:id="@+id/tv_home_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="登录"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="40dp">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/nav_icon" />
+
+        <!--用户名-->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_sign_in_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="用户名"
+                android:inputType="text"
+                tools:ignore="HardcodedText" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!--密码-->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_sign_in_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="密码"
+                android:inputType="text"
+                tools:ignore="HardcodedText" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_sign_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="登录"
+            android:textColor="@android:color/white"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_link_sign_up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:text="还没有账户？现在注册吧"
+            android:textSize="16sp"
+            tools:ignore="HardcodedText" />
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="horizontal">
+
+            <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/icon_sign_in_wechat"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="{icon-wechat}"
+                android:textColor="#04b00f"
+                android:textSize="50sp" />
+
+            <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/icon_sign_in_qq"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="{icon-qq}"
+                android:textColor="#57A9FC"
+                android:textSize="50sp" />
+
+            <com.joanzapata.iconify.widget.IconTextView
+                android:id="@+id/icon_sign_in_sina"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="{icon-sina}"
+                android:textColor="#DE0000"
+                android:textSize="50sp" />
+
+        </android.support.v7.widget.LinearLayoutCompat>
+
+
+
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.v7.widget.LinearLayoutCompat>
