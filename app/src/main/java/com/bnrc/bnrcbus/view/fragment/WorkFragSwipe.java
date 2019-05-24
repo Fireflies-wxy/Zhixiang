@@ -235,6 +235,7 @@ public class WorkFragSwipe extends BaseFragment {
 	}
 
 	private void pullToRefresh() {
+		Log.i("testToast", "WorkFragSwip: pullToRefresh");
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -262,7 +263,9 @@ public class WorkFragSwipe extends BaseFragment {
 	@Override
 	public void refresh() {
 		Log.i("refresh", "refreshed in WorkFragSwipe");
-
+		if(mContext==null||mUserDataDBHelper==null){
+			return;
+		}
 		loadDataBase();
 	}
 

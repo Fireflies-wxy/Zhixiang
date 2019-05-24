@@ -9,7 +9,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -90,10 +89,10 @@ public class ViewpagerIndicator extends HorizontalScrollView {
     private Paint measureTextPaint;//测量文字宽度用的画笔
 
     private final PageListener pageListener = new PageListener();
-    private OnPageChangeListener userPageListener;
+    private NoPreloadViewPager.OnPageChangeListener userPageListener;
 
     private LinearLayout tabsContainer;//tab的容器
-    private ViewPager viewPager;
+    private NoPreloadViewPager viewPager;
 
     private int currentPosition = 0;//viewPager当前页面
     private float currentPositionOffset = 0f;//viewPager当前页面的偏移百分比（取值：0~1）
@@ -116,7 +115,7 @@ public class ViewpagerIndicator extends HorizontalScrollView {
         setWillNotDraw(false);
     }
 
-    public ViewpagerIndicator setViewPager(ViewPager viewPager) {
+    public ViewpagerIndicator setViewPager(NoPreloadViewPager viewPager) {
         this.viewPager = viewPager;
         if (viewPager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
@@ -130,7 +129,7 @@ public class ViewpagerIndicator extends HorizontalScrollView {
         return this;
     }
 
-    public ViewpagerIndicator setOnPageChangeListener(OnPageChangeListener listener) {
+    public ViewpagerIndicator setOnPageChangeListener(NoPreloadViewPager.OnPageChangeListener listener) {
         this.userPageListener = listener;
         return this;
     }
@@ -360,7 +359,7 @@ public class ViewpagerIndicator extends HorizontalScrollView {
         int left, right;
     }
 
-    private class PageListener implements OnPageChangeListener {
+    private class PageListener implements NoPreloadViewPager.OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             currentPosition = position;

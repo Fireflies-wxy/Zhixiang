@@ -10,7 +10,7 @@ import android.view.MotionEvent;
  * Created by apple on 2018/6/5.
  */
 
-public class NoScrollViewPager extends ViewPager { /**是否禁止左右滑动，true为禁止，false为不禁止*/
+public class NoScrollViewPager extends NoPreloadViewPager { /**是否禁止左右滑动，true为禁止，false为不禁止*/
 private boolean noScroll = true;
 
     public NoScrollViewPager(Context context, AttributeSet attrs) {

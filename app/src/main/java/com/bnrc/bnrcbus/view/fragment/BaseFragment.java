@@ -94,5 +94,25 @@ public class BaseFragment extends Fragment{
 
     }
 
+    public synchronized LoadingDialog showLoading() {
+        if (mLoading == null) {
+            mLoading = new LoadingDialog(getActivity(), R.layout.view_tips_loading);
+            mLoading.setCancelable(false);
+            mLoading.setCanceledOnTouchOutside(true);
+        }
+        if (!getActivity().isFinishing() && this.mLoading != null)
+            mLoading.show();
+        return mLoading;
+    }
+
+    public synchronized void dismissLoading() {
+
+        if (!getActivity().isFinishing() && this.mLoading != null
+                && this.mLoading.isShowing()) {
+            mLoading.dismiss();
+            mLoading = null;
+        }
+    }
+
 
 }

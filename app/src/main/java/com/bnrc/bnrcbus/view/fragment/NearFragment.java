@@ -233,7 +233,7 @@ public class NearFragment extends BaseFragment{
 	}
 
 	private void pullToRefresh() {   //下拉刷新
-		Log.i(TAG, "测试刷新");
+		Log.i("testToast", "NearFragSwip: pullToRefresh");
 		if (checkPositionChange())   //位置改变之后，重载数据库
 			loadDataBase();
 		else {
@@ -273,6 +273,10 @@ public class NearFragment extends BaseFragment{
 
 	@Override
 	public void refresh() {
+
+		if(mNearAdapter==null){
+			return;
+		}
 
 		mNearAdapter.notifyDataSetChanged();
 
@@ -1166,7 +1170,7 @@ public class NearFragment extends BaseFragment{
 				mNearExplistview.setVisibility(View.GONE);
 			}
 			String position = "暂时没有定位信息";
-			Log.i("Test mBDLocation",String.valueOf(mBDLocation==null));
+			Log.i("testToast",String.valueOf(mBDLocation==null));
 			if (mBDLocation != null) {
 				String addr = mBDLocation.getAddrStr();
 				Log.i("Test addr","changed: "+addr);

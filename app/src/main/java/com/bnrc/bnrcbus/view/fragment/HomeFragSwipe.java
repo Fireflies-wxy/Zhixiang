@@ -239,6 +239,7 @@ public class HomeFragSwipe extends BaseFragment {
 	}
 
 	private void pullToRefresh() {
+		Log.i("testToast", "HomeFragSwip: pullToRefresh");
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -266,6 +267,9 @@ public class HomeFragSwipe extends BaseFragment {
 	@Override
 	public void refresh() {
 		Log.i("refresh", "refreshed in HomeFragSwipe");
+		if(mContext==null||mUserDataDBHelper==null){
+			return;
+		}
 		loadDataBase();
 	}
 

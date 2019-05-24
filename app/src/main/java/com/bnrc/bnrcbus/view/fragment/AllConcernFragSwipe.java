@@ -26,13 +26,11 @@ import com.bnrc.bnrcbus.adapter.NearAdapter;
 import com.bnrc.bnrcbus.constant.Constants;
 
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
-import com.bnrc.bnrcbus.listener.GetLocationListener;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
 import com.bnrc.bnrcbus.network.MyVolley;
 import com.bnrc.bnrcbus.network.VolleyNetwork;
-import com.bnrc.bnrcbus.ui.LoadingDialog;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenu;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenuCreator;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenuExpandableListView;
@@ -44,6 +42,7 @@ import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.MyCipher;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.view.activity.BuslineListActivity;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,22 +85,12 @@ public class AllConcernFragSwipe extends BaseFragment {
 	private NetAndGpsUtil mNetAndGpsUtil;
 	private CoordinateConverter mCoordConventer;
 
-	private LoadingDialog mLoading;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		showLoading();
-
 		mLocationUtil = LocationUtil.getInstance(mContext
 				.getApplicationContext());
-		mLocationUtil.startLocation(new GetLocationListener() {
-			@Override
-			public void onGetLocation() {
-				dismissLoading();
-			}
-		});
+		mLocationUtil.startLocation(null);
 	}
 
 	private SwipeMenuExpandableListView.OnGroupExpandListener mOnGroupExpandListener = new SwipeMenuExpandableListView.OnGroupExpandListener() {
@@ -123,28 +112,28 @@ public class AllConcernFragSwipe extends BaseFragment {
 		@Override
 		public void create(SwipeMenu menu) {
 			switch (menu.getViewType()) {
-			case NearAdapter.FAV:
-				SwipeMenuItem item1 = new SwipeMenuItem(getActivity());
-				// item1.setBackground(getResources().getColor(R.color.blue));
-				item1.setBackground(R.drawable.bg_circle_drawable_notstar);
-				// item1.setIcon(R.drawable.select_star);
-				item1.setWidth(220);
-				item1.setTitleColor(getResources().getColor(R.color.white));
-				item1.setTitleSize(50);
-				item1.setTitle("修改");
-				menu.addMenuItem(item1);
-				break;
-			case NearAdapter.NORMAL:
-				SwipeMenuItem item2 = new SwipeMenuItem(getActivity());
-				// item1.setBackground(getResources().getColor(R.color.colorPrimaryDark));
-				item2.setBackground(R.drawable.bg_circle_drawable);
-				// item2.setIcon(R.drawable.not_select_star);
-				item2.setWidth(220);
-				item2.setTitleColor(getResources().getColor(R.color.white));
-				item2.setTitleSize(50);
-				item2.setTitle("收藏");
-				menu.addMenuItem(item2);
-				break;
+				case NearAdapter.FAV:
+					SwipeMenuItem item1 = new SwipeMenuItem(getActivity());
+					// item1.setBackground(getResources().getColor(R.color.blue));
+					item1.setBackground(R.drawable.bg_circle_drawable_notstar);
+					// item1.setIcon(R.drawable.select_star);
+					item1.setWidth(220);
+					item1.setTitleColor(getResources().getColor(R.color.white));
+					item1.setTitleSize(50);
+					item1.setTitle("修改");
+					menu.addMenuItem(item1);
+					break;
+				case NearAdapter.NORMAL:
+					SwipeMenuItem item2 = new SwipeMenuItem(getActivity());
+					// item1.setBackground(getResources().getColor(R.color.colorPrimaryDark));
+					item2.setBackground(R.drawable.bg_circle_drawable);
+					// item2.setIcon(R.drawable.not_select_star);
+					item2.setWidth(220);
+					item2.setTitleColor(getResources().getColor(R.color.white));
+					item2.setTitleSize(50);
+					item2.setTitle("收藏");
+					menu.addMenuItem(item2);
+					break;
 			}
 		}
 	};
@@ -152,7 +141,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		View view = inflater.inflate(
 				R.layout.activity_allconcern_frag_swipemenu,
 				(ViewGroup) getActivity().findViewById(R.id.content), false);
@@ -193,7 +182,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 	}
 
 	public List<Group> getFavStationsAndBuslines() {
-		Log.i(TAG, "getFavStationsAndBuslines");
+		Log.i("databasetest", "All： " + (mUserDataDBHelper == null));
 		if (mBDLocation != null) {
 			LatLng point = new LatLng(mBDLocation.getLatitude(),
 					mBDLocation.getLongitude());
@@ -206,6 +195,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 	}
 
 	private void pullToRefresh() {
+		Log.i("testToast", "AllConcern: pullToRefresh");
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -232,7 +222,10 @@ public class AllConcernFragSwipe extends BaseFragment {
 
 	@Override
 	public void refresh() {
-        Log.i("refresh", "refreshed in AllConcernFragSwipe");
+		Log.i("refresh", "refreshed in AllConcernFragSwipe");
+		if(mContext==null||mUserDataDBHelper==null){
+			return;
+		}
 		loadDataBase();
 	}
 
@@ -250,7 +243,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 	}
 
 	private void getRtInfo(final Child child) throws JSONException,
-            UnsupportedEncodingException {
+			UnsupportedEncodingException {
 		final int sequence = child.getSequence();
 		int offlineID = child.getOfflineID();
 		String Url = "http://bjgj.aibang.com:8899/bus.php?city="
@@ -521,7 +514,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 					child.setRtInfo(showText);
 					child.setRtRank(Child.FIRSTSTATION);
 					child.setDataChanged(true);
-			
+
 				} else
 					mVolleyNetwork.getNearestBusWithLineAndOneStation(LineID,
 							StationID, new VolleyNetwork.requestListener() {
@@ -1077,9 +1070,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		if(mLocationUtil==null){
-			mLocationUtil = LocationUtil.getInstance(mContext);
-		}
 		loadDataBase();
 		Log.i(TAG, TAG + " onResume");
 	}
@@ -1113,21 +1103,20 @@ public class AllConcernFragSwipe extends BaseFragment {
 		/*
 		 * 第一个执行的方法 执行时机：在执行实际的后台操作前，被UI 线程调用
 		 * 作用：可以在该方法中做一些准备工作，如在界面上显示一个进度条，或者一些控件的实例化，这个方法可以不用实现。
-		 * 
+		 *
 		 * @see android.os.AsyncTask#onPreExecute()
 		 */
 		@Override
 		protected void onPreExecute() {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "onPreExecute");
-			showLoading();
 			super.onPreExecute();
 		}
 
 		/*
 		 * 执行时机：在onPreExecute 方法执行后马上执行，该方法运行在后台线程中 作用：主要负责执行那些很耗时的后台处理工作。可以调用
 		 * publishProgress方法来更新实时的任务进度。该方法是抽象方法，子类必须实现。
-		 * 
+		 *
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
@@ -1152,7 +1141,7 @@ public class AllConcernFragSwipe extends BaseFragment {
 		 * 执行时机：这个函数在doInBackground调用publishProgress时被调用后，UI
 		 * 线程将调用这个方法.虽然此方法只有一个参数,但此参数是一个数组，可以用values[i]来调用
 		 * 作用：在界面上展示任务的进展情况，例如通过一个进度条进行展示。此实例中，该方法会被执行100次
-		 * 
+		 *
 		 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
 		 */
 		@Override
@@ -1166,14 +1155,14 @@ public class AllConcernFragSwipe extends BaseFragment {
 		/*
 		 * 执行时机：在doInBackground 执行完成后，将被UI 线程调用 作用：后台的计算结果将通过该方法传递到UI
 		 * 线程，并且在界面上展示给用户 result:上面doInBackground执行后的返回值，所以这里是"执行完毕"
-		 * 
+		 *
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
 		protected void onPostExecute(List<Group> result) {
 			// TODO Auto-generated method stub
 			Log.d(TAG, "onPostExecute");
-			dismissLoading();
+			mOnSelectBtn.dismissLoading();
 			if (result != null && result.size() > 0) {
 				mGroups = result;
 				mAllConcernAdapter.updateData(mGroups);
@@ -1191,23 +1180,6 @@ public class AllConcernFragSwipe extends BaseFragment {
 			}
 		}
 
-	}
-
-	public synchronized LoadingDialog showLoading() {
-		if (mLoading == null) {
-			mLoading = new LoadingDialog(mContext, R.layout.view_tips_loading);
-			mLoading.setCancelable(false);
-			mLoading.setCanceledOnTouchOutside(true);
-		}
-		mLoading.show();
-		return mLoading;
-	}
-
-	public synchronized void dismissLoading() {
-		if (!getActivity().isFinishing() && this.mLoading != null
-				&& this.mLoading.isShowing()) {
-			mLoading.dismiss();
-		}
 	}
 
 }
