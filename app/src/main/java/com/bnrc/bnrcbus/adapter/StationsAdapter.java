@@ -19,7 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.model.LatLng;
 import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
@@ -29,6 +33,7 @@ import com.bnrc.bnrcbus.model.Group;
 import com.bnrc.bnrcbus.ui.expandablelistview.FrontViewToMove;
 import com.bnrc.bnrcbus.util.AnimationUtil;
 import com.bnrc.bnrcbus.util.DensityUtil;
+import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.util.RandomColor;
 import com.bnrc.bnrcbus.util.TextDrawable;
@@ -54,8 +59,15 @@ public class StationsAdapter extends BaseExpandableListAdapter {
 	private IPopWindowListener mChooseListener;
 	private NetAndGpsUtil mNetAndGpsUtil;
 
+	private BDLocation mBdLocation;
+	private LocationUtil mLocationUtil;
+	private LatLng startPoint,endPoint;
+
 	public StationsAdapter(List<Group> groups, Context context,
                            ListView listview, IPopWindowListener mChooseListener) {
+		SDKInitializer.initialize(context);
+		mLocationUtil = LocationUtil.getInstance(context);
+		mBdLocation = mLocationUtil.getmLocation();
 		this.groups = groups;
 		this.mContext = context;
 		inflater = LayoutInflater.from(this.mContext);
@@ -160,6 +172,7 @@ public class StationsAdapter extends BaseExpandableListAdapter {
 				holder.rtInfo.setVisibility(View.VISIBLE);
 				holder.lLayoutContainer.setVisibility(View.GONE);
 				holder.rtInfo.setText("暂无网络");
+				Toast.makeText(mContext.getApplicationContext(),"暂无网络，请尝试刷新",Toast.LENGTH_SHORT).show();
 				return;
 			}
 			if (child.getRtRank() >= 3) {
@@ -303,8 +316,8 @@ public class StationsAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getGroupView(int groupPosition, boolean isExpanded,
-                             View convertView, ViewGroup parent) {
+	public View getGroupView(final int groupPosition, boolean isExpanded,
+							 View convertView, ViewGroup parent) {
 		// Log.i(TAG, "getGroupView ");
 		GroupViewHolder holder;
 		if (convertView == null) {
@@ -337,9 +350,16 @@ public class StationsAdapter extends BaseExpandableListAdapter {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent intent = new Intent(mContext, StationRouteActivity.class);
-				intent.putExtra("StationName", group.getStationName());
-				intent.putExtra("Latitude", group.getLatitide());
-				intent.putExtra("Longitude", group.getLongitude());
+
+				endPoint = new LatLng(group.getLatitide(),group.getLongitude());
+				intent.putExtra("endPoint", endPoint);
+
+				if (mBdLocation != null) {
+					startPoint = new LatLng(mBdLocation.getLatitude(),
+							mBdLocation.getLongitude());
+				}
+				intent.putExtra("startPoint", startPoint);
+
 				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				mContext.startActivity(intent);
 				AnimationUtil.activityZoomAnimation(mContext);

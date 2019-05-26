@@ -6,9 +6,101 @@
     android:orientation="vertical" >
 
 
-   <TextView
-       android:layout_width="wrap_content"
+   <!-- 搜索栏 -->
+   <RelativeLayout
+       android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:text="route"/>
+       android:background="@color/white">
+
+      <LinearLayout
+          android:id="@+id/textblock"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_marginEnd="60dp"
+          android:layout_marginRight="60dp"
+          android:orientation="vertical">
+
+         <RelativeLayout
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/tv_start"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:text="   我的位置"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:background="@color/colorBackground" />
+
+            <ImageView
+                android:id="@+id/icon_switch"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:padding="7dp"
+                android:src="@drawable/icon_switch"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
+         </RelativeLayout>
+
+
+         <TextView
+             android:id="@+id/tv_end"
+             android:layout_width="match_parent"
+             android:layout_height="40dp"
+             android:layout_marginStart="20dp"
+             android:layout_marginLeft="20dp"
+             android:layout_marginTop="5dp"
+             android:layout_marginBottom="10dp"
+             android:text="   终点"
+             android:gravity="center_vertical"
+             android:textSize="16sp"
+             android:textColor="@color/color_b4b4b4"
+             android:background="@color/colorBackground" />
+      </LinearLayout>
+
+
+      <ImageView
+          android:id="@+id/icon_search"
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:layout_gravity="center_horizontal|center_vertical"
+          android:layout_marginRight="9dp"
+          android:src="@drawable/icon_search" />
+
+
+   </RelativeLayout>
+
+   <RelativeLayout
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content">
+
+      <com.baidu.mapapi.map.MapView
+          android:id="@+id/bmapView"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+      </com.baidu.mapapi.map.MapView>
+
+      <ImageView
+          android:id="@+id/iv_reLocate"
+          android:layout_width="40dp"
+          android:layout_height="40dp"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentTop="true"
+          android:layout_marginRight="20dp"
+          android:layout_marginTop="20dp"
+          android:src="@drawable/icon_relocate" />
+
+   </RelativeLayout>
+
+
 
 </LinearLayout>

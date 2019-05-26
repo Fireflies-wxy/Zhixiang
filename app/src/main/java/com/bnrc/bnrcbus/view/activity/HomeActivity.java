@@ -1,6 +1,5 @@
 package com.bnrc.bnrcbus.view.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.content.DialogInterface;
@@ -25,14 +24,16 @@ import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
+import com.bnrc.bnrcbus.model.user.LoginInfo;
+import com.bnrc.bnrcbus.model.user.TokenInfo;
+import com.bnrc.bnrcbus.network.RequestCenter;
+import com.bnrc.bnrcbus.network.listener.DisposeDataListener;
 import com.bnrc.bnrcbus.ui.CircleImageView;
 import com.bnrc.bnrcbus.ui.LoadingDialog;
 import com.bnrc.bnrcbus.ui.RTabHost;
 import com.bnrc.bnrcbus.ui.SelectPicPopupWindow;
 import com.bnrc.bnrcbus.util.LocationUtil;
-import com.bnrc.bnrcbus.util.Permissions.PermissionHelper;
-import com.bnrc.bnrcbus.util.Permissions.PermissionInterface;
-import com.bnrc.bnrcbus.util.Permissions.PermissionUtil;
+import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 import com.bnrc.bnrcbus.view.fragment.BaseFragment;
@@ -52,6 +53,7 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener {
 
+
     private final static int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
     public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
     private static SharedPreferenceUtil mSharePrefrenceUtil;
@@ -65,7 +67,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private int mLastIndex = 0;  //初始化时默认加载第一项"首页"
     private TextView tv_toolbar;
-    private String[] titleList = {"智享公交","附近热点"};
+    private String[] titleList = {"智享公交","路线查询"};
 
     private RelativeLayout mHomeLayout;
     private RelativeLayout mRouteLayout;
@@ -81,7 +83,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     private TextView tv_welcome,tv_username;
 
     private DrawerLayout mDrawerLayout;
-    private IconTextView icon_menu;
+    private IconTextView icon_menu,icon_search;
 
     private CircleImageView user_icon;
 
@@ -99,12 +101,17 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private LocationUtil mLocationUtil = null;
 
+    private String token,username;
+
+    private NetAndGpsUtil mNetAndGpsUtil;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mNetAndGpsUtil = NetAndGpsUtil.getInstance(getApplicationContext());
         init();
     }
 
@@ -145,6 +152,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
         mDrawerLayout = findViewById(R.id.drawer_layout);
         icon_menu = findViewById(R.id.menu_view);
+        icon_search = findViewById(R.id.search_view);
+        icon_search.setOnClickListener(this);
 
         user_icon = findViewById(R.id.icon_user);
         user_icon.setOnClickListener(this);
@@ -167,16 +176,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         icon_quit.setOnClickListener(this);
 
         mSharePrefrenceUtil = SharedPreferenceUtil.getInstance(this);
-        isLogin = mSharePrefrenceUtil.getValue("isLogin","true");
-
-        if(isLogin.equals("true")){
-            tv_welcome.setText("欢迎您");
-            icon_quit.setVisibility(View.VISIBLE);
-            tv_username.setVisibility(View.VISIBLE);
-            tv_username.setText(mSharePrefrenceUtil.getValue("username","unknown"));
-        }else{
-            tv_welcome.setText("未登录");
-        }
 
     }
 
@@ -193,6 +192,46 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mFragment = createFragmentByClass(fragClass);
         transcation.replace(R.id.content_layout, mFragment).commitAllowingStateLoss();
     }
+
+    private void doLogin(){
+        username = mSharePrefrenceUtil.getValue("username","");
+        token = mSharePrefrenceUtil.getValue("token","");
+        isLogin = mSharePrefrenceUtil.getValue("isLogin","");
+        if(isLogin.equals("true")){
+            RequestCenter.checkToken(username,token,new DisposeDataListener() {
+                @Override
+                public void onSuccess(Object responseObj) {
+                    TokenInfo info = (TokenInfo) responseObj;
+                    if(info.code.equals("201")){
+                        mSharePrefrenceUtil.setKey("isLogin","true");
+                        tv_welcome.setText("欢迎您");
+                        icon_quit.setVisibility(View.VISIBLE);
+                        tv_username.setVisibility(View.VISIBLE);
+                        tv_username.setText(mSharePrefrenceUtil.getValue("username","unknown"));
+                    }else if(info.code.equals("401")){
+                        Toast.makeText(HomeActivity.this.getApplicationContext(),"登录状态已过期",Toast.LENGTH_SHORT);
+                        tv_welcome.setText("未登录");
+                        icon_quit.setVisibility(View.INVISIBLE);
+                        tv_username.setVisibility(View.INVISIBLE);
+                    }else {
+                        Log.i("logintest", "code: unknown");
+                        icon_quit.setVisibility(View.INVISIBLE);
+                        tv_username.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Object reasonObj) {
+                    Log.i("logintest", "failed");
+                }
+            });
+        }else {
+            tv_welcome.setText("未登录");
+            icon_quit.setVisibility(View.INVISIBLE);
+            tv_username.setVisibility(View.INVISIBLE);
+        }
+    }
+
 
     private BaseFragment createFragmentByClass(
             Class<? extends BaseFragment> fragClass) {
@@ -268,9 +307,11 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
                 startActivity(arIntent);
                 break;
             case R.id.icon_user:
-                Intent loginIntent = new Intent(HomeActivity.this,
-                        LoginActivity.class);
-                startActivity(loginIntent);
+                if(!isLogin.equals("true")){
+                    Intent loginIntent = new Intent(HomeActivity.this,
+                            LoginActivity.class);
+                    startActivity(loginIntent);
+                }
                 break;
             case R.id.quit_image_view:
                 showQuitDialog();
@@ -310,9 +351,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mSharePrefrenceUtil.setKey("isLogin","false");
-                tv_username.setVisibility(View.INVISIBLE);
-                tv_welcome.setText("未登录");
-                icon_quit.setVisibility(View.GONE);
+                doLogin();
             }
         });
         quitDialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -425,4 +464,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         }
     };
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doLogin();
+    }
 }

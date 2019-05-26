@@ -34,7 +34,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="m5zexVNASHMtI34B9AfnPbD43BICskjs" />
@@ -52,7 +51,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.HomeActivity" />
+        <activity android:name=".view.activity.HomeActivity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".view.activity.ARActivity" />
         <activity android:name=".view.activity.RouteActivity" />
         <activity android:name=".view.activity.BuslineListActivity" />
@@ -67,7 +67,8 @@
         <activity android:name=".view.activity.base.BaseActivity" />
         <activity android:name=".view.activity.SettingActivity" />
         <activity android:name=".view.activity.SubwayActivity" />
-        <activity android:name=".view.activity.StationRouteActivity"></activity>
+        <activity android:name=".view.activity.StationRouteActivity" />
+        <activity android:name=".view.activity.SugSearchActivity"></activity>
     </application>
 
 </manifest>

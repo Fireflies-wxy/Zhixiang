@@ -32,7 +32,7 @@ public class HttpConstants {
 
     public static final String REGISTER_URL = ROOT_URL + "/api/v1/registerpwd";//注册
     public static final String LOGIN_URL = ROOT_URL + "/api/v1/login";//登录
-    public static final String TOKEN_URL = ROOT_URL + "/api/v1/token";//登录token
+    public static final String TOKEN_URL = ROOT_URL + "/api/v1/loginstate";//登录token
 
     public static final String COMMENT_URL = ROOT_URL + "/api/v1/\n" +
             "http://39.96.3.214:8080/api/v1/addcom";//评论

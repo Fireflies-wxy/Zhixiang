@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="12dp"
+    android:paddingRight="16dp"
+    android:paddingTop="12dp"
+    android:background="@drawable/btn_bg_white_gray">
+
+    <!-- 图标 -->
+
+    <ImageView
+        android:id="@+id/search_poi_iv_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_toLeftOf="@+id/search_poi_txt_hint"
+        android:layout_toRightOf="@id/search_poi_iv_icon"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical" >
+
+        <!-- poi名字 -->
+
+        <TextView
+            android:id="@+id/search_poi_txt_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="#333333"
+            android:textSize="16dp" />
+
+        <!-- poi地址 -->
+
+        <TextView
+            android:id="@+id/search_poi_txt_address"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="#999999"
+            android:textSize="14dp" />
+    </LinearLayout>
+
+    <!-- poi类型的提示 -->
+
+    <TextView
+        android:id="@id/search_poi_txt_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="6dp"
+        android:singleLine="true"
+        android:textColor="#d3d3d3"
+        android:textSize="12dp" />
+
+</RelativeLayout>

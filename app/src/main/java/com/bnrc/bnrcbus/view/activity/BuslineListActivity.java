@@ -394,6 +394,7 @@ public class BuslineListActivity extends BaseActivity {
         if (!mNetAndGpsUtil.isNetworkAvailable()) {
             Log.i(TAG, "getRtParam !isNetworkConnected(this)");
             rtInfo = "暂无网络";
+            Toast.makeText(getApplicationContext(),"暂无网络，请尝试刷新",Toast.LENGTH_SHORT).show();
             Log.i(TAG, "等待发车  " + 403);
             mRtInfo.setText(Html.fromHtml(rtInfo));
             dismissLoading();
@@ -422,6 +423,7 @@ public class BuslineListActivity extends BaseActivity {
         mBuslineAdapter.notifyDataSetChanged();
         if (!mNetAndGpsUtil.isNetworkAvailable()) {
             rtInfo = "暂无网络";
+            Toast.makeText(getApplicationContext(),"暂无网络，请尝试刷新",Toast.LENGTH_SHORT).show();
             Log.i(TAG, "等待发车  " + 431);
             mRtInfo.setText(Html.fromHtml(rtInfo));
             dismissLoading();

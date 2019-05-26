@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#eeeeee"
+    android:paddingBottom="0dp" >
+
+    <!-- 标题栏 -->
+    <RelativeLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="10dp">
+
+        <com.joanzapata.iconify.widget.IconTextView
+            android:id="@+id/search_back_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="{icon-back}"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:padding="5dp"
+            android:clickable="true"
+            android:onClick="openDrawerLayout"/>
+
+        <TextView
+            android:id="@+id/tv_search_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="兴趣点搜索"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_search"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@drawable/search_top_background">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btn_search"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="@drawable/search_top_background">
+
+            <EditText
+                android:id="@+id/edt_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:hint="请输入兴趣点名称"
+                android:paddingLeft="40dp"
+                android:singleLine="true"
+                android:textSize="18dp"
+                android:background="@drawable/search_frame"/>
+
+            <ImageView
+                android:id="@+id/iv_delete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/icon_delete"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/rl_search"
+        android:orientation="vertical">
+        <!-- 分割线 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#d9d9d9" />
+        <!-- 智能提示列表 -->
+
+        <ListView
+            android:id="@+id/search_lv_suggest"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#ffffffff"
+            android:divider="#d9d9d9"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:scrollbars="none"
+            android:scrollingCache="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/search_no_result"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/rl_search"
+        android:background="#fafafa"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:src="@drawable/search_no_result" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="未查找到结果"
+            android:textColor="#999999"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+</RelativeLayout>

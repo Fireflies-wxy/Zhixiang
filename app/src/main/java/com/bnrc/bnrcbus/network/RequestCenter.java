@@ -5,6 +5,7 @@ package com.bnrc.bnrcbus.network;
 import com.bnrc.bnrcbus.model.bus.BusModel;
 import com.bnrc.bnrcbus.model.user.LoginInfo;
 import com.bnrc.bnrcbus.model.user.RegisterInfo;
+import com.bnrc.bnrcbus.model.user.TokenInfo;
 import com.bnrc.bnrcbus.model.version.VersionModel;
 import com.bnrc.bnrcbus.network.listener.DisposeDataHandler;
 import com.bnrc.bnrcbus.network.listener.DisposeDataListener;
@@ -71,6 +72,15 @@ public class RequestCenter {
         params.put("password",pwd);
 
         RequestCenter.dealPostRequest(HttpConstants.LOGIN_URL,params,listener, LoginInfo.class);
+    }
+
+    public static void checkToken(String uid, String token, DisposeDataListener listener) {
+        RequestParams params = new RequestParams();
+
+        params.put("username",uid);
+        params.put("token",token);
+
+        RequestCenter.dealPostRequest(HttpConstants.TOKEN_URL,params,listener, TokenInfo.class);
     }
 
     public static void submitRate(String uid, int lineID, int stationID, int lineRate, int stationRate, DisposeDataListener listener) {

@@ -1,5 +1,7 @@
 package com.bnrc.bnrcbus.model;
 
+import com.bnrc.bnrcbus.util.RandomUtil;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,7 @@ public class Child implements Cloneable, Serializable {
     private int isAlertOpen = NONE;
 
     //添加评论分数
-    private int lineStatus = 1; //乘车拥挤度
+    private int busStatus = RandomUtil.PercentageRandom(); //乘车拥挤度
 
     public int isAlertOpen() {
         return isAlertOpen;
@@ -227,11 +229,11 @@ public class Child implements Cloneable, Serializable {
     }
 
 
-    public int getLineStatus() {
-        return lineStatus;
+    public int getBusStatus() {
+        return busStatus;
     }
 
-    public void setLineStatus(int lineStatus) {
-        this.lineStatus = lineStatus;
+    public void setBusStatus(int busStatus) {
+        this.busStatus = busStatus;
     }
 }

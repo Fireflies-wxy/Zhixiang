@@ -90,8 +90,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }else{
                                 Toast.makeText(getApplicationContext(),"登陆成功，跳转至首页",Toast.LENGTH_SHORT).show();
                                 Log.i(TAG, "登陆成功");
-                                mSharePrefrenceUtil.setKey("username",username);
+                                mSharePrefrenceUtil.setKey("username",info.username);
                                 mSharePrefrenceUtil.setKey("isLogin","true");
+                                mSharePrefrenceUtil.setKey("token",info.token);
                                 startActivity(new Intent(LoginActivity.this,
                                         HomeActivity.class));
                             }

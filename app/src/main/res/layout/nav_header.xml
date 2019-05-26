@@ -44,7 +44,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="{icon-share}"
+        android:text="{icon-quit}"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"

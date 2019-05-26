@@ -116,7 +116,7 @@
                             android:textColor="@color/black"
                             android:textSize="16sp" />
                         <ImageView
-                            android:id="@+id/img_carStatus"
+                            android:id="@+id/img_busStatus"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_marginLeft="10dp"

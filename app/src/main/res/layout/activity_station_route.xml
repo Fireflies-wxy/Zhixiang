@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
-            android:text="智享公交"
+            android:text="路线规划"
             android:textColor="@color/white"
             android:textSize="20sp" />
 

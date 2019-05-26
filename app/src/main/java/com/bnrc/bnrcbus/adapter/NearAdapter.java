@@ -129,7 +129,7 @@ public class NearAdapter extends BaseExpandableListAdapter {
 			holder.fixButton = (TextView) convertView
 					.findViewById(R.id.btn_delete);
 			holder.frontView = convertView.findViewById(R.id.id_front);
-			holder.img_carStatus = convertView.findViewById(R.id.img_carStatus);
+			holder.img_busStatus = convertView.findViewById(R.id.img_busStatus);
 			convertView.setTag(holder);
 
 		} else {
@@ -192,6 +192,7 @@ public class NearAdapter extends BaseExpandableListAdapter {
 				holder.rtInfo.setVisibility(View.VISIBLE);
 				holder.lLayoutContainer.setVisibility(View.GONE);
 				holder.rtInfo.setText("暂无网络");
+				Toast.makeText(mContext.getApplicationContext(),"暂无网络，请尝试刷新",Toast.LENGTH_SHORT).show();
 				return;
 			}
 			if (child.getRtRank() >= 3) {
@@ -298,25 +299,25 @@ public class NearAdapter extends BaseExpandableListAdapter {
 				}
 			});
 
-			int carStatusRate = child.getLineStatus();  //乘车拥挤度
+			int busStatusRate = child.getBusStatus();  //乘车拥挤度
 
-            switch (carStatusRate){
+            switch (busStatusRate){
                 case 1:
-                    holder.img_carStatus.setBackgroundResource(R.drawable.wait_status_low);
+                    holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_low);
                     break;
                 case 2:
-					holder.img_carStatus.setBackgroundResource(R.drawable.wait_status_mid);
+					holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_mid);
                     break;
                 case 3:
-					holder.img_carStatus.setBackgroundResource(R.drawable.wait_status_high);
+					holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_high);
                     break;
             }
 
 
-            holder.img_carStatus.setOnClickListener(new OnClickListener() {
+            holder.img_busStatus.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-						switch (child.getLineStatus()){
+						switch (child.getBusStatus()){
 							case 1:
 								Toast.makeText(mContext.getApplicationContext(),"乘车拥挤度:舒适",Toast.LENGTH_SHORT).show();
 								break;
@@ -484,7 +485,7 @@ public class NearAdapter extends BaseExpandableListAdapter {
 		LinearLayout lLayoutContainer;
 		TextView fixButton; //
 		View frontView;
-		ImageView img_carStatus;
+		ImageView img_busStatus;
 	}
 
 	private String getSequence(int position) {

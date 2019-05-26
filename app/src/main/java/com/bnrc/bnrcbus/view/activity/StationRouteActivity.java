@@ -2,7 +2,6 @@ package com.bnrc.bnrcbus.view.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -52,12 +51,11 @@ import java.util.Map;
 
 public class StationRouteActivity extends BaseActivity {
 
-    private String StationName;
-    private LatLng stationPoint = null;
+    private LatLng endPoint = null;
     private MapView mMapView;
     private TextView mTitleTextView;
     private BaiduMap mBaiduMap = null;
-    private LatLng mPoint = null;
+    private LatLng startPoint = null;
 
     // 步行
     private Button walkButton = null;
@@ -81,7 +79,7 @@ public class StationRouteActivity extends BaseActivity {
     private LocationUtil mLocationUtil;
     private BDLocation mBdLocation;
 
-    private TextView tv_station_title,station_menu_view;
+    private TextView station_menu_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +91,6 @@ public class StationRouteActivity extends BaseActivity {
         mBdLocation = mLocationUtil.getmLocation();
         Intent intent = getIntent();
 
-        tv_station_title = findViewById(R.id.tv_station_title);
-        tv_station_title.setText(intent.getStringExtra("StationName"));
 
         station_menu_view = findViewById(R.id.station_menu_view);
         station_menu_view.setOnClickListener(new View.OnClickListener() {
@@ -104,18 +100,15 @@ public class StationRouteActivity extends BaseActivity {
             }
         });
 
-        StationName = intent.getStringExtra("StationName");
         mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
         mMapView.removeViewAt(2);
         mBaiduMap.setTrafficEnabled(false);
-        double Latitude = intent.getDoubleExtra("Latitude", 0.0);
-        double Longitude = intent.getDoubleExtra("Longitude", 0.0);
-        stationPoint = new LatLng(Latitude, Longitude);
-        if (mBdLocation != null) {
-            mPoint = new LatLng(mBdLocation.getLatitude(),
-                    mBdLocation.getLongitude());
-        }
+
+
+        endPoint = intent.getParcelableExtra("endPoint");
+        startPoint = intent.getParcelableExtra("startPoint");
+
         mTitleTextView = (TextView) findViewById(R.id.mTitleTextView);
         mTitleTextView.setText("以下是到达该站点的步行方案...");
         busButton = (Button) findViewById(R.id.busbtn);
@@ -214,17 +207,17 @@ public class StationRouteActivity extends BaseActivity {
                                     .zoomTo(14.0f);
                             mBaiduMap.animateMapStatus(u);
                             LatLng center = new LatLng(
-                                    (mPoint.latitude + stationPoint.latitude) / 2,
-                                    (mPoint.longitude + stationPoint.longitude) / 2);
+                                    (startPoint.latitude + endPoint.latitude) / 2,
+                                    (startPoint.longitude + endPoint.longitude) / 2);
                             u = MapStatusUpdateFactory.newLatLng(center);
                             mBaiduMap.animateMapStatus(u);
                             mTitleTextView.setText("以下是到达该站点的驾车方案");
 
                             BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                    .fromResource(R.drawable.icon_location);
+                                    .fromResource(R.drawable.umeng_socialize_location_on);
                             // ����MarkerOption�������ڵ�ͼ�����Marker
                             OverlayOptions option = new MarkerOptions()
-                                    .position(stationPoint).icon(bitmap)
+                                    .position(endPoint).icon(bitmap)
                                     .zIndex(1) // ����marker���ڲ㼶
                                     .draggable(true).title("我的位置"); // ����������ק;
                             // �ڵ�ͼ�����Marker������ʾ
@@ -311,8 +304,8 @@ public class StationRouteActivity extends BaseActivity {
                                     .zoomTo(14.0f);
                             mBaiduMap.animateMapStatus(u);
                             LatLng center = new LatLng(
-                                    (mPoint.latitude + stationPoint.latitude) / 2,
-                                    (mPoint.longitude + stationPoint.longitude) / 2);
+                                    (startPoint.latitude + endPoint.latitude) / 2,
+                                    (startPoint.longitude + endPoint.longitude) / 2);
                             u = MapStatusUpdateFactory.newLatLng(center);
                             mBaiduMap.animateMapStatus(u);
                             mTitleTextView.setText("以下是到达该站点的公交方案");
@@ -321,7 +314,7 @@ public class StationRouteActivity extends BaseActivity {
                                     .fromResource(R.drawable.icon_location);
                             // ����MarkerOption�������ڵ�ͼ�����Marker
                             OverlayOptions option = new MarkerOptions()
-                                    .position(stationPoint).icon(bitmap)
+                                    .position(endPoint).icon(bitmap)
                                     .zIndex(1) // ����marker���ڲ㼶
                                     .draggable(true).title("我的位置"); // ����������ק;
                             // �ڵ�ͼ�����Marker������ʾ
@@ -400,8 +393,8 @@ public class StationRouteActivity extends BaseActivity {
                             mBaiduMap.animateMapStatus(u);
 
                             LatLng center = new LatLng(
-                                    (mPoint.latitude + stationPoint.latitude) / 2,
-                                    (mPoint.longitude + stationPoint.longitude) / 2);
+                                    (startPoint.latitude + endPoint.latitude) / 2,
+                                    (startPoint.longitude + endPoint.longitude) / 2);
                             u = MapStatusUpdateFactory.newLatLng(center);
                             mBaiduMap.animateMapStatus(u);
                             mTitleTextView.setText("以下是到达该站点的步行方案...");
@@ -411,13 +404,13 @@ public class StationRouteActivity extends BaseActivity {
                 }
             }
         });
-        if (mPoint == null) {
+        if (startPoint == null) {
             Toast.makeText(this.getApplicationContext(), "无法定位，请检查网络或打开GPS！", Toast.LENGTH_SHORT);
         }
-        PlanNode st = PlanNode.withLocation(mPoint);
-        PlanNode ed = PlanNode.withLocation(stationPoint);
-        double distance = mLocationUtil.getDistanceWithLocations(mPoint,
-                stationPoint);
+        PlanNode st = PlanNode.withLocation(startPoint);
+        PlanNode ed = PlanNode.withLocation(endPoint);
+        double distance = mLocationUtil.getDistanceWithLocations(startPoint,
+                endPoint);
         if (distance < 1000) {
             search.walkingSearch(new WalkingRoutePlanOption().from(st).to(ed));
             walkListView.setVisibility(View.VISIBLE);
@@ -448,8 +441,8 @@ public class StationRouteActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // Intent intent = null;
-                PlanNode st = PlanNode.withLocation(mPoint);
-                PlanNode ed = PlanNode.withLocation(stationPoint);
+                PlanNode st = PlanNode.withLocation(startPoint);
+                PlanNode ed = PlanNode.withLocation(endPoint);
                 search.transitSearch(new TransitRoutePlanOption().from(st)
                         .to(ed).city("北京"));
                 walkListView.setVisibility(View.INVISIBLE);
@@ -470,8 +463,8 @@ public class StationRouteActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // Intent intent = null;
-                PlanNode st = PlanNode.withLocation(mPoint);
-                PlanNode ed = PlanNode.withLocation(stationPoint);
+                PlanNode st = PlanNode.withLocation(startPoint);
+                PlanNode ed = PlanNode.withLocation(endPoint);
                 search.walkingSearch(new WalkingRoutePlanOption().from(st).to(
                         ed));
                 walkListView.setVisibility(View.VISIBLE);
@@ -492,8 +485,8 @@ public class StationRouteActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 // Intent intent = null;
-                PlanNode st = PlanNode.withLocation(mPoint);
-                PlanNode ed = PlanNode.withLocation(stationPoint);
+                PlanNode st = PlanNode.withLocation(startPoint);
+                PlanNode ed = PlanNode.withLocation(endPoint);
                 search.drivingSearch(new DrivingRoutePlanOption().from(st).to(
                         ed));
                 driveListView.setVisibility(View.VISIBLE);
