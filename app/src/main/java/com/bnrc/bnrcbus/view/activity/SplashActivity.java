@@ -15,7 +15,7 @@ import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 
 public class SplashActivity extends BaseActivity implements PermissionInterface {
 
-    private int TIME = 1;  //3秒
+    private int TIME = 3;  //3秒
     private String[] mPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA};
     private PermissionHelper permissionHelper;
     private LocationUtil mLocationUtil = null;

@@ -307,7 +307,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
                 startActivity(arIntent);
                 break;
             case R.id.icon_user:
-                if(!isLogin.equals("true")){
+                if(tv_welcome.getText().toString().equals("未登录")){
                     Intent loginIntent = new Intent(HomeActivity.this,
                             LoginActivity.class);
                     startActivity(loginIntent);

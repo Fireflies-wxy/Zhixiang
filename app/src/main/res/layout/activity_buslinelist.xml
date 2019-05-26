@@ -403,7 +403,7 @@
                             android:text="候车拥挤度: "/>
 
                         <ImageView
-                            android:id="@+id/icon_waitstatus"
+                            android:id="@+id/icon_stationstatus"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/wait_status_low"/>

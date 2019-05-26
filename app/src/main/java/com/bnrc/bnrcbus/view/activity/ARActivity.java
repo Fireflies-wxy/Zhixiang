@@ -53,12 +53,13 @@ import com.bnrc.bnrcbus.model.AR.ARCamera;
 import com.bnrc.bnrcbus.model.AR.AROverlayView;
 import com.bnrc.bnrcbus.model.AR.ARPoint;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
+import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ARActivity extends AppCompatActivity implements View.OnClickListener,SensorEventListener,OnGetPoiSearchResultListener {
+public class ARActivity extends BaseActivity implements View.OnClickListener,SensorEventListener,OnGetPoiSearchResultListener {
 
     final static String TAG = "ARActivity";
     private SurfaceView surfaceView;

@@ -155,6 +155,7 @@ public class WorkFragSwipe extends BaseFragment {
 			intent.putExtra("FullName", child.getLineFullName());
 			intent.putExtra("Sequence", child.getSequence());
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.putExtra("busStatus", child.getBusStatus());
 			mContext.startActivity(intent);
 			AnimationUtil.activityZoomAnimation((Activity) mContext);
 			return false;

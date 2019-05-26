@@ -1,14 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true"
-    android:orientation="vertical" >
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
+    <!--&lt;!&ndash; 标题栏 &ndash;&gt;-->
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/toolbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/colorPrimary"-->
+        <!--android:padding="10dp">-->
 
-   <TextView
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="提醒线路"/>
+        <!--<com.joanzapata.iconify.widget.IconTextView-->
+            <!--android:id="@+id/search_back_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:text="{icon-back}"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="25sp"-->
+            <!--android:padding="5dp"-->
+            <!--android:clickable="true"-->
+            <!--android:onClick="openDrawerLayout"/>-->
 
+        <!--<TextView-->
+            <!--android:id="@+id/tv_search_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:text="站点提醒"-->
+            <!--android:textColor="@color/white"-->
+            <!--android:textSize="20sp" />-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:background="@color/transparent"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:paddingRight="5dp">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/open_alert_btn"-->
+                <!--android:layout_width="58dp"-->
+                <!--android:layout_height="26dp"-->
+                <!--android:src="@drawable/alertoffimg"/>-->
+        <!--</LinearLayout>-->
+    <!--</RelativeLayout>-->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#eeeeee" >
+
+        <com.bnrc.bnrcsdk.ui.pullloadmenulistview.PullLoadMenuListView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:cacheColorHint="#00000000"
+            android:childDivider="@color/white"
+            android:divider="@color/white"
+            android:dividerHeight="0dp"
+            android:drawSelectorOnTop="false"
+            android:fastScrollEnabled="false"
+            android:footerDividersEnabled="true"
+            android:groupIndicator="@null"
+            android:scrollbars="vertical"
+            android:scrollingCache="true" />
+
+        <RelativeLayout
+            android:id="@+id/rLayout_alert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#eeeeee"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/iv_alert"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:alpha="0.6"
+                android:src="@drawable/icon_no_collection" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/iv_alert"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:hint="暂时没有提醒站点"
+                android:textSize="18sp"
+                android:typeface="serif" />
+        </RelativeLayout>
+    </FrameLayout>
 </LinearLayout>

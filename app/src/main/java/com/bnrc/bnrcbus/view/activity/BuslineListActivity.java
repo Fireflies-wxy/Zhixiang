@@ -104,6 +104,7 @@ public class BuslineListActivity extends BaseActivity {
     private CoordinateConverter mCoordConventer;
 
     private TextView tv_busline_title,busline_menu_view;
+    private ImageView icon_busstatus,icon_stationstatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +176,21 @@ public class BuslineListActivity extends BaseActivity {
         mRtInfo.setText(Html.fromHtml(loadingInfo));
         tv_busline_title = findViewById(R.id.tv_busline_title);
         busline_menu_view = findViewById(R.id.busline_menu_view);
+
+        icon_busstatus = findViewById(R.id.icon_busstatus);
+        icon_stationstatus = findViewById(R.id.icon_stationstatus);
+
+        switch (getIntent().getIntExtra("busStatus",0)){
+            case 1:
+                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_low));
+                break;
+            case 2:
+                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_mid));
+                break;
+            case 3:
+                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_high));
+                break;
+        }
 
 
         if (mUserDataBaseHelper.IsFavStation(LineID, StationID))

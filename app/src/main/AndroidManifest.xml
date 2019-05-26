@@ -54,6 +54,7 @@
         <activity android:name=".view.activity.HomeActivity"
             android:launchMode="singleInstance"/>
         <activity android:name=".view.activity.ARActivity" />
+        <activity android:name=".view.activity.SearchSomethingActivity" />
         <activity android:name=".view.activity.RouteActivity" />
         <activity android:name=".view.activity.BuslineListActivity" />
         <activity android:name=".view.activity.StationListActivity" />

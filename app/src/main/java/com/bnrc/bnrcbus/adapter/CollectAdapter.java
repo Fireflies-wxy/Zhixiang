@@ -243,6 +243,8 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 					intent.putExtra("StationID", child.getStationID());
 					intent.putExtra("FullName", child.getLineFullName());
 					intent.putExtra("Sequence", child.getSequence());
+					intent.putExtra("busStatus", child.getBusStatus());
+					intent.putExtra("lineStatus", group.getStationStatus());
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					mContext.startActivity(intent);
 					AnimationUtil.activityZoomAnimation((Activity) mContext);

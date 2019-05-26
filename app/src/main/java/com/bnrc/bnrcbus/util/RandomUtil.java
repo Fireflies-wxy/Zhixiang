@@ -12,16 +12,15 @@ public class RandomUtil
     /**
      * 0出现的概率为%50
      */
-    public static double rate0 = 0.70;
+    public static double rate0 = 0.80;
     /**
      * 1出现的概率为%20
      */
-    public static double rate1 = 0.20;
+    public static double rate1 = 0.15;
     /**
      * 2出现的概率为%15
      */
-    public static double rate2 = 0.10;
-
+    public static double rate2 = 0.05;
 
     /**
      * Math.random()产生一个double型的随机数，判断一下
