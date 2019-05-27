@@ -213,7 +213,7 @@
                 android:gravity="center_horizontal" >
 
                 <LinearLayout
-                    android:id="@+id/lLayout_correct"
+                    android:id="@+id/lLayout_rate"
                     android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="@drawable/radius_rec_big"

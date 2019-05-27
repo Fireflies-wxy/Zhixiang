@@ -51,8 +51,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.HomeActivity"
-            android:launchMode="singleInstance"/>
+        <activity
+            android:name=".view.activity.HomeActivity"
+            android:launchMode="singleInstance" />
         <activity android:name=".view.activity.ARActivity" />
         <activity android:name=".view.activity.SearchSomethingActivity" />
         <activity android:name=".view.activity.RouteActivity" />
@@ -69,7 +70,20 @@
         <activity android:name=".view.activity.SettingActivity" />
         <activity android:name=".view.activity.SubwayActivity" />
         <activity android:name=".view.activity.StationRouteActivity" />
-        <activity android:name=".view.activity.SugSearchActivity"></activity>
+        <activity android:name=".view.activity.SugSearchActivity" />
+        <activity android:name=".view.activity.RateActivity"></activity>
+
+        <service android:name="com.bnrc.bnrcbus.service.ScanService">
+            <intent-filter android:priority="1000">
+                <action android:name="com.bnrc.bnrcbus.scanservice" />
+            </intent-filter>
+        </service>
+
+        <service android:name="com.bnrc.bnrcbus.service.AlertService">
+            <intent-filter>
+                <action android:name="com.bnrc.bnrcbus.AlertService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

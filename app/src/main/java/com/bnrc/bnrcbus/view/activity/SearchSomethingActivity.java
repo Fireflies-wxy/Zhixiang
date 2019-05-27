@@ -48,7 +48,7 @@ public class SearchSomethingActivity extends BaseActivity {
 	private String Keyword = null;
 	private BDLocation mBDLocation = null;
 	RelativeLayout mAdContainer;
-	private TextView tv_near;
+	private TextView tv_near,icon_back;
 
 	@SuppressLint("ResourceAsColor")
 	@Override
@@ -58,6 +58,14 @@ public class SearchSomethingActivity extends BaseActivity {
 		setContentView(R.layout.activity_search_something);
 
 		mLocationUtil = LocationUtil.getInstance(this.getApplicationContext());
+
+		icon_back = findViewById(R.id.icon_back);
+		icon_back.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				finish();
+			}
+		});
 
 		// 加载地图和定位
 		mMapView = (MapView) findViewById(R.id.bmapView);
@@ -150,7 +158,7 @@ public class SearchSomethingActivity extends BaseActivity {
 				// 获取POI检索结果
 				if (result == null
 						|| result.error != PoiResult.ERRORNO.NO_ERROR) {
-					Toast.makeText(SearchSomethingActivity.this, "抱歉，未找到结果",
+					Toast.makeText(SearchSomethingActivity.this.getApplicationContext(), "抱歉，未找到结果",
 							Toast.LENGTH_SHORT).show();
 				}
 				if (result.error == PoiResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
@@ -170,10 +178,10 @@ public class SearchSomethingActivity extends BaseActivity {
 			public void onGetPoiDetailResult(PoiDetailResult result) {
 				// TODO Auto-generated method stub
 				if (result.error != PoiDetailResult.ERRORNO.NO_ERROR) {
-					Toast.makeText(SearchSomethingActivity.this, "抱歉，未找到结果",
+					Toast.makeText(SearchSomethingActivity.this.getApplicationContext(), "抱歉，未找到结果",
 							Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(SearchSomethingActivity.this,
+					Toast.makeText(SearchSomethingActivity.this.getApplicationContext(),
 							result.getName() + ": " + result.getAddress(),
 							Toast.LENGTH_SHORT).show();
 				}

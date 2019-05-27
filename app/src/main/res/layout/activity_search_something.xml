@@ -27,7 +27,7 @@
         android:padding="10dp">
 
         <com.joanzapata.iconify.widget.IconTextView
-            android:id="@+id/menu_view"
+            android:id="@+id/icon_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -37,8 +37,7 @@
             android:textColor="@color/white"
             android:textSize="25sp"
             android:padding="5dp"
-            android:clickable="true"
-            android:onClick="openDrawerLayout"/>
+            android:clickable="true" />
 
         <TextView
             android:id="@+id/tv_home_title"

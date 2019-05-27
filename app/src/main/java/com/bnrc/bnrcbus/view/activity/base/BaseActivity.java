@@ -1,7 +1,6 @@
 
 package com.bnrc.bnrcbus.view.activity.base;
 
-import android.Manifest;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.bnrc.bnrcbus.service.AlertService;
-import com.bnrc.bnrcbus.ui.AlertDialog;
+import com.bnrc.bnrcbus.ui.MyAlertDialog;
 import com.bnrc.bnrcbus.ui.LoadingDialog;
-import com.bnrc.bnrcbus.util.LocationUtil;
-import com.bnrc.bnrcbus.util.Permissions.PermissionHelper;
 
 
 public class BaseActivity extends AppCompatActivity {
@@ -52,6 +49,10 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mAlertIntent = new Intent(this, AlertService.class);
+        bindService(mAlertIntent, mAlertConnection, BIND_AUTO_CREATE);
+       // mScanWifiIntent = new Intent(this, ScanWifiService.class);
+       // bindService(mScanWifiIntent, mScanWifiConnection, BIND_AUTO_CREATE);
     }
 
 
@@ -89,7 +90,7 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             // TODO Auto-generated method stub
-            // bindService(mAlertIntent, mAlertConnection, BIND_AUTO_CREATE);
+            //bindService(mAlertIntent, mAlertConnection, BIND_AUTO_CREATE);
         }
     };
 
@@ -118,6 +119,7 @@ public class BaseActivity extends AppCompatActivity {
     };
 
     protected void startAlertService() {
+        Log.i("AlertTest", "startAlertService: ");
         if (myAlertBinder != null)
             myAlertBinder.startScanAlert();
         else {
@@ -137,13 +139,13 @@ public class BaseActivity extends AppCompatActivity {
         bindService(mAlertIntent, mAlertConnection, BIND_AUTO_CREATE);
     }
 
-    private AlertDialog mAlertDialog;
+    private MyAlertDialog mAlertDialog;
 
-    public AlertDialog showAlertDialog() {
+    public MyAlertDialog showAlertDialog() {
         if (mAlertDialog != null)
             mAlertDialog.dismiss();
         String stationName = myAlertBinder.getAlertStationName();
-        mAlertDialog = new AlertDialog(this).builder()
+        mAlertDialog = new MyAlertDialog(this).builder()
                 .setTitle(stationName + "站").setMsg("即将到达 ，请注意下车！")
                 .setNegativeButton("确认", new View.OnClickListener() {
                     @Override
@@ -152,7 +154,8 @@ public class BaseActivity extends AppCompatActivity {
                     }
                 });
         mAlertDialog.setCancelable(false);
-        mAlertDialog.show();
+        if(!BaseActivity.this.isFinishing())
+            mAlertDialog.show();
         return mAlertDialog;
     }
 

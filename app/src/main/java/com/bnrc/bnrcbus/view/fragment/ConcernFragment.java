@@ -20,13 +20,19 @@ import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
 import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.adapter.ConcernAdapter;
+import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.model.Group;
+import com.bnrc.bnrcbus.service.PollingService;
+import com.bnrc.bnrcbus.service.ScanService;
 import com.bnrc.bnrcbus.ui.expandablelistview.SwipeMenuExpandableListView;
 import com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView;
 import com.bnrc.bnrcbus.util.LocationUtil;
+import com.bnrc.bnrcbus.util.PollingUtils;
+import com.bnrc.bnrcbus.util.ServiceUtils;
+
 import java.util.List;
 
 /**
@@ -169,6 +175,12 @@ public class ConcernFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
         // Stop polling service
+        System.out.println("Stop polling service...");
+        PollingUtils.stopPollingService(mContext, PollingService.class,
+                PollingService.ACTION);
+        ServiceUtils.stopPollingService(mContext.getApplicationContext(),
+                ScanService.class, Constants.SERVICE_ACTION);
+        Log.i(TAG, TAG + " onDestroy");
 
         Log.i("BaseFragment", TAG + " onDestroy");
 

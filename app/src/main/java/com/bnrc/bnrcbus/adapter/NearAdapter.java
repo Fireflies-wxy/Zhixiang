@@ -138,7 +138,7 @@ public class NearAdapter extends BaseExpandableListAdapter {
 
 		if (child.isDataChanged()) {
 			child.setDataChanged(false);
-			convertView.startAnimation(push_left_in);
+			//convertView.startAnimation(push_left_in);
 		}
 		setData(holder, groupPosition, childPosition);
 

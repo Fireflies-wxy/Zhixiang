@@ -3,6 +3,7 @@ package com.bnrc.bnrcbus.network;
 
 
 import com.bnrc.bnrcbus.model.bus.BusModel;
+import com.bnrc.bnrcbus.model.comment.RateInfo;
 import com.bnrc.bnrcbus.model.user.LoginInfo;
 import com.bnrc.bnrcbus.model.user.RegisterInfo;
 import com.bnrc.bnrcbus.model.user.TokenInfo;
@@ -83,14 +84,17 @@ public class RequestCenter {
         RequestCenter.dealPostRequest(HttpConstants.TOKEN_URL,params,listener, TokenInfo.class);
     }
 
-    public static void submitRate(String uid, int lineID, int stationID, int lineRate, int stationRate, DisposeDataListener listener) {
+    public static void submitRate(int uid,int lineid,int linestatus, int stationid, int stationRate, DisposeDataListener listener) {
 
-//        RequestParams params = new RequestParams();
-//        params.put("SID", "1000020761");
-//        params.put("LID", "1038700");
-//        params.put("T", Long.toString(new Date().getTime()));
-//
-//        RequestCenter.dealPostRequest(HttpConstants.BUS_URL, params, listener, BusModel.class);
+        RequestParams params = new RequestParams();
+        params.put("uid",uid);
+        params.put("lineid", lineid);
+        params.put("linestatus", linestatus);
+        params.put("stationid", stationid);
+        params.put("stationstatus", stationRate);
+        params.put("time", Long.toString(new Date().getTime()));
+
+        RequestCenter.dealPostRequest(HttpConstants.COMMENT_URL, params, listener, RateInfo.class);
     }
 
 }

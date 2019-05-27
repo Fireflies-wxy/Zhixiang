@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.bnrc.bnrcbus.R;
 
 
-public class AlertDialog {
+public class MyAlertDialog {
 	private Context context;
 	private Dialog dialog;
 	private LinearLayout lLayout_bg;
@@ -32,14 +32,14 @@ public class AlertDialog {
 	private boolean showPosBtn = false;
 	private boolean showNegBtn = false;
 
-	public AlertDialog(Context context) {
+	public MyAlertDialog(Context context) {
 		this.context = context;
 		WindowManager windowManager = (WindowManager) context
 				.getSystemService(Context.WINDOW_SERVICE);
 		display = windowManager.getDefaultDisplay();
 	}
 
-	public AlertDialog builder() {
+	public MyAlertDialog builder() {
 		// ��ȡDialog����
 		View view = LayoutInflater.from(context).inflate(
 				R.layout.view_alertdialog, null);
@@ -68,7 +68,7 @@ public class AlertDialog {
 		return this;
 	}
 
-	public AlertDialog setTitle(String title) {
+	public MyAlertDialog setTitle(String title) {
 		showTitle = true;
 		if ("".equals(title)) {
 			txt_title.setText("");
@@ -78,7 +78,7 @@ public class AlertDialog {
 		return this;
 	}
 
-	public AlertDialog setMsg(String msg) {
+	public MyAlertDialog setMsg(String msg) {
 		showMsg = true;
 		if ("".equals(msg)) {
 			txt_msg.setText("");
@@ -88,18 +88,18 @@ public class AlertDialog {
 		return this;
 	}
 
-	public AlertDialog setCancelable(boolean cancel) {
+	public MyAlertDialog setCancelable(boolean cancel) {
 		dialog.setCancelable(cancel);
 		return this;
 	}
 
-	public AlertDialog setCanceledOnTouchOutside(boolean cancel) {
+	public MyAlertDialog setCanceledOnTouchOutside(boolean cancel) {
 		dialog.setCanceledOnTouchOutside(cancel);
 		return this;
 	}
 
-	public AlertDialog setPositiveButton(String text,
-                                         final OnClickListener listener) {
+	public MyAlertDialog setPositiveButton(String text,
+                                           final OnClickListener listener) {
 		showPosBtn = true;
 		if ("".equals(text)) {
 			btn_pos.setText("");
@@ -116,8 +116,8 @@ public class AlertDialog {
 		return this;
 	}
 
-	public AlertDialog setNegativeButton(String text,
-                                         final OnClickListener listener) {
+	public MyAlertDialog setNegativeButton(String text,
+                                           final OnClickListener listener) {
 		showNegBtn = true;
 		if ("".equals(text)) {
 			btn_neg.setText("");

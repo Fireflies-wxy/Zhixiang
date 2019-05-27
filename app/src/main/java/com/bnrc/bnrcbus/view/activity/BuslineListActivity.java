@@ -87,7 +87,7 @@ public class BuslineListActivity extends BaseActivity {
     private Timer timer;
     private TextView mViewInMap;
     private LinearLayout mChangeDirecLayout, mAlertLayout, mConcernLayout,
-            mCorrectMistakeLayout, mRefreshLayout;
+            mRateLayout, mRefreshLayout;
     private ImageView mChangeDirecBtn, mAlertBtn, mConcernBtn, mOnOffBtn;
     private TextView mStartTime, mEndTime, mRtInfo, mOnOff;
     private HorizontalListViewAdapter mBuslineAdapter;
@@ -165,7 +165,7 @@ public class BuslineListActivity extends BaseActivity {
         mOnOff =  findViewById(R.id.tv_onoff);
         mAlertBtn =  findViewById(R.id.iv_addAlert);
         mConcernBtn =  findViewById(R.id.iv_addFav);
-        mCorrectMistakeLayout =  findViewById(R.id.lLayout_correct);
+        mRateLayout =  findViewById(R.id.lLayout_rate);
         mViewInMap =  findViewById(R.id.iv_map);
 //		mStartTime =  findViewById(R.id.tv_startTime);
 //		mEndTime =  findViewById(R.id.tv_endTime);
@@ -221,7 +221,7 @@ public class BuslineListActivity extends BaseActivity {
         mAlertLayout.setOnClickListener(mClickListener);
         mConcernLayout.setOnClickListener(mClickListener);
         mRefreshLayout.setOnClickListener(mClickListener);
-        mCorrectMistakeLayout.setOnClickListener(mClickListener);
+        mRateLayout.setOnClickListener(mClickListener);
         mViewInMap.setOnClickListener(mClickListener);
         busline_menu_view.setOnClickListener(mClickListener);
         mBuslineListView.setOnItemClickListener(new OnItemClickListener() {
@@ -335,12 +335,16 @@ public class BuslineListActivity extends BaseActivity {
                     AnimationUtil
                             .activityZoomAnimation(BuslineListActivity.this);
                     break;
-                case R.id.lLayout_correct:
-//                    Intent corrIntent = new Intent(BuslineListActivity.this,
-//                            CorrectMistakeActivity.class);
-//                    startActivity(corrIntent);
-//                    AnimationUtil
-//                            .activityZoomAnimation(BuslineListActivity.this);
+                case R.id.lLayout_rate:
+                    Intent rateIntent = new Intent(BuslineListActivity.this,
+                            RateActivity.class);
+                    rateIntent.putExtra("LineID", LineID);
+                    rateIntent.putExtra("LineName", LineName);
+                    rateIntent.putExtra("StationID", StationID);
+                    rateIntent.putExtra("StationName", StationName);
+                    startActivity(rateIntent);
+                    AnimationUtil
+                            .activityZoomAnimation(BuslineListActivity.this);
                     break;
                 case R.id.lLayout_refresh:
                     // showLoading();

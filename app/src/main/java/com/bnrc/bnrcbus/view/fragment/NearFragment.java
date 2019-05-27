@@ -1095,6 +1095,7 @@ public class NearFragment extends BaseFragment{
 			// TODO Auto-generated method stub
 			Log.i(TAG, "onPreExecute");
 			super.onPreExecute();
+			//showLoading();
 //			mChooseListener.showLoading();
 
 		}
@@ -1111,7 +1112,6 @@ public class NearFragment extends BaseFragment{
 			Log.i(TAG, "doInBackground");
 			// for (int i = 0; i <= 100; i++) {
 			// mProgressBar.setProgress(i);
-			publishProgress();
 
 			// try {
 			// Thread.sleep(params[0]);

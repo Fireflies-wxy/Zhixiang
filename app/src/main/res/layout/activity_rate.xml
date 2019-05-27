@@ -1,0 +1,186 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 标题栏 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="10dp">
+
+        <com.joanzapata.iconify.widget.IconTextView
+            android:id="@+id/icon_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="{icon-back}"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:padding="5dp"
+            android:clickable="true" />
+
+        <TextView
+            android:id="@+id/tv_home_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:text="拥挤度评分"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/car_status_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_bus_status"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="乘车拥挤度"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical|center_horizontal"/>
+
+        <RadioGroup
+            android:id="@+id/rg_bus_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtn_bus_status_low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:button="@null"
+                android:drawableTop="@drawable/car_status_low_selector"
+                android:gravity="center"
+                android:text="舒适"
+                android:textColor="@color/color_666666"
+                android:textSize="20sp"/>
+
+            <RadioButton
+                android:id="@+id/rbtn_bus_status_mid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/car_status_mid_selector"
+                android:gravity="center"
+                android:text="适中"
+                android:textSize="20sp"
+                android:textColor="@color/color_666666"/>
+
+            <RadioButton
+                android:id="@+id/rbtn_bus_status_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/car_status_high_selector"
+                android:gravity="center"
+                android:text="拥挤"
+                android:textSize="20sp"
+                android:textColor="@color/color_666666"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/color_999999"/>
+
+    <LinearLayout
+        android:id="@+id/station_status_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_station_status"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="候车拥挤度"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical|center_horizontal"/>
+
+        <RadioGroup
+            android:id="@+id/rg_station_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbtn_station_status_low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/wait_status_low_selector"
+                android:gravity="center"
+                android:text="舒适"
+                android:textColor="@color/color_666666"
+                android:textSize="20sp"/>
+
+            <RadioButton
+                android:id="@+id/rbtn_station_status_mid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/wait_status_mid_selector"
+                android:gravity="center"
+                android:text="适中"
+                android:textSize="20sp"
+                android:textColor="@color/color_666666"/>
+
+            <RadioButton
+                android:id="@+id/rbtn_station_status_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:button="@null"
+                android:drawableTop="@drawable/wait_status_high_selector"
+                android:gravity="center"
+                android:text="拥挤"
+                android:textSize="20sp"
+                android:textColor="@color/color_666666"/>
+        </RadioGroup>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_sunmit"
+        android:layout_width="186.5dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/btn_bg_submit"
+        android:text="提交"
+        android:textSize="20sp"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

@@ -688,34 +688,39 @@ public class PCDataBaseHelper extends SQLiteOpenHelper {
 			Log.i(TAG, relations);
 			for (String relationID : relationList) {
 				Log.i(TAG, "id " + relationID);
-				String sql1 = "select * from Relations where RelationID ="
-						+ relationID;
-				Cursor cursor1 = getMyDataBase().rawQuery(sql1, null);
-				if (cursor1.moveToNext()) {
-					int LineID = cursor1.getInt(cursor1
-							.getColumnIndex("LineID"));
-					String LineName = cursor1.getString(cursor1
-							.getColumnIndex("LineName"));
-					double Latitude1 = cursor1.getDouble(cursor1
-							.getColumnIndex("Latitude"));
-					double Longitude1 = cursor1.getDouble(cursor1
-							.getColumnIndex("Longitude"));
-					Child child = new Child();
-					child.setLineID(LineID);
-					child.setStationID(StationID);
-					child.setStationName(StationName);
-					child.setLineName(LineName);
-					child.setLatitude(Latitude1);
-					child.setLongitude(Longitude1);
-					child.setAZ(Azimuth);
-					if (PCUserDataDBHelper.getInstance(myContext)
-							.IsAlertOpenBusline(LineID, StationName))
-						child.setAlertOpen(Child.OPEN);
-					else
-						child.setAlertOpen(Child.CLOSE);
-					group.addChildrenItem(child);
+				String sql1 = "";
+				if(!(relationID==null||relationID.equals("")))
+				{
+					sql1 = "select * from Relations where RelationID ="
+							+ relationID;
+					Cursor cursor1 = getMyDataBase().rawQuery(sql1, null);
+					if (cursor1.moveToNext()) {
+						int LineID = cursor1.getInt(cursor1
+								.getColumnIndex("LineID"));
+						String LineName = cursor1.getString(cursor1
+								.getColumnIndex("LineName"));
+						double Latitude1 = cursor1.getDouble(cursor1
+								.getColumnIndex("Latitude"));
+						double Longitude1 = cursor1.getDouble(cursor1
+								.getColumnIndex("Longitude"));
+						Child child = new Child();
+						child.setLineID(LineID);
+						child.setStationID(StationID);
+						child.setStationName(StationName);
+						child.setLineName(LineName);
+						child.setLatitude(Latitude1);
+						child.setLongitude(Longitude1);
+						child.setAZ(Azimuth);
+						if (PCUserDataDBHelper.getInstance(myContext)
+								.IsAlertOpenBusline(LineID, StationName))
+							child.setAlertOpen(Child.OPEN);
+						else
+							child.setAlertOpen(Child.CLOSE);
+						group.addChildrenItem(child);
+					}
+					cursor1.close();
 				}
-				cursor1.close();
+
 			}
 		}
 		cursor.close();

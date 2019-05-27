@@ -60,12 +60,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tv_link_sign_up.setOnClickListener(this);
         pressback = findViewById(R.id.back_login);
         pressback.setOnClickListener(this);
-        login_wechat = findViewById(R.id.icon_sign_in_wechat);
-        login_wechat.setOnClickListener(this);
-        login_qq = findViewById(R.id.icon_sign_in_qq);
-        login_qq.setOnClickListener(this);
-        login_sina = findViewById(R.id.icon_sign_in_sina);
-        login_sina.setOnClickListener(this);
+//        login_wechat = findViewById(R.id.icon_sign_in_wechat);
+//        login_wechat.setOnClickListener(this);
+//        login_qq = findViewById(R.id.icon_sign_in_qq);
+//        login_qq.setOnClickListener(this);
+//        login_sina = findViewById(R.id.icon_sign_in_sina);
+//        login_sina.setOnClickListener(this);
 
         et_username = findViewById(R.id.edit_sign_in_username);
         et_password= findViewById(R.id.edit_sign_in_password);
@@ -118,21 +118,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.back_login:
                 finish();
                 break;
-            case R.id.icon_sign_in_wechat:
-                // 微信登录
-//                Platform wechat = ShareSDK.getPlatform(Wechat.NAME);
-//                authorize(wechat);
-                break;
-            case R.id.icon_sign_in_qq:
-                // qq登录
-                Platform qq = ShareSDK.getPlatform(QQ.NAME);
-                authorize(qq);
-                break;
-            case R.id.icon_sign_in_sina:
-                Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
-                Toast.makeText(getApplicationContext(),"微博登录",Toast.LENGTH_SHORT).show();
-                authorize(weibo);
-                break;
+//            case R.id.icon_sign_in_wechat:
+//                // 微信登录
+////                Platform wechat = ShareSDK.getPlatform(Wechat.NAME);
+////                authorize(wechat);
+//                break;
+//            case R.id.icon_sign_in_qq:
+//                // qq登录
+//                Platform qq = ShareSDK.getPlatform(QQ.NAME);
+//                authorize(qq);
+//                break;
+//            case R.id.icon_sign_in_sina:
+//                Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
+//                Toast.makeText(getApplicationContext(),"微博登录",Toast.LENGTH_SHORT).show();
+//                authorize(weibo);
+//                break;
         }
     }
 

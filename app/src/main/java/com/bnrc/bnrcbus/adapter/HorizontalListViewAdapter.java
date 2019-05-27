@@ -112,13 +112,13 @@ public class HorizontalListViewAdapter extends BaseAdapter {
 				&& mHasRtStationList.containsKey(position)) {
 			if (position == selectIndex)
 				holder.mRTBus
-						.setImageResource(R.drawable.icon_bus_arrive);
+						.setImageResource(R.drawable.car_status_mid);
 			else if (position > selectIndex)
 				holder.mRTBus
-						.setImageResource(R.drawable.icon_bus_pass);
+						.setImageResource(R.drawable.car_status_high);
 			else
 				holder.mRTBus
-						.setImageResource(R.drawable.icon_bus_wait);
+						.setImageResource(R.drawable.car_status_low);
 			int amount = mHasRtStationList.get(position);
 			if (amount <= 1)
 				holder.mLineNum.setVisibility(View.INVISIBLE);

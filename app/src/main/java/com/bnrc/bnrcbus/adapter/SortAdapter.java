@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class SortAdapter extends ArrayAdapter {
 
-    private String[] strs = {"公交","美食", "酒店","超市","公园","ATM","厕所"};
+    private String[] strs = {"公交","美食", "酒店","超市","ATM","厕所"};
     private LayoutInflater inflater;
     private int res;
 

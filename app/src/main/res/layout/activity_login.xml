@@ -109,47 +109,47 @@
             android:textSize="16sp"
             tools:ignore="HardcodedText" />
 
-        <android.support.v7.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:orientation="horizontal">
+        <!--<android.support.v7.widget.LinearLayoutCompat-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:paddingLeft="20dp"-->
+            <!--android:paddingRight="20dp"-->
+            <!--android:orientation="horizontal">-->
 
-            <com.joanzapata.iconify.widget.IconTextView
-                android:id="@+id/icon_sign_in_wechat"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="{icon-wechat}"
-                android:textColor="#04b00f"
-                android:textSize="50sp" />
+            <!--<com.joanzapata.iconify.widget.IconTextView-->
+                <!--android:id="@+id/icon_sign_in_wechat"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{icon-wechat}"-->
+                <!--android:textColor="#04b00f"-->
+                <!--android:textSize="50sp" />-->
 
-            <com.joanzapata.iconify.widget.IconTextView
-                android:id="@+id/icon_sign_in_qq"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="{icon-qq}"
-                android:textColor="#57A9FC"
-                android:textSize="50sp" />
+            <!--<com.joanzapata.iconify.widget.IconTextView-->
+                <!--android:id="@+id/icon_sign_in_qq"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{icon-qq}"-->
+                <!--android:textColor="#57A9FC"-->
+                <!--android:textSize="50sp" />-->
 
-            <com.joanzapata.iconify.widget.IconTextView
-                android:id="@+id/icon_sign_in_sina"
-                android:layout_width="0dp"
-                android:layout_height="100dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="{icon-sina}"
-                android:textColor="#DE0000"
-                android:textSize="50sp" />
+            <!--<com.joanzapata.iconify.widget.IconTextView-->
+                <!--android:id="@+id/icon_sign_in_sina"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="100dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:gravity="center"-->
+                <!--android:text="{icon-sina}"-->
+                <!--android:textColor="#DE0000"-->
+                <!--android:textSize="50sp" />-->
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        <!--</android.support.v7.widget.LinearLayoutCompat>-->
 
 
 

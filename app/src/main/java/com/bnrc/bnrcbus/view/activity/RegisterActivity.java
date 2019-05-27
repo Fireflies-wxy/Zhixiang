@@ -14,6 +14,7 @@ import com.bnrc.bnrcbus.R;
 import com.bnrc.bnrcbus.model.user.RegisterInfo;
 import com.bnrc.bnrcbus.network.RequestCenter;
 import com.bnrc.bnrcbus.network.listener.DisposeDataListener;
+import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 
 
@@ -28,11 +29,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private String username;
     private String password,repassword;
+    private SharedPreferenceUtil mSharePrefrenceUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        mSharePrefrenceUtil = SharedPreferenceUtil.getInstance(this);
         initView();
     }
     public void initView(){
@@ -67,6 +70,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                 Log.i(TAG, "onSuccess: "+info.errorCode+password);
                                 if(info.errorCode == 0){
                                     Toast.makeText(getApplicationContext(),"注册成功,请登录",Toast.LENGTH_SHORT).show();
+                                    mSharePrefrenceUtil.setKey("uid",info.msg);
                                     startActivity(new Intent(RegisterActivity.this,
                                             LoginActivity.class));
                                 }else if(info.errorCode == 40000){

@@ -86,6 +86,7 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
     private SortAdapter adapter = null;
 
     private ImageView img_close;
+    private TextView tv_ar_title;
 
 
     private SensorManager sensorManager;
@@ -111,12 +112,12 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
 
         mSharePrefrenceUtil = SharedPreferenceUtil.getInstance(this.getApplicationContext());
 
-        initDownSpinner();
-
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         cameraContainerLayout = (FrameLayout) findViewById(R.id.camera_container_layout);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         mARContainer = findViewById(R.id.poiGroup_layout);
+        tv_ar_title = findViewById(R.id.tv_ar_title);
+        initDownSpinner();
 
         menu_view_ar = findViewById(R.id.menu_view_ar);
         menu_view_ar.setOnClickListener(ARActivity.this);
@@ -167,6 +168,7 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
                     Toast.makeText(getApplicationContext(), adapter.getItem(pos), Toast.LENGTH_SHORT).show();
+                    tv_ar_title.setText(adapter.getItem(pos));
                     mARContainer.removeAllViews();
                     Log.i("poiTag", "removed");
                     keyword = adapter.getItem(pos);
@@ -406,6 +408,7 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
             return;
         }else {
             for(PoiInfo poi:poiResult.getAllPoi()){
+                Log.i(TAG, "onGetPoiResult: ");
             }
             if(arOverlayView!=null)
                 arOverlayView.updatePoiResult(poiResult);

@@ -2,6 +2,7 @@ package com.bnrc.bnrcbus.view.activity;
 
 import android.annotation.SuppressLint;
 
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
@@ -10,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,14 +24,17 @@ import com.bnrc.bnrcbus.constant.Constants;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
 import com.bnrc.bnrcbus.listener.IPopWindowListener;
 import com.bnrc.bnrcbus.model.Child;
-import com.bnrc.bnrcbus.model.user.LoginInfo;
 import com.bnrc.bnrcbus.model.user.TokenInfo;
 import com.bnrc.bnrcbus.network.RequestCenter;
+import com.bnrc.bnrcbus.network.UpdateFromBaidu;
+import com.bnrc.bnrcbus.network.VolleyNetwork;
 import com.bnrc.bnrcbus.network.listener.DisposeDataListener;
 import com.bnrc.bnrcbus.ui.CircleImageView;
 import com.bnrc.bnrcbus.ui.LoadingDialog;
+import com.bnrc.bnrcbus.ui.MyAlertDialog;
 import com.bnrc.bnrcbus.ui.RTabHost;
 import com.bnrc.bnrcbus.ui.SelectPicPopupWindow;
+import com.bnrc.bnrcbus.util.GetToMarket;
 import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
@@ -41,10 +44,10 @@ import com.bnrc.bnrcbus.view.fragment.HomeFragment;
 import com.bnrc.bnrcbus.view.fragment.RouteFragment;
 import com.joanzapata.iconify.widget.IconTextView;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -53,10 +56,8 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener {
 
-
-    private final static int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
-    public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
     private static SharedPreferenceUtil mSharePrefrenceUtil;
+    private static final String TAG = "HomeActivity";
 
     private FragmentManager fm;
     private List<BaseFragment> fragmentList = new ArrayList<BaseFragment>();
@@ -105,6 +106,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private NetAndGpsUtil mNetAndGpsUtil;
 
+    private MyAlertDialog mVersionDialog;
+
 
 
     @Override
@@ -122,6 +125,10 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         initTabHost();
         initLocationUtil();
         initDB();
+
+        startAlertService();
+//
+//        checkVersion();
     }
 
 
@@ -469,4 +476,61 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         super.onResume();
         doLogin();
     }
+
+//    public void checkVersion(){
+//        int dbver = mSharePrefrenceUtil.getValue("");
+//    }
+
+//    private void showDBVersionDialog() {
+//        mVersionDialog = new MyAlertDialog(this).builder().setTitle("数据库更新")
+//                .setMsg("数据库不是最新版本，请更新数据库")
+//                .setPositiveButton("确认", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        updateDatabase(VolleyNetwork.beijingdbURL, "pc.db");
+//                    }
+//                }).setNegativeButton("取消", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        // startAlertService();
+//                        exitProcess();
+//                    }
+//                });
+//        mVersionDialog.setCanceledOnTouchOutside(false);
+//        mVersionDialog.setCancelable(false);
+//        mVersionDialog.show();
+//    }
+//
+//    private void showAppVersionDialog(String msg,final String url) {
+//        mVersionDialog = new MyAlertDialog(this).builder().setTitle("应用版本更新")
+//                .setMsg(msg).setPositiveButton("前往市场", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        GetToMarket gu = new GetToMarket();
+//                        Intent i = gu.getIntent(HomeActivity.this);
+//                        boolean b = gu.judge(HomeActivity.this, i);
+//                        if (b == false) {
+//                            startActivity(i);
+//                        } else
+//                            Toast.makeText(HomeActivity.this, "请前往应用商店更新应用！",
+//                                    Toast.LENGTH_LONG).show();
+//                    }
+//                })/*.setNegativeButton("取消", new OnClickListener() {
+//					@Override
+//					public void onClick(View v) {
+//					}
+//				})*/
+//                .setNegativeButton("下载APK", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+////						Log.d(TAG, "onClick: ");
+//                        UpdateFromBaidu update = new UpdateFromBaidu(HomeActivity.this);
+//                        update.showNoticeDialog(true, "检测到新版本，立即更新吗？", url,getFilesDir().getPath());
+//                        Log.d(TAG, "onClick: filepath"+getFilesDir().getPath());
+//                        /**/}
+//                });
+//        mVersionDialog.setCanceledOnTouchOutside(false);
+//        //mVersionDialog.setCancelable(false);
+//        mVersionDialog.show();
+//    }
 }

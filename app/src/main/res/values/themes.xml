@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<style name="myTheme" parent="android:Theme">
+	    <item name="android:windowBackground">@null</item>
+	    <item name="android:windowNoTitle">true</item>
+        <!-- <item name="android:windowTitleSize">48dip</item>
+	    <item name="android:windowTitleBackgroundStyle">@style/mCustomWindowTitleBackground</item> -->
+	    <item name="android:expandableListViewStyle">@style/mExpandableListView</item>
+	    <item name="android:progressBarStyleHorizontal">@style/mProgressBarHorizontal</item>
+	</style>
+	
+	<style name="style_launch" parent="@android:style/Theme">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+</resources>

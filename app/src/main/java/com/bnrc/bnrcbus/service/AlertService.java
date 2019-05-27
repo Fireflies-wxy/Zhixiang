@@ -1,5 +1,21 @@
 package com.bnrc.bnrcbus.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.baidu.location.BDLocation;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
+import com.bnrc.bnrcbus.R;
+import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
+import com.bnrc.bnrcbus.model.Child;
+import com.bnrc.bnrcbus.util.LocationUtil;
+import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
+import com.bnrc.bnrcbus.view.activity.HomeActivity;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,23 +26,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.util.Log;
-
-import com.baidu.location.BDLocation;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.DistanceUtil;
-import com.bnrc.bnrcbus.R;
-
-import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
-import com.bnrc.bnrcbus.model.Child;
-import com.bnrc.bnrcbus.util.LocationUtil;
-import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
-import com.bnrc.bnrcbus.view.activity.HomeActivity;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AlertService extends Service {
 	private static final String TAG = AlertService.class.getSimpleName();
@@ -172,15 +171,13 @@ public class AlertService extends Service {
 		Intent intent = new Intent(this, HomeActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
 				| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
-				intent,PendingIntent.FLAG_CANCEL_CURRENT);
-//
+//		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+//				intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 //		mNotification.setLatestEventInfo(this,
 //				getResources().getString(R.string.app_name), "即将到达  "
 //						+ stationName + "站  距离您" + distance + "米",
 //				pendingIntent);
-
-		mManager.notify(0, mNotification);
+//		mManager.notify(0, mNotification);
 		mVibrator.vibrate(new long[] { 500, 1000, 500, 1000, 500, 1000 }, -1);// 振动提醒已到设定位置附近
 	}
 

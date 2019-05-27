@@ -1,9 +1,12 @@
 package com.bnrc.bnrcbus.view.activity;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,14 +28,19 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMap.OnMapClickListener;
 import com.baidu.mapapi.map.BaiduMap.OnMapLoadedCallback;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapPoi;
+import com.baidu.mapapi.map.MapStatusUpdate;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
@@ -61,11 +69,18 @@ import com.bnrc.bnrcbus.database.PCDataBaseHelper;
 import com.bnrc.bnrcbus.database.PCUserDataDBHelper;
 import com.bnrc.bnrcbus.model.Child;
 import com.bnrc.bnrcbus.network.MyVolley;
+import com.bnrc.bnrcbus.ui.mapoverlay.PoiOverlay;
 import com.bnrc.bnrcbus.ui.mapoverlay.StationOverlay;
 import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.MyCipher;
+import com.bnrc.bnrcbus.util.NetAndGpsUtil;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 
 public class BuslineMapActivity extends BaseActivity implements
@@ -100,11 +115,16 @@ public class BuslineMapActivity extends BaseActivity implements
     private SharedPreferenceUtil mSharePrefrenceUtil;
     private Timer mTimer;
     private TextView mTitleText;
+    private OkHttpClient mOkHttpClient;
+    private NetAndGpsUtil mNetAndGpsUtil;
+    private BDLocation mBDLocation = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_busline_map);
+
+        Log.i(TAG, "onCreate: ");
 
         Intent intent = getIntent();
 
@@ -127,6 +147,8 @@ public class BuslineMapActivity extends BaseActivity implements
         });
 
         mLocationUtil = LocationUtil.getInstance(BuslineMapActivity.this);
+        mNetAndGpsUtil = NetAndGpsUtil.getInstance(this
+                .getApplicationContext());
         dabase = PCDataBaseHelper.getInstance(BuslineMapActivity.this);
         userdabase = PCUserDataDBHelper.getInstance(BuslineMapActivity.this);
         // 加载地图和定位
@@ -155,6 +177,30 @@ public class BuslineMapActivity extends BaseActivity implements
         mCoordConventer = new CoordinateConverter();
 
         mScrollView.setVisibility(View.GONE);
+
+
+        mBDLocation = mLocationUtil.getmLocation();
+        if (mBDLocation != null) {
+            Toast.makeText(this.getApplicationContext(),mBDLocation.getAddrStr(),Toast.LENGTH_SHORT).show();
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(mBDLocation.getRadius())
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(100).latitude(mBDLocation.getLatitude())
+                    .longitude(mBDLocation.getLongitude()).build();
+            mBaiduMap.setMyLocationData(locData);
+
+            // 开启定位图层
+            mBaiduMap.setMyLocationEnabled(true);
+
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(new LatLng(mBDLocation.getLatitude(),
+                    mBDLocation.getLongitude()),
+                    18.0f);
+
+        }
+
+        mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
+                MyLocationConfiguration.LocationMode.NORMAL, true, null));
+
         mBaiduMap.setOnMapLoadedCallback(new OnMapLoadedCallback() {
 
             @Override
@@ -173,9 +219,11 @@ public class BuslineMapActivity extends BaseActivity implements
                 runOnUiThread(new Runnable() {
                     public void run() {
                         try {
-                            getRealtimeInfo();
+                            getRtInfo();
                         } catch (UnsupportedEncodingException e) {
                             // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -273,9 +321,11 @@ public class BuslineMapActivity extends BaseActivity implements
         Log.i(TAG, "overlay ");
         // getRtInfo();
         try {
-            getRealtimeInfo();
+            getRtInfo();
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -429,7 +479,7 @@ public class BuslineMapActivity extends BaseActivity implements
                                         .addOverlay(myOption);
                                 optionList.add(marker);
 
-                                // mMapView.getOverlay().add(myOption);
+                                mMapView.getMap().addOverlay(myOption);
                             }
 
                         }
@@ -449,6 +499,128 @@ public class BuslineMapActivity extends BaseActivity implements
         MyVolley.sharedVolley(BuslineMapActivity.this).getRequestQueue()
                 .add(request);
 
+    }
+
+    private void getRtInfo() throws JSONException,
+            UnsupportedEncodingException {
+        Log.i(TAG, "getRtInfo: ");
+//        String Url =
+//                "http://223.72.210.21:8512/bus.php?city="
+//                        + URLEncoder.encode("北京", "utf-8") + "&id=" + OfflineID
+//                        + "&no=1&type=1&encrypt=0&versionid=2";
+        String Url =
+                "http://223.72.210.21:8512/ssgj/bus.php?city="
+                        + URLEncoder.encode("北京", "utf-8") + "&id=" + OfflineID
+                        + "&no=" + 1 + "&type=2&encrypt=1&versionid=2";
+        // 创建一个Request
+        final Request request = new Request.Builder().url(Url).build();
+        // new call
+        if(mOkHttpClient==null){
+            mOkHttpClient = new OkHttpClient();
+        }
+        Call call = mOkHttpClient.newCall(request);
+        // 请求加入调度
+        call.enqueue(new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException arg1) {
+                Log.d(TAG, "!!!!!!!faliure: ");
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response res)
+                    throws IOException {
+                // TODO Auto-generated method stub
+                Log.d(TAG, "!!!!!!!response: " + res);
+
+                String response = res.body().string();
+                try {
+
+                    JSONObject responseJson = XML.toJSONObject(response);
+                    JSONObject rootJson = responseJson.getJSONObject("root");
+
+                    Log.i(TAG, "rootJson: " + rootJson.toString());
+
+                    JSONObject dataJson = rootJson
+                            .getJSONObject("data");
+                    JSONArray busJsonArray;
+                    if (dataJson.toString().indexOf("[") > 0) {
+                        // busJsonArray = (JSONArray) dataJson
+                        // .get("bus");
+                        busJsonArray = dataJson.getJSONArray("bus");
+                        Log.i(TAG,
+                                "busJsonArray "
+                                        + busJsonArray.toString());
+
+                    } else {
+
+                        JSONObject busJsonObject = dataJson
+                                .getJSONObject("bus");
+                        Log.i(TAG,
+                                "busJsonObject "
+                                        + busJsonObject.toString());
+                        busJsonArray = new JSONArray("["
+                                + busJsonObject.toString() + "]");
+                        Log.i(TAG, "busJsonObject to array: "
+                                + busJsonArray.toString());
+                    }
+                    for (Marker marker : optionList)
+                        marker.remove();
+                    optionList.clear();
+                    int busJsonArray_count = busJsonArray.length();
+                    Log.i(TAG, "busJsonArray_count: "
+                            + busJsonArray_count);
+                    for (int j = 0; j < busJsonArray_count; j++) {
+
+                        JSONObject busJson = (JSONObject) busJsonArray
+                                .get(j);
+
+                        MyCipher mCiper = new MyCipher("aibang"
+                                + busJson.getString("gt"));
+
+                        String ns = mCiper.decrypt(busJson
+                                .getString("ns"));
+                        String nsn = mCiper.decrypt(busJson
+                                .getString("nsn"));
+                        String sd = mCiper.decrypt(busJson
+                                .getString("sd"));
+                        double xLon = Double.parseDouble(mCiper
+                                .decrypt(busJson.getString("x")));
+                        double ylat = Double.parseDouble(mCiper
+                                .decrypt(busJson.getString("y")));
+                        Log.i(TAG, "next_station_name: " + ns + "\n"
+                                + "next_station_num: " + nsn + "\n"
+                                + "station_distance: " + sd + "\n"
+                                + "latitude: " + xLon + "\n"
+                                + "longitude: " + ylat
+                                + "\n********************\n");
+                        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                                .fromResource(R.drawable.br_clr_ptrs);
+                        LatLng rtStationPoint = new LatLng(ylat, xLon);
+                        LatLng rtSLatLngBaidu = mCoordConventer
+                                .from(CoordinateConverter.CoordType.COMMON)
+                                .coord(rtStationPoint).convert();
+                        // 构建MarkerOption，用于在地图上添加Marker
+                        OverlayOptions myOption = new MarkerOptions()
+                                .position(rtSLatLngBaidu).icon(bitmap)
+                                .title("我的位置");
+                        // 在地图上添加Marker，并显示
+                        Marker marker = (Marker) mBaiduMap
+                                .addOverlay(myOption);
+                        optionList.add(marker);
+
+                        mMapView.getMap().addOverlay(myOption);
+                    }
+
+                }
+
+                catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
     @Override
