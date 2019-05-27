@@ -1,5 +1,6 @@
 package com.bnrc.bnrcbus.view.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.support.v7.app.AlertDialog;
@@ -37,6 +38,9 @@ import com.bnrc.bnrcbus.ui.SelectPicPopupWindow;
 import com.bnrc.bnrcbus.util.GetToMarket;
 import com.bnrc.bnrcbus.util.LocationUtil;
 import com.bnrc.bnrcbus.util.NetAndGpsUtil;
+import com.bnrc.bnrcbus.util.Permissions.PermissionHelper;
+import com.bnrc.bnrcbus.util.Permissions.PermissionInterface;
+import com.bnrc.bnrcbus.util.Permissions.PermissionUtil;
 import com.bnrc.bnrcbus.util.SharedPreferenceUtil;
 import com.bnrc.bnrcbus.view.activity.base.BaseActivity;
 import com.bnrc.bnrcbus.view.fragment.BaseFragment;
@@ -54,7 +58,7 @@ import java.util.List;
  * 创建首页及其他fragment
  */
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener {
+public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener,PermissionInterface {
 
     private static SharedPreferenceUtil mSharePrefrenceUtil;
     private static final String TAG = "HomeActivity";
@@ -108,14 +112,18 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private MyAlertDialog mVersionDialog;
 
+    private PermissionHelper permissionHelper;
+
+    private String[] mPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA};
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mNetAndGpsUtil = NetAndGpsUtil.getInstance(getApplicationContext());
-        init();
+        permissionHelper = new PermissionHelper(this, this);
+        permissionHelper.requestPermissions();
     }
 
     private void init(){
@@ -123,6 +131,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         initView();
         initFragments();
         initTabHost();
+        mNetAndGpsUtil = NetAndGpsUtil.getInstance(getApplicationContext());
         initLocationUtil();
         initDB();
 
@@ -475,6 +484,39 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     protected void onResume() {
         super.onResume();
         doLogin();
+    }
+
+    @Override
+    public int getPermissionsRequestCode() {
+        return 0;
+    }
+
+    @Override
+    public String[] getPermissions() {
+        return mPermissions;
+    }
+
+    @Override
+    public void requestPermissionsSuccess() {
+        init();
+    }
+
+    @Override
+    public void requestPermissionsFail() {
+        StringBuilder sb = new StringBuilder();
+        mPermissions = PermissionUtil.getDeniedPermissions(this, mPermissions);
+        for (String s : mPermissions) {
+            if (s.equals(Manifest.permission.CAMERA)) {
+                sb.append("相机权限(用于拍照，视频聊天);\n");
+            } else if (s.equals(Manifest.permission.RECORD_AUDIO)) {
+                sb.append("麦克风权限(用于发语音，语音及视频聊天);\n");
+            } else if (s.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                sb.append("读取权限(用于读取数据);\n");
+            }else if (s.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                sb.append("存储(用于存储必要信息，缓存数据);\n");}
+        }
+        PermissionUtil.PermissionDialog(this, "程序运行需要如下权限：\n" + sb.toString() + "请在应用权限管理进行设置！");
+
     }
 
 //    public void checkVersion(){

@@ -27,7 +27,7 @@ public class LoadingDialog extends AlertDialog {
 	 *            要传入的dialog布局文件的id
 	 */
 	public LoadingDialog(Context context, int layoutResId) {
-		super(context);
+		super(context,R.style.MyDialogStyle);
 		this.layoutResId = layoutResId;
 		message = context.getResources().getString(R.string.loading);
 	}
