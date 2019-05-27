@@ -214,10 +214,10 @@ public class StationRouteActivity extends BaseActivity {
                             mTitleTextView.setText("以下是到达该站点的驾车方案");
 
                             BitmapDescriptor bitmap = BitmapDescriptorFactory
-                                    .fromResource(R.drawable.umeng_socialize_location_on);
+                                    .fromResource(R.drawable.icon_location);
                             // ����MarkerOption�������ڵ�ͼ�����Marker
                             OverlayOptions option = new MarkerOptions()
-                                    .position(endPoint).icon(bitmap)
+                                    .position(new LatLng(mBdLocation.getLatitude(),mBdLocation.getLongitude())).icon(bitmap)
                                     .zIndex(1) // ����marker���ڲ㼶
                                     .draggable(true).title("我的位置"); // ����������ק;
                             // �ڵ�ͼ�����Marker������ʾ
@@ -314,7 +314,7 @@ public class StationRouteActivity extends BaseActivity {
                                     .fromResource(R.drawable.icon_location);
                             // ����MarkerOption�������ڵ�ͼ�����Marker
                             OverlayOptions option = new MarkerOptions()
-                                    .position(endPoint).icon(bitmap)
+                                    .position(new LatLng(mBdLocation.getLatitude(),mBdLocation.getLongitude())).icon(bitmap)
                                     .zIndex(1) // ����marker���ڲ㼶
                                     .draggable(true).title("我的位置"); // ����������ק;
                             // �ڵ�ͼ�����Marker������ʾ

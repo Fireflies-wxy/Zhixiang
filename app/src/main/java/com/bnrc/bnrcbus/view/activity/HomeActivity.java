@@ -339,7 +339,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
                 break;
             case R.id.menu_railway:
                 Intent subwayIntent = new Intent(HomeActivity.this,
-                        SubwayActivity.class);
+                        SubWayActivity.class);
                 startActivity(subwayIntent);
                 break;
             case R.id.menu_setting:
