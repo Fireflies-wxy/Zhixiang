@@ -6,7 +6,7 @@
     android:background="@color/colorPrimary"
     android:padding="10dp">
 
-    <com.bnrc.bnrcbus.ui.CircleImageView
+    <com.bnrc.busapp.ui.CircleImageView
         android:id="@+id/icon_user"
         android:layout_width="70dp"
         android:layout_height="70dp"

@@ -40,7 +40,7 @@
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView
+    <com.bnrc.busapp.ui.pullloadmenulistview.PullLoadMenuListView
         android:id="@+id/explistview_alert_station"
         android:layout_below="@+id/alert_toolbar"
         android:layout_width="match_parent"

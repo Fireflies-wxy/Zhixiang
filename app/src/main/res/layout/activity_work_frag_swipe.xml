@@ -6,7 +6,7 @@
     android:background="#eeeeee"
     android:orientation="horizontal" >
 
-    <com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView
+    <com.bnrc.busapp.ui.pullloadmenulistview.PullLoadMenuListView
         android:id="@+id/explistview_work_concern"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

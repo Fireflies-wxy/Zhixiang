@@ -68,7 +68,7 @@
         android:layout_above="@id/tab_host"
         android:background="@color/color_b4b4b4" />
 
-    <com.bnrc.bnrcbus.ui.RTabHost
+    <com.bnrc.busapp.ui.RTabHost
         android:id="@+id/tab_host"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -142,7 +142,7 @@
             android:paddingBottom="4dp"
             android:layout_gravity="bottom">
 
-            <com.bnrc.bnrcbus.ui.CircleImageView
+            <com.bnrc.busapp.ui.CircleImageView
                 android:id="@+id/ar_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -226,5 +226,5 @@
 
 
 
-    </com.bnrc.bnrcbus.ui.RTabHost>
+    </com.bnrc.busapp.ui.RTabHost>
 </RelativeLayout>

@@ -33,7 +33,7 @@
           android:typeface="serif" />
    </RelativeLayout>
 
-   <com.bnrc.bnrcbus.ui.pullloadmenulistview.PullLoadMenuListView
+   <com.bnrc.busapp.ui.pullloadmenulistview.PullLoadMenuListView
        android:id="@+id/explistview_near"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"

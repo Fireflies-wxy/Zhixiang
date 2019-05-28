@@ -18,7 +18,7 @@ p
         android:layout_centerInParent="true"
         android:orientation="vertical" >
 
-        <com.bnrc.bnrcbus.ui.ProgressWheel
+        <com.bnrc.busapp.ui.ProgressWheel
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"

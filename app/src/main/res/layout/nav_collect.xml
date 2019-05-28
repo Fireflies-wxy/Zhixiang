@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/search_top_background" >
 
-            <com.bnrc.bnrcbus.view.SegmentedGroup
+            <com.bnrc.busapp.view.SegmentedGroup
                 android:id="@+id/segmentedGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,12 +45,12 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="回家" />
-            </com.bnrc.bnrcbus.view.SegmentedGroup>
+            </com.bnrc.busapp.view.SegmentedGroup>
 
         </FrameLayout>
 
 
-        <com.bnrc.bnrcbus.ui.viewpager.MyViewPager
+        <com.bnrc.busapp.ui.viewpager.MyViewPager
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

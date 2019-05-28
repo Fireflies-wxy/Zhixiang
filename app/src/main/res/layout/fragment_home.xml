@@ -34,7 +34,7 @@
         android:orientation="vertical"
         android:background="@color/colorPrimary">
 
-        <com.bnrc.bnrcbus.ui.viewpager.ViewpagerIndicator
+        <com.bnrc.busapp.ui.viewpager.ViewpagerIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -42,7 +42,7 @@
             android:layout_marginBottom="5dp"
             />
 
-        <com.bnrc.bnrcbus.ui.viewpager.NoScrollViewPager
+        <com.bnrc.busapp.ui.viewpager.NoScrollViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

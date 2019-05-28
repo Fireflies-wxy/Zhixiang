@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bnrc.bnrcbus">
+    package="com.bnrc.busapp">
 
     <!-- 基本权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -27,7 +27,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
-        android:name=".application.BnrcApplication"
+        android:name="com.bnrc.busapp.application.BnrcApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -36,7 +36,7 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="RNYPMSxHsKm2ZUzmawVpTHar01Mk2OS7" />
+            android:value="bSzKSyFy5ybYPQBP6Za0hPIs7uXgG9Ny" />
         <meta-data
             android:name="Mob-AppKey"
             android:value="26b36fd31d4d1" />
@@ -44,7 +44,7 @@
             android:name="Mob-AppSecret"
             android:value="2807e5e9f4f10865b5203f9ec7411980" />
 
-        <activity android:name=".view.activity.SplashActivity">
+        <activity android:name="com.bnrc.busapp.view.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,35 +52,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.HomeActivity"
+            android:name="com.bnrc.busapp.view.activity.HomeActivity"
             android:launchMode="singleInstance" />
-        <activity android:name=".view.activity.ARActivity" />
-        <activity android:name=".view.activity.SubWayActivity" />
-        <activity android:name=".view.activity.SearchSomethingActivity" />
-        <activity android:name=".view.activity.RouteActivity" />
-        <activity android:name=".view.activity.BuslineListActivity" />
-        <activity android:name=".view.activity.StationListActivity" />
-        <activity android:name=".view.activity.BuslineMapActivity" />
-        <activity android:name=".view.activity.AboutActivity" />
-        <activity android:name=".view.activity.AlertSelectListActivity" />
-        <activity android:name=".view.activity.BusCircleActivity" />
-        <activity android:name=".view.activity.LoginActivity" />
-        <activity android:name=".view.activity.RegisterActivity" />
-        <activity android:name=".view.activity.SearchActivity" />
-        <activity android:name=".view.activity.base.BaseActivity" />
-        <activity android:name=".view.activity.SettingActivity" />
-        <activity android:name=".view.activity.SubwayActivity" />
-        <activity android:name=".view.activity.StationRouteActivity" />
-        <activity android:name=".view.activity.SugSearchActivity" />
-        <activity android:name=".view.activity.RateActivity"></activity>
+        <activity android:name="com.bnrc.busapp.view.activity.ARActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.SubWayActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.SearchSomethingActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.RouteActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.BuslineListActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.StationListActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.BuslineMapActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.AboutActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.AlertSelectListActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.BusCircleActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.LoginActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.RegisterActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.SearchActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.base.BaseActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.SettingActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.StationRouteActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.SugSearchActivity" />
+        <activity android:name="com.bnrc.busapp.view.activity.RateActivity"></activity>
 
-        <service android:name="com.bnrc.bnrcbus.service.ScanService">
+        <service android:name="com.bnrc.busapp.service.ScanService">
             <intent-filter android:priority="1000">
                 <action android:name="com.bnrc.bnrcbus.scanservice" />
             </intent-filter>
         </service>
 
-        <service android:name="com.bnrc.bnrcbus.service.AlertService">
+        <service android:name="com.bnrc.busapp.service.AlertService">
             <intent-filter>
                 <action android:name="com.bnrc.bnrcbus.AlertService" />
             </intent-filter>
