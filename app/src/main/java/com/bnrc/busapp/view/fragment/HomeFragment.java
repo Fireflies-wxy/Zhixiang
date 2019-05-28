@@ -66,6 +66,7 @@ public class HomeFragment extends BaseFragment {
                 if (v.getId() == R.id.search_view) {
                     Intent intent = new Intent(getActivity(),
                             SearchActivity.class);   //搜索界面
+                    intent.putExtra("isAR",false);
                     startActivity(intent);
                 }
             }

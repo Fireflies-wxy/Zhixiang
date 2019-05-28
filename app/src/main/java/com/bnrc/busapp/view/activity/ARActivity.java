@@ -1,7 +1,9 @@
 package com.bnrc.busapp.view.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
@@ -41,6 +43,7 @@ import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.search.poi.PoiSortType;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.bnrc.busapp.R;
 import com.bnrc.busapp.adapter.SortAdapter;
 import com.bnrc.busapp.listener.GetLocationListener;
@@ -54,7 +57,7 @@ import com.bnrc.busapp.view.activity.base.BaseActivity;
 
 import java.util.List;
 
-public class ARActivity extends BaseActivity implements View.OnClickListener,SensorEventListener,OnGetPoiSearchResultListener {
+public class ARActivity extends BaseActivity implements SensorEventListener,OnGetPoiSearchResultListener {
 
     final static String TAG = "ARActivity";
     private SurfaceView surfaceView;
@@ -81,7 +84,7 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
     private SortAdapter adapter = null;
 
     private ImageView img_close;
-    private TextView tv_ar_title;
+    private TextView tv_ar_title,icon_search;
 
 
     private SensorManager sensorManager;
@@ -121,19 +124,31 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
         tv_ar_title = findViewById(R.id.tv_ar_title);
         initDownSpinner();
 
-        menu_view_ar = findViewById(R.id.menu_view_ar);
-        menu_view_ar.setOnClickListener(ARActivity.this);
-
 
         arOverlayView = new AROverlayView(this,mARContainer);
 
         mSearch = PoiSearch.newInstance();
         mSearch.setOnGetPoiSearchResultListener(this);
 
+
+        requestLocationPermission();
+        requestCameraPermission();
+        registerSensors();
+
         findViewById(R.id.close_view_ar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        icon_search = findViewById(R.id.icon_search);
+        icon_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ARActivity.this,SearchActivity.class);
+                intent.putExtra("isAR",true);
+                startActivityForResult(intent,1);
             }
         });
     }
@@ -439,9 +454,7 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
     @Override
     public void onResume() {
         super.onResume();
-        requestLocationPermission();
-        requestCameraPermission();
-        registerSensors();
+        initARCameraView();
         initAROverlayView();
     }
 
@@ -458,13 +471,32 @@ public class ARActivity extends BaseActivity implements View.OnClickListener,Sen
         arOverlayView.cancleTask();
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.menu_view_ar:
-                arOverlayView.startMove();
-                break;
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (resultCode != Activity.RESULT_OK)
+            return;
+        int searchType = intent.getIntExtra("searchType",0);
+
+        switch (searchType) {
+            case 1:
+                mARContainer.removeAllViews();
+                Log.i("oldPoiTag", "removed");
+
+                String stationName = intent.getStringExtra("stationName");
+                LatLng stationLoc = intent.getParcelableExtra("stationLoc");
+                LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+
+                ARPoint arPoint = new ARPoint(stationName,(int)DistanceUtil.getDistance(currentLoc,stationLoc)+"m",stationLoc.latitude,stationLoc.longitude,0);
+                if(arOverlayView!=null)
+                    arOverlayView.updatePoiResult(arPoint);
+                break;
+            case 2:
+
+                break;
+            default:
+                Toast.makeText(ARActivity.this,"搜索发生错误，请重试",Toast.LENGTH_SHORT).show();
         }
     }
 

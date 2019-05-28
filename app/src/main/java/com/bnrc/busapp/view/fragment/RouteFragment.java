@@ -65,6 +65,7 @@ public class RouteFragment extends BaseFragment implements View.OnClickListener{
     private List<Group> stations;
 
     private LatLng startPoint,endPoint;
+    private String poiname;
 
 
     @Nullable
@@ -195,7 +196,7 @@ public class RouteFragment extends BaseFragment implements View.OnClickListener{
             case R.id.tv_start:
                 //SugSearchActivity.startSearchActivityForResult((FragmentActivity) mContext,tv_start.getText().toString(),1);
                 intent = new Intent(mContext,SugSearchActivity.class);
-                intent.putExtra("poiname",mBDLocation.getAddrStr());
+                intent.putExtra("poiname",poiname);
                 startActivityForResult(intent,1);
                 break;
             case R.id.tv_end:
@@ -345,6 +346,7 @@ public class RouteFragment extends BaseFragment implements View.OnClickListener{
         overList.clear();
         mBDLocation = mLocationUtil.getmLocation();
         if (mBDLocation != null) {
+            poiname = mBDLocation.getAddrStr();
             Toast.makeText(mContext.getApplicationContext(),mBDLocation.getAddrStr(),Toast.LENGTH_SHORT).show();
             MyLocationData locData = new MyLocationData.Builder()
                     .accuracy(mBDLocation.getRadius())

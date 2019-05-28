@@ -150,7 +150,6 @@ public class SugSearchActivity extends AppCompatActivity implements OnGetPoiSear
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             Intent intent = new Intent();
-            Log.i(TAG, "onItemClick: "+mPOIList.get(position).name);
             intent.putExtra("PoiInfo", mPOIList.get(position));
             setResult(RESULT_OK, intent);
             hidenAndFinish();
@@ -216,4 +215,6 @@ public class SugSearchActivity extends AppCompatActivity implements OnGetPoiSear
         mPoiSearch.destroy();
         super.onDestroy();
     }
+
+
 }

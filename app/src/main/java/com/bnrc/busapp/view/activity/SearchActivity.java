@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.mapapi.model.LatLng;
 import com.bnrc.busapp.adapter.MyLatestListViewAdapter;
 import com.bnrc.busapp.constant.Constants;
 import com.bnrc.busapp.database.PCDataBaseHelper;
@@ -55,6 +56,8 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
 
     private View footerView;
 
+    private boolean isAR;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +89,9 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
                 finish();
             }
         });
+
+        isAR = getIntent().getBooleanExtra("isAR",false);
+
         loadHistoryData();
     }
 
@@ -156,27 +162,47 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
                 historyItem item = mListData.get(position);
                 switch (item.getType()) {
                     case Constants.STATION:
-                        Intent stationIntent = new Intent(SearchActivity.this,
-                                StationListActivity.class);
-                        stationIntent.putExtra("StationName", item.getStationName());
-                        startActivity(stationIntent);
-                        AnimationUtil.activityZoomAnimation(SearchActivity.this);
-                        item.setType(Constants.STATION);
-                        mUserDB.addSearchRecord(item);
+                        if(!isAR){
+                            Intent stationIntent = new Intent(SearchActivity.this,
+                                    StationListActivity.class);
+                            stationIntent.putExtra("StationName", item.getStationName());
+                            startActivity(stationIntent);
+                            AnimationUtil.activityZoomAnimation(SearchActivity.this);
+                            item.setType(Constants.STATION);
+                            mUserDB.addSearchRecord(item);
+                        }else {
+                            Intent stationIntent = new Intent();
+                            stationIntent.putExtra("searchType",1); //1代表站点
+                            stationIntent.putExtra("stationName",item.getStationName());
+                            stationIntent.putExtra("stationLoc", new LatLng(item.getLatitude(),item.getLongitude()));
+                            setResult(RESULT_OK, stationIntent);
+                            hidenAndFinish();
+                        }
+
                         break;
                     case Constants.BUSLINE:
-                        Intent buslineIntent = new Intent(SearchActivity.this,
-                                BuslineListActivity.class);
-                        int LineID = item.getLineID();
-                        int StationID = 0;
-                        int Sequence = 1;
-                        buslineIntent.putExtra("LineID", LineID);
-                        buslineIntent.putExtra("StationID", StationID);
-                        buslineIntent.putExtra("Sequence", Sequence);
-                        startActivity(buslineIntent);
-                        AnimationUtil.activityZoomAnimation(SearchActivity.this);
-                        item.setType(Constants.BUSLINE);
-                        mUserDB.addSearchRecord(item);
+                        if(isAR){
+                            Intent buslineIntent = new Intent(SearchActivity.this,
+                                    BuslineListActivity.class);
+                            int LineID = item.getLineID();
+                            int StationID = 0;
+                            int Sequence = 1;
+                            buslineIntent.putExtra("searchType",2); //2代表线路
+                            buslineIntent.putExtra("LineID", LineID);
+                            buslineIntent.putExtra("StationID", StationID);
+                            buslineIntent.putExtra("Sequence", Sequence);
+                            startActivity(buslineIntent);
+                            AnimationUtil.activityZoomAnimation(SearchActivity.this);
+                            item.setType(Constants.BUSLINE);
+                            mUserDB.addSearchRecord(item);
+                        }else {
+                            Intent buslineIntent = new Intent();
+                            int LineID = item.getLineID();
+                            buslineIntent.putExtra("LineID", LineID);
+                            setResult(RESULT_OK, buslineIntent);
+                            hidenAndFinish();
+                        }
+
                         break;
                     default:
                         break;
@@ -352,6 +378,14 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
             mSearchListView.removeFooterView(footerView);
         }
         mListViewAdapter.notifyDataSetChanged();
+    }
+
+    private void hidenAndFinish() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
+            ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(SearchActivity.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+        finish();
     }
 
 }

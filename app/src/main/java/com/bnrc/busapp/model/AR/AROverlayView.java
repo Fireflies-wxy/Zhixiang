@@ -65,6 +65,8 @@ public class AROverlayView extends View {
     }
 
     public void updatePoiResult(PoiResult poiResult){
+        Log.i("testpoi", "updatePoiResult: 1");
+        arPoints.clear();
         for(PoiInfo poi:poiResult.getAllPoi()){
             if(!arPoints.contains(poi))
                 arPoints.add(new ARPoint(poi.name,(int)DistanceUtil.getDistance(
@@ -72,6 +74,13 @@ public class AROverlayView extends View {
                         new LatLng(poi.location.latitude,poi.location.longitude)
                                 )+"m",poi.location.latitude,poi.location.longitude,0));
         }
+    }
+
+    public void updatePoiResult(ARPoint arPoint){
+        Log.i("testpoi", "updatePoiResult: 2");
+        arPoints.clear();
+        if(!arPoints.contains(arPoint))
+            arPoints.add(arPoint);
     }
 
     public void updateMovingPoint(int inclat){
