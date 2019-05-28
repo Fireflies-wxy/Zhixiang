@@ -986,13 +986,7 @@ public class BuslineListActivity extends BaseActivity {
         }
     }
 
-    public String TimeStampToDate(Long timestampString, String formats) {
-        if (timestampString < 0)
-            return "0";
-        String date = new java.text.SimpleDateFormat(formats)
-                .format(new java.util.Date(timestampString * 1000));
-        return date;
-    }
+
 
     public boolean isNumeric(String str) {
         Pattern pattern = Pattern.compile("-?[0-9]+.*[0-9]*");
@@ -1013,8 +1007,6 @@ public class BuslineListActivity extends BaseActivity {
 
     public void onResume() {
         super.onResume();
-//		MobclickAgent.onPageStart("SplashScreen"); // ͳ��ҳ��
-//		MobclickAgent.onResume(this); // ͳ��ʱ��
         exeuteTask();
 
     }
@@ -1022,10 +1014,6 @@ public class BuslineListActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-//		MobclickAgent.onPageEnd("SplashScreen");
-//		MobclickAgent.onPause(this);
-        // task.cancel();
-        // timer.cancel();
         if (mTask != null)
             mTask.cancel(true);
     }

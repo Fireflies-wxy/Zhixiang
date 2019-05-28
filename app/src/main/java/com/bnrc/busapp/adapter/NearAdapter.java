@@ -456,20 +456,6 @@ public class NearAdapter extends BaseExpandableListAdapter {
 		return convertView;
 	}
 
-	public boolean isNetworkConnected(Context ctx) {
-		if (ctx != null) {
-			ConnectivityManager mConnectivityManager = (ConnectivityManager) ctx
-					.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo mNetworkInfo = mConnectivityManager
-					.getActiveNetworkInfo();
-			if (mNetworkInfo != null) {
-				return mNetworkInfo.isAvailable();
-			}
-		}
-		return false;
-	}
-
-
 	class GroupViewHolder {
 		ImageView icon;
 		TextView rtStation;

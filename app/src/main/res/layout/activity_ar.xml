@@ -91,7 +91,7 @@
 
         <com.joanzapata.iconify.widget.IconTextView
             android:id="@+id/icon_search"
-            android:text="{icon_search}"
+            android:text="{icon-search}"
             android:textSize="25sp"
             android:textColor="@color/white"
             android:layout_width="30dp"

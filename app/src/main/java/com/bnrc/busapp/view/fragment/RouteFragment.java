@@ -309,36 +309,6 @@ public class RouteFragment extends BaseFragment implements View.OnClickListener{
         mBaiduMap.clear();
         overList.clear();
 
-//        try {
-//            stations = mPcDataBaseHelper
-//                    .acquireAroundStationsWithLocation(newPos);
-//            Toast.makeText(mContext.getApplicationContext(),
-//                    "在附近查找到" + stations.size() + "个站点", Toast.LENGTH_SHORT)
-//                    .show();
-//            for (Group station : stations) {
-//                // 定义Maker坐标点
-//                double Latitude = station.getLatitide();
-//                double Longitude = station.getLongitude();
-//                LatLng stationPoint = new LatLng(Latitude, Longitude);
-//                View view = LayoutInflater.from(mContext)
-//                        .inflate(R.layout.map_station_popview, null);
-//                TextView tv_stationName = (TextView) view
-//                        .findViewById(R.id.tv_stationName);
-//                tv_stationName.setText(station.getStationName());
-//                BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                        .fromView(view);
-//                MarkerOptions option2 = new MarkerOptions()
-//                        .position(stationPoint).icon(bitmap).zIndex(9) // 设置marker所在层级
-//                        .draggable(true).title(station.getStationName()); // 设置手势拖拽;
-//                option2.animateType(MarkerOptions.MarkerAnimateType.grow);
-//
-//                overList.add(mBaiduMap.addOverlay(option2));
-//
-//            }
-//        } catch (SQLException sqle) {
-//            throw sqle;
-//        }
-
     }
 
     private void getAroundStation() {
@@ -367,35 +337,6 @@ public class RouteFragment extends BaseFragment implements View.OnClickListener{
         }
         mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
                 MyLocationConfiguration.LocationMode.NORMAL, true, null));
-//
-//        try {
-//            stations = mPcDataBaseHelper
-//                    .acquireAroundStationsWithLocation(myPoint);
-//
-//            Toast.makeText(mContext.getApplicationContext(),
-//                    "在附近查找到" + stations.size() + "个站点", Toast.LENGTH_SHORT)
-//                    .show();
-//            for (Group station : stations) {
-//                // 定义Maker坐标点
-//                double Latitude = station.getLatitide();
-//                double Longitude = station.getLongitude();
-//                LatLng stationPoint = new LatLng(Latitude, Longitude);
-//                View view = LayoutInflater.from(mContext)
-//                        .inflate(R.layout.map_station_popview, null);
-//                TextView tv_stationName = (TextView) view
-//                        .findViewById(R.id.tv_stationName);
-//                tv_stationName.setText(station.getStationName());
-//                BitmapDescriptor bitmap = BitmapDescriptorFactory
-//                        .fromView(view);
-//                MarkerOptions option2 = new MarkerOptions()
-//                        .position(stationPoint).icon(bitmap).zIndex(9) // 设置marker所在层级
-//                        .draggable(true).title(station.getStationName()); // 设置手势拖拽;
-//                overList.add(mBaiduMap.addOverlay(option2));
-//
-//            }
-//        } catch (SQLException sqle) {
-//            throw sqle;
-//        }
 
     }
 

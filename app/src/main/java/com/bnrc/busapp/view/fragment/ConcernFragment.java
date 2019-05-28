@@ -112,33 +112,6 @@ public class ConcernFragment extends BaseFragment {
         mBDLocation = mLocationUtil.getmLocation();
         mListView =  mContentView.findViewById(R.id.list);
         mHint = mContentView.findViewById(R.id.rLayout_alert);
-//        mMainSwitch = mContentView.findViewById(R.id.open_alert_btn);
-//        mMainSwitch.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                // TODO Auto-generated method stub
-//                if (isAllOpen) {
-//                    mUserDB.closeAllAlertBusline();
-//                    ((ImageView) v).setImageResource(R.drawable.alertoffimg);
-//                    isAllOpen = false;
-//                    if (mListData != null)
-//                        for (Group gro : mListData)
-//                            gro.closeAllChildAlert();
-//                } else {
-//                    mUserDB.openAllAlertBusline();
-//                    ((ImageView) v).setImageResource(R.drawable.alertonimg);
-//                    isAllOpen = true;
-//                    if (mListData != null)
-//                        for (Group gro : mListData)
-//                            gro.openAllChildAlert();
-//                }
-//                if (mAdapter != null)
-//                    mAdapter.notifyDataSetChanged();
-//
-//            }
-//        });
-
         mUserDB = PCUserDataDBHelper.getInstance(mContext);
         mAdapter = new ConcernAdapter(mListData, mContext);
         mListView.setAdapter(mAdapter);

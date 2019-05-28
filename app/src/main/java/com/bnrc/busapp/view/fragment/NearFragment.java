@@ -29,7 +29,6 @@ import com.bnrc.busapp.adapter.NearAdapter;
 import com.bnrc.busapp.database.PCDataBaseHelper;
 import com.bnrc.busapp.listener.GetLocationListener;
 import com.bnrc.busapp.listener.IPopWindowListener;
-import com.bnrc.busapp.model.Child;
 import com.bnrc.busapp.model.Group;
 import com.bnrc.busapp.network.MyVolley;
 import com.bnrc.busapp.network.VolleyNetwork;
@@ -41,34 +40,13 @@ import com.bnrc.busapp.ui.expandablelistview.SwipeMenuItem;
 import com.bnrc.busapp.ui.pullloadmenulistview.IPullRefresh;
 import com.bnrc.busapp.ui.pullloadmenulistview.PullLoadMenuListView;
 import com.bnrc.busapp.util.LocationUtil;
-import com.bnrc.busapp.util.MyCipher;
 import com.bnrc.busapp.util.NetAndGpsUtil;
 
 
-import com.bnrc.busapp.network.VolleyNetwork.*;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 /**
@@ -90,17 +68,11 @@ public class NearFragment extends BaseFragment{
 	private IPopWindowListener mChooseListener;
 	private DownloadTask mTask;
 	private int mChildrenSize = 0;
-	public static boolean isFirstLoad = true;
 	private Handler mHandler = new Handler(Looper.getMainLooper());
-	private VolleyNetwork mVolleyNetwork;
 	private LatLng mOldPoint;
-	private NetAndGpsUtil mNetAndGpsUtil;
-	private CoordinateConverter mCoordConventer;
-	private OkHttpClient mOkHttpClient;
 
 	private RtPresenter mRtPresenter;
 
-	private ProgressDialog progressDialog;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -159,10 +131,6 @@ public class NearFragment extends BaseFragment{
 			mOldPoint = new LatLng(mBDLocation.getLatitude(),
 					mBDLocation.getLongitude());
 
-		mVolleyNetwork = VolleyNetwork.getInstance(mContext);
-
-		mNetAndGpsUtil = NetAndGpsUtil.getInstance(mContext
-				.getApplicationContext());
 		mNearExplistview = (PullLoadMenuListView) mContentView
 				.findViewById(R.id.explistview_near);
 		mNearHint = (RelativeLayout) mContentView.findViewById(R.id.rLayout_near);
@@ -187,7 +155,6 @@ public class NearFragment extends BaseFragment{
 				});
 
 		Log.i(TAG, TAG + " onCreateView");
-		mCoordConventer = new CoordinateConverter();
 
 		loadDataBase();
 

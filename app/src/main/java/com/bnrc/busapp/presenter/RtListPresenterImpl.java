@@ -4,17 +4,18 @@ import android.content.Context;
 import android.database.SQLException;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
-import com.bnrc.busapp.adapter.NearAdapter;
 import com.bnrc.busapp.model.Child;
 import com.bnrc.busapp.model.Group;
 import com.bnrc.busapp.network.VolleyNetwork;
 import com.bnrc.busapp.util.MyCipher;
 import com.bnrc.busapp.util.NetAndGpsUtil;
 
+import org.bouncycastle.jce.provider.symmetric.ARC4;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,9 +39,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RtPresenterImpl implements RtPresenter {
+public class RtListPresenterImpl implements RtListPresenter {
 
-    private static final String TAG = "RtPresenterImpl";
+    private static final String TAG = "RtListPresenterImpl";
 
     private Context mContext;
 
@@ -57,7 +58,7 @@ public class RtPresenterImpl implements RtPresenter {
     private Handler mHandler;
 
 
-    private RtPresenterImpl(Context mContext,Handler mHandler){
+    private RtListPresenterImpl(Context mContext, Handler mHandler){
         this.mContext = mContext;
         this.mHandler = mHandler;
         mVolleyNetwork = VolleyNetwork.getInstance(mContext);
@@ -66,13 +67,13 @@ public class RtPresenterImpl implements RtPresenter {
         mCoordConventer =  new CoordinateConverter();
     }
 
-    public static RtPresenterImpl newInstance(Context mContext,Handler mHandler){
-        return new RtPresenterImpl(mContext,mHandler);
+    public static RtListPresenterImpl newInstance(Context mContext, Handler mHandler){
+        return new RtListPresenterImpl(mContext,mHandler);
     }
 
     @Override
 
-    public void getServerInfo(List<Group> groups,final BaseExpandableListAdapter mAdapter) {
+    public void getServerInfo(List<Group> groups,final BaseAdapter mAdapter) {
 
         this.mNearGroups = groups;
 
@@ -99,8 +100,7 @@ public class RtPresenterImpl implements RtPresenter {
                                 public void onSuccess(JSONObject data) {
                                     try {
                                         JSONArray arr = null;
-                                        Log.i(TAG, "onSuccess: "+data.toString());
-                                        if (data.toString().indexOf("[") > 0) {   //有数据
+                                        if (data.toString().indexOf("[") > 0) {
                                             arr = data.getJSONArray("dt");
                                         } else {
                                             JSONObject busJsonObject = data
@@ -248,7 +248,7 @@ public class RtPresenterImpl implements RtPresenter {
 
     }
 
-    public void getRtInfo(final Child child, final BaseExpandableListAdapter mAdapter) throws
+    public void getRtInfo(final Child child, final BaseAdapter mAdapter) throws
             UnsupportedEncodingException {
         final int sequence = child.getSequence();
         int offlineID = child.getOfflineID();
@@ -386,7 +386,7 @@ public class RtPresenterImpl implements RtPresenter {
      * @param child
      * @param url
      */
-    public void getRtInfo(final Child child, String url, final BaseExpandableListAdapter mAdapter) {
+    public void getRtInfo(final Child child, String url, final BaseAdapter mAdapter) {
         final int sequence = child.getSequence();
         Log.i("Test double getRtInfo", "url:" + url);
         // 创建okHttpClient对象
@@ -523,7 +523,7 @@ public class RtPresenterImpl implements RtPresenter {
      * @param json
      * @param child
      */
-    private void dealRtInfo(JSONArray json, final Child child, final BaseExpandableListAdapter mAdapter) {
+    private void dealRtInfo(JSONArray json, final Child child, final BaseAdapter mAdapter) {
         Map<String, String> showText = new HashMap<String, String>();
         showText.put("itemsText", "等待发车");
         int rank = Child.NOTYET;

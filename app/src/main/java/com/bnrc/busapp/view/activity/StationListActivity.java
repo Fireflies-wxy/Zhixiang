@@ -360,36 +360,6 @@ public class StationListActivity extends BaseActivity implements IPopWindowListe
         mRefreshTimer.cancel();
     }
 
-    private void getRtParam(List<Group> groups) {
-        Log.i(TAG, "getRtInfo");
-        if (!mNetAndGpsUtil.isNetworkAvailable() || groups == null)
-            return;
-        for (Group group : groups) {
-            if (group.getChildrenCount() <= 0)
-                continue;
-            List<Child> children = group.getChildren();
-            for (Child child : children) {
-                if (child.getOfflineID() <= 0) {
-                    Map<String, String> showText = new HashMap<String, String>();
-                    showText.put("itemsText", "<font color=\"grey\">" + "未开通"
-                            + "</font>");
-                    if (child != null) {
-                        child.setRtInfo(showText);
-                        child.setRtRank(Child.NOTEXIST);
-                        child.setDataChanged(true);
-                    }
-                    mStationAdapter.notifyDataSetChanged();
-                } else {
-                    try {
-                        getRtInfo(child);
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
 
     private void getServerInfo(List<Group> groups) {
         if (groups == null)
@@ -486,37 +456,6 @@ public class StationListActivity extends BaseActivity implements IPopWindowListe
                                                 }
                                             }
                                         }
-                                        // JSONObject json = data
-                                        // .getJSONObject("data");
-                                        // int distance = json
-                                        // .getInt("StationDistance");
-                                        // int time = json
-                                        // .getInt("StationArrivingTime");
-                                        // Map<String, String> showText = new
-                                        // HashMap<String, String>();
-                                        // if (time <= 10)
-                                        // showText.put("itemsText",
-                                        // "<font color=\"red\">" + "即将到站"
-                                        // + "</font>");
-                                        // else {
-                                        // int tmp = time / 60;
-                                        // if (tmp <= 0)
-                                        // showText.put("itemsText",
-                                        // "<font color=\"red\">"
-                                        // + time + " 秒钟"
-                                        // + "</font>");
-                                        // else
-                                        // showText.put("itemsText",
-                                        // "<font color=\"red\">"
-                                        // + tmp + " 分钟"
-                                        // + "</font>");
-                                        // }
-                                        // if (child != null) {
-                                        // child.setRtInfo(showText);
-                                        // child.setRtRank(Child.ARRIVING);
-                                        // child.setDataChanged(true);
-                                        //
-                                        // }
                                         sortGroup();
                                         mStationAdapter.notifyDataSetChanged();
 
@@ -581,19 +520,6 @@ public class StationListActivity extends BaseActivity implements IPopWindowListe
                                 @Override
                                 public void onNetError() {
                                     // TODO Auto-generated method stub
-                                    // Map<String, String> showText = new
-                                    // HashMap<String, String>();
-                                    // showText.put("itemsText",
-                                    // "<font color=\"grey\">" + "网络不佳"
-                                    // + "</font>");
-                                    // if (child != null) {
-                                    // child.setRtInfo(showText);
-                                    // child.setRtRank(Child.NOTYET);
-                                    // child.setDataChanged(true);
-                                    //
-                                    // }
-                                    // sortGroup();
-                                    // mStationAdapter.notifyDataSetChanged();
                                     if (child.getOfflineID() <= 0) {
                                         Map<String, String> showText = new HashMap<String, String>();
                                         showText.put("itemsText",
