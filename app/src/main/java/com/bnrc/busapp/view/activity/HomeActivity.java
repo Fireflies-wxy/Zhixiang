@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.DialogInterface;
@@ -12,7 +11,6 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.app.Fragment;
@@ -46,14 +44,14 @@ import com.bnrc.busapp.ui.MyAlertDialog;
 import com.bnrc.busapp.ui.ProgressLoadingDialog;
 import com.bnrc.busapp.ui.RTabHost;
 import com.bnrc.busapp.ui.SelectPicPopupWindow;
-import com.bnrc.busapp.ui.sweetalert.SweetAlertDialog;
 import com.bnrc.busapp.util.DownloadUtil;
 import com.bnrc.busapp.util.GetToMarket;
 import com.bnrc.busapp.util.LocationUtil;
 import com.bnrc.busapp.util.NetAndGpsUtil;
-import com.bnrc.busapp.util.Permissions.PermissionHelper;
-import com.bnrc.busapp.util.Permissions.PermissionInterface;
-import com.bnrc.busapp.util.Permissions.PermissionUtil;
+import com.bnrc.busapp.util.Permissions.PermissionsHelper;
+import com.bnrc.busapp.util.Permissions.info.DialogInfo;
+import com.bnrc.busapp.util.Permissions.permission.DangerousPermissions;
+import com.bnrc.busapp.util.SPUtils;
 import com.bnrc.busapp.util.SharedPreferenceUtil;
 import com.bnrc.busapp.view.activity.base.BaseActivity;
 import com.bnrc.busapp.view.fragment.BaseFragment;
@@ -67,6 +65,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -74,7 +73,7 @@ import java.util.List;
  * 创建首页及其他fragment
  */
 
-public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener,PermissionInterface {
+public class HomeActivity extends BaseActivity implements View.OnClickListener,IPopWindowListener{
 
     private static SharedPreferenceUtil mSharePrefrenceUtil;
     private static final String TAG = "HomeActivity";
@@ -85,6 +84,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     private List<Class<? extends BaseFragment>> classList = null;
     Class<? extends BaseFragment> fragClass = null;
     private RTabHost mTabHost;
+
+    protected List<String> permissions = new ArrayList<>();
 
     private int mLastIndex = 0;  //初始化时默认加载第一项"首页"
     private TextView tv_toolbar;
@@ -131,9 +132,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private MyAlertDialog mVersionDialog,mAlertDialog;
 
-    private PermissionHelper permissionHelper;
+    protected PermissionsHelper permissionsHelper;
 
-    private String[] mPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA};
+    private static String[] PERMISSIONS = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA};
 
     private ProgressLoadingDialog mProgressLoadingDialog;
 
@@ -142,8 +143,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        permissionHelper = new PermissionHelper(this, this);
-        permissionHelper.requestPermissions();
+        setDangerousPermissions(permissions);
+        checkPermissions();
     }
 
     private void init(){
@@ -280,7 +281,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         }
     }
 
-
     private BaseFragment createFragmentByClass(
             Class<? extends BaseFragment> fragClass) {
         BaseFragment frag = null;
@@ -331,8 +331,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mFragment = createFragmentByClass(fragClass);
         transcation.replace(R.id.content_layout, mFragment).commit();
     }
-
-
 
     @Override
     protected void onDestroy() {
@@ -490,46 +488,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     }
 
-    @Override
-    public int getPermissionsRequestCode() {
-        return 0;
-    }
-
-    @Override
-    public String[] getPermissions() {
-        return mPermissions;
-    }
-
-    @Override
-    public void requestPermissionsSuccess() {
-        init();
-    }
-
-    @Override
-    public void requestPermissionsFail() {
-        StringBuilder sb = new StringBuilder();
-        mPermissions = PermissionUtil.getDeniedPermissions(this, mPermissions);
-        for (String s : mPermissions) {
-            if (s.equals(Manifest.permission.CAMERA)) {
-                sb.append("相机权限(用于拍照，视频聊天);\n");
-            } else if (s.equals(Manifest.permission.RECORD_AUDIO)) {
-                sb.append("麦克风权限(用于发语音，语音及视频聊天);\n");
-            } else if (s.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                sb.append("读取权限(用于读取数据);\n");
-            }else if (s.equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                sb.append("存储(用于存储必要信息，缓存数据);\n");}
-        }
-        PermissionUtil.PermissionDialog(this, "程序运行需要如下权限：\n" + sb.toString() + "请在应用权限管理进行设置！");
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionHelper.requestPermissionsResult(requestCode,permissions,grantResults);
-        permissionHelper.requestPermissions();
-    }
-
     public MyAlertDialog showAlertDialog() {
         if (mAlertDialog != null)
             mAlertDialog.dismiss();
@@ -546,7 +504,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mAlertDialog.show();
         return mAlertDialog;
     }
-
 
     public void checkVersion() {
         final double localVersion = Double.parseDouble(mSharePrefrenceUtil
@@ -669,9 +626,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mVersionDialog.show();
     }
 
-    /**
-     * 文件下载
-     */
     private void downFile(String url) {
         DownloadUtil.get().downloadDB(url, Environment.getExternalStorageDirectory().getAbsolutePath(), "pc.db",
                 new DownloadUtil.OnDownloadListener() {
@@ -707,6 +661,134 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
                 });
 
 
+    }
+
+    private void checkPermissions(){
+        List<String> finalPermissions = checkParams(permissions);
+        if (finalPermissions == null || finalPermissions.size() <= 0) {
+            allPermissionsGranted();
+            return;
+        }
+        String[] checkPermissions = new String[finalPermissions.size()];
+        checkPermissions = finalPermissions.toArray(checkPermissions);
+        for (String checkPermission : checkPermissions) {
+            Log.e("testpermission","checkPermission: splash"+checkPermission);
+        }
+        permissionsHelper = new PermissionsHelper(this, checkPermissions,isFirstTime());
+        permissionsHelper.setonAllNeedPermissionsGrantedListener(new PermissionsHelper
+                .onAllNeedPermissionsGrantedListener() {
+
+
+            @Override
+            public void onAllNeedPermissionsGranted() {
+                allPermissionsGranted();
+            }
+
+            @Override
+            public void onPermissionsDenied() {
+                permissionsDenied();
+            }
+
+            @Override
+            public void hasLockForever() {
+                shouldNOTShowRequest();
+            }
+
+            @Override
+            public void onBeforeRequestFinalPermissions(PermissionsHelper helper) {
+                beforeRequestFinalPermissions(helper);
+            }
+        });
+
+        permissionsHelper.setonNegativeButtonClickListener(new PermissionsHelper.onNegativeButtonClickListener() {
+
+
+            @Override
+            public void negativeButtonClick() {
+                onNegativeButtonClick();
+            }
+        });
+        if (permissionsHelper.checkAllPermissions(checkPermissions)) {
+            permissionsHelper.onDestroy();
+            allPermissionsGranted();//没有需要申请的权限
+        } else {
+            //申请权限
+            permissionsHelper.startRequestNeedPermissions();
+            initParams();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionsHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        permissionsHelper.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private List<String> checkParams(List<String> permissions) {
+        if (permissions == null || permissions.size() <= 0) return null;
+        List<String> allPermissions = Arrays.asList(PERMISSIONS);
+        List<String> finalPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            if (allPermissions.contains(permission)) {
+                finalPermissions.add(permission);
+            }
+        }
+        return finalPermissions;
+    }
+
+    protected Boolean isFirstTime() {
+        boolean first = (boolean) SPUtils.getData(this, "first", false);
+        if (!first){
+            SPUtils.putData(this,"first",true);
+        }
+        return !first;
+    }
+
+    protected void allPermissionsGranted() {
+        Log.i("testpermission", "allPermissionsGranted: ");
+       init();
+    }
+
+    protected void permissionsDenied() {
+        Toast.makeText(this, "permissionsDenied", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void shouldNOTShowRequest() {
+        Toast.makeText(this, "永远不需要展示", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void beforeRequestFinalPermissions(PermissionsHelper helper){
+        helper.continueRequestPermissions();
+    }
+
+    protected DialogInfo setDialogInfo(DialogInfo dialogInfo) {
+        dialogInfo.setTitle("权限申请");
+        dialogInfo.setContent("本应用需要您许可相应权限才能正常运行!");
+        dialogInfo.setPositiveButtonText("去设置");
+        dialogInfo.setNegativeButtonText("取消");
+        dialogInfo.showDialog(true);
+        return dialogInfo;
+    }
+
+    private void initParams(){
+        permissionsHelper.setParams(setDialogInfo(new DialogInfo()));
+    }
+
+    protected void onNegativeButtonClick(){
+        Log.d("PermissionsHelper","onNegativeButtonClick");
+    }
+
+    protected void setDangerousPermissions(List<String> permissions) {
+        permissions.add(DangerousPermissions.STORAGE);
+        permissions.add(DangerousPermissions.CAMERA);
+        permissions.add(DangerousPermissions.LOCATION);
     }
 
 }

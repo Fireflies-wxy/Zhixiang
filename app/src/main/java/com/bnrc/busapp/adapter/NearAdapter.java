@@ -101,13 +101,13 @@ public class NearAdapter extends BaseExpandableListAdapter {
 		ChildViewHolder holder = null;
 		final Child child = groups.get(groupPosition).getChildItem(
 				childPosition);
+		Log.i(TAG, "getChildView: groupPosition: "+groupPosition+" childPosition: "+childPosition);
 		int size = groups.get(groupPosition).getChildrenCount();
 		if (childPosition == size - 1)
 			isLastChild = true;
 		else
 			isLastChild = false;
 		if (convertView == null) {
-			Log.i(TAG, "getChildView: convertview == null");
 			if (isLastChild)
 				convertView = inflater.inflate(R.layout.child_loc, null);
 			else
@@ -141,37 +141,6 @@ public class NearAdapter extends BaseExpandableListAdapter {
 		setData(holder, groupPosition, childPosition);
 
 		return convertView;
-	}
-
-	public void startScaleTo(final View view, float start, float end) {
-		ValueAnimator animator = ValueAnimator.ofFloat(start, end);
-		animator.setDuration(500);
-		animator.start();
-		animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-			@Override
-			public void onAnimationUpdate(ValueAnimator animation) {
-				float value = Float.parseFloat(animation.getAnimatedValue()
-						.toString());
-				view.setScaleX(value);
-				view.setScaleY(0.4f + (0.6f * value));
-			}
-		});
-	}
-
-	private LayoutAnimationController getListAnim() {
-		AnimationSet set = new AnimationSet(true);
-		Animation animation = new AlphaAnimation(0.0f, 1.0f);
-		animation.setDuration(300);
-		set.addAnimation(animation);
-
-		animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-				Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-				-1.0f, Animation.RELATIVE_TO_SELF, 0.0f);
-		animation.setDuration(500);
-		set.addAnimation(animation);
-		LayoutAnimationController controller = new LayoutAnimationController(
-				set, 0.5f);
-		return controller;
 	}
 
 	/**
@@ -220,8 +189,6 @@ public class NearAdapter extends BaseExpandableListAdapter {
 								.findViewById(R.id.tv_info2);
 						tvStation.setText(station);
 						tvTime.setText(time);
-//                        tvStation.startAnimation(bus_refresh);
-//                        tvTime.startAnimation(bus_refresh);
 						holder.lLayoutContainer.addView(item);
 					}
 				}
@@ -300,6 +267,8 @@ public class NearAdapter extends BaseExpandableListAdapter {
 
 			int lineStatusRate = child.getLineStatus();  //乘车拥挤度
 
+			Log.i(TAG, "setData: status childname: "+child.getLineName()+" status: "+child.getLineStatus());
+
             switch (lineStatusRate){
 				case 0:
 					holder.img_lineStatus.setVisibility(View.INVISIBLE);
@@ -368,7 +337,6 @@ public class NearAdapter extends BaseExpandableListAdapter {
                              View convertView, ViewGroup parent) {
 		if (groupPosition >= groups.size())
 			return convertView;
-		Log.i(TAG, "getGroupView " + groups.get(groupPosition).getStationName());
 		GroupViewHolder holder;
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.group_concern, null);
