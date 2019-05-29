@@ -1057,6 +1057,8 @@ public class BuslineListActivity extends BaseActivity {
                         + LineInfo.get("EndStation").toString() + ")";
                 OfflineID = Integer.parseInt(LineInfo.get("OfflineID")
                         .toString());
+                Log.i("testoffline", "BuslineListActivity LineID: "+LineID);
+                Log.i("testoffline", "BuslineListActivity offline: "+OfflineID);
             }
             return mStations;
         } else

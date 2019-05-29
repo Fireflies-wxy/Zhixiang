@@ -188,6 +188,7 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
                             int StationID = 0;
                             int Sequence = 1;
                             buslineIntent.putExtra("LineID", LineID);
+                            Log.i("testoffline", "SearchActivity nonAR: "+LineID);
                             buslineIntent.putExtra("StationID", StationID);
                             buslineIntent.putExtra("Sequence", Sequence);
                             startActivity(buslineIntent);
@@ -197,19 +198,10 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
                         }else {
                             Intent buslineIntent = new Intent();
                             int LineID = item.getLineID();
-                            int StationID = 0;
-                            String StationName = "";
-                            if(mSearchDB.acquireBusLinesWithKeyword(item.getLineName()).size()!=0){
-                                StationID = mSearchDB.acquireStationsWithBuslineID(LineID).get(1).getStationID();
-                                StationName = mSearchDB.acquireStationsWithBuslineID(LineID).get(0).getStationName();
-
-                            }
-
-                            Log.i(TAG, "onItemClick: LName: "+item.getLineName()+" StationName: "+StationName);
-                            Log.i(TAG, "onItemClick: LineID: "+LineID+" StationID: "+StationID);
+                            String LineName = item.getLineName();
                             buslineIntent.putExtra("searchType",2);//2代表线路
-                            buslineIntent.putExtra("LineID", 1064500);
-                            buslineIntent.putExtra("StationID", StationID);
+                            buslineIntent.putExtra("LineID", LineID);
+                            buslineIntent.putExtra("LineName", LineName);
                             setResult(RESULT_OK, buslineIntent);
                             hidenAndFinish();
                         }

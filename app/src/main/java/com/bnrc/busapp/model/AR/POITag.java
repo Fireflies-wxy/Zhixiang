@@ -29,4 +29,6 @@ public class POITag extends FrameLayout {
         poi_name.setWidth(10+(poi_name.length()>poi_distance.length()?poi_name.length():poi_distance.length()));
         poi_distance.setWidth(10+(poi_name.length()>poi_distance.length()?poi_name.length():poi_distance.length()));
     }
+
+
 }

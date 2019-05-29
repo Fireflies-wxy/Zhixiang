@@ -33,6 +33,11 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.core.SearchResult;
@@ -43,9 +48,11 @@ import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
 import com.baidu.mapapi.search.poi.PoiSortType;
+import com.baidu.mapapi.utils.CoordinateConverter;
 import com.baidu.mapapi.utils.DistanceUtil;
 import com.bnrc.busapp.R;
 import com.bnrc.busapp.adapter.SortAdapter;
+import com.bnrc.busapp.database.PCDataBaseHelper;
 import com.bnrc.busapp.listener.GetLocationListener;
 import com.bnrc.busapp.model.AR.ARCamera;
 import com.bnrc.busapp.model.AR.AROverlayView;
@@ -55,12 +62,27 @@ import com.bnrc.busapp.model.bus.BusModel;
 import com.bnrc.busapp.network.RequestCenter;
 import com.bnrc.busapp.network.listener.DisposeDataListener;
 import com.bnrc.busapp.util.LocationUtil;
+import com.bnrc.busapp.util.MyCipher;
 import com.bnrc.busapp.util.SharedPreferenceUtil;
 import com.bnrc.busapp.view.activity.base.BaseActivity;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class ARActivity extends BaseActivity implements SensorEventListener,OnGetPoiSearchResultListener {
 
@@ -74,12 +96,16 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
     private PoiSearch mSearch = null;
     private String keyword = "酒店";
     private ImageView menu_view_ar;
+    private OkHttpClient mOkHttpClient;
+    private CoordinateConverter mCoordConventer;
+    public PCDataBaseHelper mDataBaseManager = null;
+
 
     //AR相关
     private FrameLayout mARContainer;
     private float[] rotatedProjectionMatrix = new float[16];
     private BDLocation currentLocation;
-    private List<ARPoint> arPoints;
+    private ArrayList<ARPoint> arPoints = new ArrayList<>();
     private View poiTag;
 
     //下拉菜单控件
@@ -156,6 +182,11 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                 startActivityForResult(intent,1);
             }
         });
+
+        mCoordConventer = new CoordinateConverter();
+        mDataBaseManager = PCDataBaseHelper
+                .getInstance(ARActivity.this);
+
     }
 
     /**
@@ -498,43 +529,140 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                 break;
             case 2:
                 mARContainer.removeAllViews();
-                final ArrayList<ARPoint> arPoints = new ArrayList<>();
-                String SID = String.valueOf(intent.getIntExtra("StationID",0));
                 String LID = String.valueOf(intent.getIntExtra("LineID",0));
-                Log.i(TAG, "onActivityResult: StationID:"+SID+" LineID: "+LID);
-                RequestCenter.requestBusData(SID, LID, new DisposeDataListener() {
-                    @Override
-                    public void onSuccess(Object responseObj) {
-                        BusModel busModel = (BusModel) responseObj;
-                        ArrayList<BusInfo> busInfos = ((BusModel) responseObj).lineinfo;
-                        if(busModel.errorCode == 0){
-                            if(busInfos.size()!=0){
-                                for(int i = 0;i<busInfos.size();i++){
-                                    BusInfo info = busInfos.get(i);
-                                    arPoints.add(new ARPoint("实时公交 "+i,(int)DistanceUtil.getDistance(currentLoc,new LatLng(info.Lat,info.Lon))+"m",info.Lat,info.Lon,0));
-                                }
-                                if(arOverlayView!=null)
-                                    arOverlayView.updatePoiResult(arPoints);
-                            }else {
-                                Toast.makeText(ARActivity.this.getApplicationContext(),"该线路暂无实时信息",Toast.LENGTH_SHORT).show();
-                            }
-
-                        }else {
-                            Toast.makeText(ARActivity.this.getApplicationContext(),"该线路暂无实时信息",Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Object reasonObj) {
-                        Toast.makeText(ARActivity.this.getApplicationContext(),"请求失败，请检查网络连接",Toast.LENGTH_SHORT).show();
-                    }
-                });
-
+                String LineName = intent.getStringExtra("LineName");
+                try {
+                    getRtInfo(LID);
+                } catch (UnsupportedEncodingException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 Toast.makeText(ARActivity.this.getApplicationContext(),"搜索发生错误，请重试",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getRtInfo(String LineID) throws JSONException,
+            UnsupportedEncodingException {
+        Log.i(TAG, "getRtInfo: ");
+        Map<String, Object> LineInfo = mDataBaseManager
+                .acquireLineInfoWithLineID(Integer.parseInt(LineID));
+        int OfflineID = 0;
+        if (LineInfo != null && LineInfo.size() > 0) {
+            OfflineID = Integer.parseInt(LineInfo.get("OfflineID")
+                    .toString());
+        }
+        Log.i("testoffline", "ARActivity LingID: "+LineID);
+        Log.i("testoffline", "ARActivity offline: "+OfflineID);
+        String Url =
+                "http://223.72.210.21:8512/ssgj/bus.php?city="
+                        + URLEncoder.encode("北京", "utf-8") + "&id=" + OfflineID
+                        + "&no=" + 1 + "&type=2&encrypt=1&versionid=2";
+        // 创建一个Request
+        final Request request = new Request.Builder().url(Url).build();
+        // new call
+        if(mOkHttpClient==null){
+            mOkHttpClient = new OkHttpClient();
+        }
+        Call call = mOkHttpClient.newCall(request);
+        // 请求加入调度
+        call.enqueue(new Callback() {
+
+            @Override
+            public void onFailure(Call call, IOException arg1) {
+                Log.d(TAG, "!!!!!!!faliure: ");
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response res)
+                    throws IOException {
+                // TODO Auto-generated method stub
+                Log.d(TAG, "!!!!!!!response: " + res);
+
+                String response = res.body().string();
+                try {
+
+                    JSONObject responseJson = XML.toJSONObject(response);
+                    JSONObject rootJson = responseJson.getJSONObject("root");
+
+                    Log.i(TAG, "rootJson: " + rootJson.toString());
+
+                    JSONObject dataJson = rootJson
+                            .getJSONObject("data");
+                    JSONArray busJsonArray;
+                    if (dataJson.toString().indexOf("[") > 0) {
+                        // busJsonArray = (JSONArray) dataJson
+                        // .get("bus");
+                        busJsonArray = dataJson.getJSONArray("bus");
+                        Log.i(TAG,
+                                "busJsonArray "
+                                        + busJsonArray.toString());
+
+                    } else {
+
+                        JSONObject busJsonObject = dataJson
+                                .getJSONObject("bus");
+                        Log.i(TAG,
+                                "busJsonObject "
+                                        + busJsonObject.toString());
+                        busJsonArray = new JSONArray("["
+                                + busJsonObject.toString() + "]");
+                        Log.i(TAG, "busJsonObject to array: "
+                                + busJsonArray.toString());
+                    }
+
+                    int busJsonArray_count = busJsonArray.length();
+                    Log.i(TAG, "busJsonArray_count: "
+                            + busJsonArray_count);
+
+                    for (int j = 0; j < busJsonArray_count; j++) {
+                        Log.i(TAG, "onResponse: Added!");
+
+                        JSONObject busJson = (JSONObject) busJsonArray
+                                .get(j);
+
+                        MyCipher mCiper = new MyCipher("aibang"
+                                + busJson.getString("gt"));
+
+                        String ns = mCiper.decrypt(busJson
+                                .getString("ns"));
+                        String nsn = mCiper.decrypt(busJson
+                                .getString("nsn"));
+                        String sd = mCiper.decrypt(busJson
+                                .getString("sd"));
+                        double xLon = Double.parseDouble(mCiper
+                                .decrypt(busJson.getString("x")));
+                        double ylat = Double.parseDouble(mCiper
+                                .decrypt(busJson.getString("y")));
+                        Log.i(TAG, "next_station_name: " + ns + "\n"
+                                + "next_station_num: " + nsn + "\n"
+                                + "station_distance: " + sd + "\n"
+                                + "latitude: " + xLon + "\n"
+                                + "longitude: " + ylat
+                                + "\n********************\n");
+
+                        LatLng rtStationPoint = new LatLng(ylat, xLon);
+                        LatLng rtSLatLngBaidu = mCoordConventer
+                                .from(CoordinateConverter.CoordType.COMMON)
+                                .coord(rtStationPoint).convert();
+                        final LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+                        arPoints.add(new ARPoint("实时公交"+j,(int)DistanceUtil.getDistance(currentLoc,rtSLatLngBaidu)+"m",ylat,xLon,0));
+                    }
+                    if(arOverlayView!=null)
+                        arOverlayView.updatePoiResult(arPoints);
+
+                }
+
+                catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
     }
 
 }
