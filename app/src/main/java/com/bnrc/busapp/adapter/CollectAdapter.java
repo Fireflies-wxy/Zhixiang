@@ -114,7 +114,7 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 			holder.fixButton = (TextView) convertView
 					.findViewById(R.id.btn_delete);
 			holder.frontView = convertView.findViewById(R.id.id_front);
-			holder.img_busStatus = convertView.findViewById(R.id.img_busStatus);
+			holder.img_lineStatus = convertView.findViewById(R.id.img_lineStatus);
 			convertView.setTag(holder);
 
 		} else {
@@ -140,25 +140,25 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 		// }
 		setData(holder, groupPosition, childPosition);
 
-		int busStatusRate = child.getBusStatus();  //乘车拥挤度
+		int lineStatusRate = child.getLineStatus();  //乘车拥挤度
 
-		switch (busStatusRate){
+		switch (lineStatusRate){
 			case 1:
-				holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_low);
+				holder.img_lineStatus.setBackgroundResource(R.drawable.wait_status_low);
 				break;
 			case 2:
-				holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_mid);
+				holder.img_lineStatus.setBackgroundResource(R.drawable.wait_status_mid);
 				break;
 			case 3:
-				holder.img_busStatus.setBackgroundResource(R.drawable.wait_status_high);
+				holder.img_lineStatus.setBackgroundResource(R.drawable.wait_status_high);
 				break;
 		}
 
 
-		holder.img_busStatus.setOnClickListener(new OnClickListener() {
+		holder.img_lineStatus.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				switch (child.getBusStatus()){
+				switch (child.getLineStatus()){
 					case 1:
 						Toast.makeText(mContext.getApplicationContext(),"乘车拥挤度:舒适",Toast.LENGTH_SHORT).show();
 						break;
@@ -243,8 +243,8 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 					intent.putExtra("StationID", child.getStationID());
 					intent.putExtra("FullName", child.getLineFullName());
 					intent.putExtra("Sequence", child.getSequence());
-					intent.putExtra("busStatus", child.getBusStatus());
-					intent.putExtra("lineStatus", group.getStationStatus());
+					intent.putExtra("lineStatus", child.getLineStatus());
+					intent.putExtra("stationStatus", group.getStationStatus());
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					mContext.startActivity(intent);
 					AnimationUtil.activityZoomAnimation((Activity) mContext);
@@ -467,7 +467,7 @@ public class CollectAdapter extends BaseExpandableListAdapter {
 		LinearLayout lLayoutContainer;
 		TextView fixButton; //
 		View frontView;
-		ImageView img_busStatus;
+		ImageView img_lineStatus;
 	}
 
 	private String getSequence(int position) {

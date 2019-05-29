@@ -3,9 +3,17 @@ package com.bnrc.busapp.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,17 +30,25 @@ import android.widget.Toast;
 
 import com.bnrc.busapp.R;
 import com.bnrc.busapp.constant.Constants;
+import com.bnrc.busapp.database.PCDataBaseHelper;
 import com.bnrc.busapp.database.PCUserDataDBHelper;
 import com.bnrc.busapp.listener.IPopWindowListener;
 import com.bnrc.busapp.model.Child;
 import com.bnrc.busapp.model.user.TokenInfo;
+import com.bnrc.busapp.network.HttpConstants;
 import com.bnrc.busapp.network.RequestCenter;
+import com.bnrc.busapp.network.UpdateFromBaidu;
+import com.bnrc.busapp.network.VolleyNetwork;
 import com.bnrc.busapp.network.listener.DisposeDataListener;
 import com.bnrc.busapp.ui.CircleImageView;
 import com.bnrc.busapp.ui.LoadingDialog;
 import com.bnrc.busapp.ui.MyAlertDialog;
+import com.bnrc.busapp.ui.ProgressLoadingDialog;
 import com.bnrc.busapp.ui.RTabHost;
 import com.bnrc.busapp.ui.SelectPicPopupWindow;
+import com.bnrc.busapp.ui.sweetalert.SweetAlertDialog;
+import com.bnrc.busapp.util.DownloadUtil;
+import com.bnrc.busapp.util.GetToMarket;
 import com.bnrc.busapp.util.LocationUtil;
 import com.bnrc.busapp.util.NetAndGpsUtil;
 import com.bnrc.busapp.util.Permissions.PermissionHelper;
@@ -45,6 +61,10 @@ import com.bnrc.busapp.view.fragment.HomeFragment;
 import com.bnrc.busapp.view.fragment.RouteFragment;
 import com.joanzapata.iconify.widget.IconTextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +89,12 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     private int mLastIndex = 0;  //初始化时默认加载第一项"首页"
     private TextView tv_toolbar;
     private String[] titleList = {"智享公交","路线查询"};
+    private double dbVersion, appVersion;
 
     private RelativeLayout mHomeLayout;
     private RelativeLayout mRouteLayout;
     private RelativeLayout mArLayout;
     private RelativeLayout mBusCircleLayout;
-    private RelativeLayout mMessageLayout;
 
     private TextView icon_home,tv_home;
     private TextView icon_route,tv_route;
@@ -87,6 +107,9 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     private IconTextView icon_menu,icon_search;
 
     private CircleImageView user_icon;
+
+    private VolleyNetwork mVolleyNetwork;
+    private PCDataBaseHelper mPcDataBaseHelper = null;
 
     //分享图标
     private TextView icon_quit;
@@ -106,12 +129,13 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private NetAndGpsUtil mNetAndGpsUtil;
 
-    private MyAlertDialog mVersionDialog;
+    private MyAlertDialog mVersionDialog,mAlertDialog;
 
     private PermissionHelper permissionHelper;
 
     private String[] mPermissions = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA};
 
+    private ProgressLoadingDialog mProgressLoadingDialog;
 
 
     @Override
@@ -124,18 +148,28 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     private void init(){
         //初始化页面中所有控件
+        initLocationUtil();
+        initDB();
+
         initView();
         initFragments();
         initTabHost();
         mNetAndGpsUtil = NetAndGpsUtil.getInstance(getApplicationContext());
-        initLocationUtil();
-        initDB();
-
+        mVolleyNetwork = VolleyNetwork
+                .getInstance(this.getApplicationContext());
         startAlertService();
-//
-//        checkVersion();
+
+        checkVersion();
+
+        doLogin();
     }
 
+    private void initProgressDialog(){
+        mProgressLoadingDialog = new ProgressLoadingDialog(
+                HomeActivity.this, R.style.Translucent_NoTitle);
+        mProgressLoadingDialog.setCancelable(false);
+        mProgressLoadingDialog.show();
+    }
 
     private void initLocationUtil(){
         mLocationUtil = LocationUtil.getInstance(this
@@ -145,6 +179,8 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     }
 
     private void initDB(){
+        mPcDataBaseHelper = PCDataBaseHelper
+                .getInstance(getApplicationContext());
         mUserDB = PCUserDataDBHelper.getInstance(HomeActivity.this);
     }
 
@@ -379,34 +415,6 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
         mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
-//    private void showShare() {
-//        OnekeyShare oks = new OnekeyShare();
-//        //关闭sso授权
-//        oks.disableSSOWhenAuthorize();
-//
-//        // 分享时Notification的图标和文字  2.5.9以后的版本不调用此方法
-//        //oks.setNotification(R.drawable.ic_launcher, getString(R.string.app_name));
-//        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
-//        oks.setTitle(getString(R.string.share));
-//        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
-//        oks.setTitleUrl("http://app.mi.com/details?id=com.bnrc.busapp&ref=search");
-//        // text是分享文本，所有平台都需要这个字段
-//        oks.setText("智享公交app，智能出行靠谱助手！\n下载地址：http://app.mi.com/details?id=com.bnrc.busapp&ref=search");
-//        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-//        oks.setImagePath("http://file.market.xiaomi.com/thumbnail/PNG/l114/AppStore/07eab64b6d2d448020c25697708eef0e7aed08009");//确保SDcard下面存在此张图片
-//        // url仅在微信（包括好友和朋友圈）中使用
-//        oks.setUrl("http://app.mi.com/details?id=com.bnrc.busapp&ref=search");
-//        // comment是我对这条分享的评论，仅在人人网和QQ空间使用
-//        oks.setComment("我是测试评论文本");
-//        // site是分享此内容的网站名称，仅在QQ空间使用
-//        oks.setSite(getString(R.string.app_name));
-//        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
-//        oks.setSiteUrl("http://sharesdk.cn");
-//
-//        // 启动分享GUI
-//        oks.show(this);
-//    }
-
     @Override
     public void onPopClick(Child child) {
         mChild = child;
@@ -479,7 +487,7 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
     @Override
     protected void onResume() {
         super.onResume();
-        doLogin();
+
     }
 
     @Override
@@ -515,60 +523,190 @@ public class HomeActivity extends BaseActivity implements View.OnClickListener,I
 
     }
 
-//    public void checkVersion(){
-//        int dbver = mSharePrefrenceUtil.getValue("");
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionHelper.requestPermissionsResult(requestCode,permissions,grantResults);
+        permissionHelper.requestPermissions();
+    }
 
-//    private void showDBVersionDialog() {
-//        mVersionDialog = new MyAlertDialog(this).builder().setTitle("数据库更新")
-//                .setMsg("数据库不是最新版本，请更新数据库")
-//                .setPositiveButton("确认", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
+    public MyAlertDialog showAlertDialog() {
+        if (mAlertDialog != null)
+            mAlertDialog.dismiss();
+        String stationName = myAlertBinder.getAlertStationName();
+        mAlertDialog = new MyAlertDialog(HomeActivity.this).builder()
+                .setTitle(stationName + "站").setMsg("即将到达 ，请注意下车！")
+                .setNegativeButton("确认", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myAlertBinder.stopAlert();
+                    }
+                });
+        // mAlertDialog.setCancelable(false);
+        mAlertDialog.show();
+        return mAlertDialog;
+    }
+
+
+    public void checkVersion() {
+        final double localVersion = Double.parseDouble(mSharePrefrenceUtil
+                .getValue("DBVersion", "2.3"));  //localVersion：本地数据库ver，本地记录
+        PackageManager manager;
+        PackageInfo info = null;
+        manager = this.getPackageManager();
+        try {
+            info = manager.getPackageInfo(this.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        final double localAppVersion = Double.parseDouble(info.versionName);  //本地appVer
+        Log.i("VERSION", localVersion + "before getuploadinfo" + info.versionName);
+        mVolleyNetwork.getUploadInfo(new VolleyNetwork.appVersionListener() {
+
+            @Override
+            public void onSuccess(JSONObject obj) {
+                // TODO Auto-generated method stub
+                try {
+                    double dVersion = Double.parseDouble(obj.getString("V"));
+                    Log.i("VERSION", "dVersion: "+dVersion);
+                    double aVersion = Double.parseDouble(obj.getString("appV"));
+                    Log.i("VERSION", "aVersion: "+aVersion);
+                    String Info = obj.getString("Info");  //这里记录着更新的信息
+                    Log.i("VERSION", "msg: "+Info);
+                    String url = obj.getString("url");
+                    if (localVersion < dVersion)
+                        showDBVersionDialog();
+                    Log.i(TAG, "localAppVersion: " + localAppVersion
+                            + " aVersion: " + aVersion);
+                    if (localAppVersion < aVersion)
+                        showAppVersionDialog(Info,url);
+                    dbVersion = dVersion;
+                    appVersion = aVersion;
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFail() {
+                // TODO Auto-generated method stub
+                startAlertService();
+                Log.d(TAG, "onFail: getversioninfo");
+            }
+        });
+    }
+
+    private void showDBVersionDialog() {
+        mVersionDialog = new MyAlertDialog(this).builder().setTitle("数据库更新")
+                .setMsg("数据库不是最新版本，请更新数据库")
+                .setPositiveButton("确认", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 //                        updateDatabase(VolleyNetwork.beijingdbURL, "pc.db");
-//                    }
-//                }).setNegativeButton("取消", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        // startAlertService();
-//                        exitProcess();
-//                    }
-//                });
-//        mVersionDialog.setCanceledOnTouchOutside(false);
-//        mVersionDialog.setCancelable(false);
-//        mVersionDialog.show();
-//    }
-//
-//    private void showAppVersionDialog(String msg,final String url) {
-//        mVersionDialog = new MyAlertDialog(this).builder().setTitle("应用版本更新")
-//                .setMsg(msg).setPositiveButton("前往市场", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        GetToMarket gu = new GetToMarket();
-//                        Intent i = gu.getIntent(HomeActivity.this);
-//                        boolean b = gu.judge(HomeActivity.this, i);
-//                        if (b == false) {
-//                            startActivity(i);
-//                        } else
-//                            Toast.makeText(HomeActivity.this, "请前往应用商店更新应用！",
-//                                    Toast.LENGTH_LONG).show();
-//                    }
-//                })/*.setNegativeButton("取消", new OnClickListener() {
-//					@Override
-//					public void onClick(View v) {
-//					}
-//				})*/
-//                .setNegativeButton("下载APK", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-////						Log.d(TAG, "onClick: ");
-//                        UpdateFromBaidu update = new UpdateFromBaidu(HomeActivity.this);
-//                        update.showNoticeDialog(true, "检测到新版本，立即更新吗？", url,getFilesDir().getPath());
-//                        Log.d(TAG, "onClick: filepath"+getFilesDir().getPath());
-//                        /**/}
-//                });
-//        mVersionDialog.setCanceledOnTouchOutside(false);
-//        //mVersionDialog.setCancelable(false);
-//        mVersionDialog.show();
-//    }
+                        initProgressDialog();
+                        new Thread(new Runnable(){
+                            @Override
+                            public void run() {
+                                downFile(HttpConstants.BEIJINGDB_URL);
+                            }
+                        }).start();
+
+                    }
+                }).setNegativeButton("取消", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // startAlertService();
+                        exitProcess();
+                    }
+                });
+        mVersionDialog.setCanceledOnTouchOutside(false);
+        mVersionDialog.setCancelable(false);
+        mVersionDialog.show();
+    }
+
+    private void exitProcess() {
+        finish();
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        }, 400);
+
+    }
+
+    private void showAppVersionDialog(String msg,final String url) {
+        mVersionDialog = new MyAlertDialog(this).builder().setTitle("应用版本更新")
+                .setMsg(msg).setPositiveButton("前往市场", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        GetToMarket gu = new GetToMarket();
+                        Intent i = gu.getIntent(HomeActivity.this);
+                        boolean b = gu.judge(HomeActivity.this, i);
+                        if (b == false) {
+                            startActivity(i);
+                        } else
+                            Toast.makeText(HomeActivity.this, "请前往应用商店更新应用！",
+                                    Toast.LENGTH_LONG).show();
+                    }
+                })/*.setNegativeButton("取消", new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+					}
+				})*/
+                .setNegativeButton("下载APK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//						Log.d(TAG, "onClick: ");
+                        UpdateFromBaidu update = new UpdateFromBaidu(HomeActivity.this);
+                        update.showNoticeDialog(true, "检测到新版本，立即更新吗？", url,getFilesDir().getPath());
+                        Log.d(TAG, "onClick: filepath"+getFilesDir().getPath());
+                        /**/}
+                });
+        mVersionDialog.setCanceledOnTouchOutside(false);
+        //mVersionDialog.setCancelable(false);
+        mVersionDialog.show();
+    }
+
+    /**
+     * 文件下载
+     */
+    private void downFile(String url) {
+        DownloadUtil.get().downloadDB(url, Environment.getExternalStorageDirectory().getAbsolutePath(), "pc.db",
+                new DownloadUtil.OnDownloadListener() {
+                    @Override
+                    public void onDownloadSuccess(File file) {
+                        if (mProgressLoadingDialog != null) {
+                            mProgressLoadingDialog.dismiss();
+                            mProgressLoadingDialog = null;
+                        }
+                        mPcDataBaseHelper.copyFile(file.getAbsolutePath(), "pc.db");
+                        mSharePrefrenceUtil.setKey("UPDATEFAV", "no");
+                        mSharePrefrenceUtil.setKey("UPDATEALERT", "no");
+                        mSharePrefrenceUtil.setKey("DBVersion", dbVersion+"");
+                        Looper.prepare();
+                        Toast.makeText(HomeActivity.this.getApplicationContext(),"数据库更新完成",Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                        //下载完成进行相关逻辑操作
+                    }
+
+                    @Override
+                    public void onDownloading(int progress) {
+                        mProgressLoadingDialog.setProgress(progress);
+                    }
+
+                    @Override
+                    public void onDownloadFailed(Exception e) {
+                        //下载异常进行相关提示操作
+                        startAlertService();
+                        Looper.prepare();
+                        Toast.makeText(HomeActivity.this.getApplicationContext(),"更新失败，请检查网络",Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+                });
+
+
+    }
+
 }

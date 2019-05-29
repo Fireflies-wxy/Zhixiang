@@ -8,10 +8,13 @@ import android.widget.BaseExpandableListAdapter;
 
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
-import com.bnrc.busapp.adapter.NearAdapter;
 import com.bnrc.busapp.model.Child;
 import com.bnrc.busapp.model.Group;
+import com.bnrc.busapp.model.bus.BusInfo;
+import com.bnrc.busapp.model.bus.BusModel;
+import com.bnrc.busapp.network.RequestCenter;
 import com.bnrc.busapp.network.VolleyNetwork;
+import com.bnrc.busapp.network.listener.DisposeDataListener;
 import com.bnrc.busapp.util.MyCipher;
 import com.bnrc.busapp.util.NetAndGpsUtil;
 
@@ -76,7 +79,7 @@ public class RtPresenterImpl implements RtPresenter {
 
         this.mNearGroups = groups;
 
-        for (Group group : groups) {
+        for (final Group group : groups) {
             if (group.getChildrenCount() <= 0)
                 continue;
             List<Child> children = group.getChildren();
@@ -84,6 +87,24 @@ public class RtPresenterImpl implements RtPresenter {
                 final int LineID = child.getLineID();
                 int StationID = child.getStationID();
 
+                RequestCenter.requestBusData(StationID, LineID, new DisposeDataListener() {
+                    @Override
+                    public void onSuccess(Object responseObj) {
+                        BusModel busModel = (BusModel) responseObj;
+
+                        group.setStationStatus(busModel.stationstatus);
+                        child.setLineStatus(busModel.linestatus);
+
+                    }
+
+                    @Override
+                    public void onFailure(Object reasonObj) {
+                        Log.i(TAG, "onFailure: ");
+                    }
+                });
+
+                Log.i(TAG, "LineID: " + LineID + " ; " + "StationID: "
+                        + StationID);
                 final int sequence = child.getSequence();
                 if (sequence == 1) {
                     Map<String, String> showText = new HashMap<String, String>();
@@ -99,8 +120,8 @@ public class RtPresenterImpl implements RtPresenter {
                                 public void onSuccess(JSONObject data) {
                                     try {
                                         JSONArray arr = null;
-                                        Log.i(TAG, "onSuccess: "+data.toString());
-                                        if (data.toString().indexOf("[") > 0) {   //有数据
+                                        Log.i(TAG, "test:"+data.toString());
+                                        if (data.toString().indexOf("[") > 0) {
                                             arr = data.getJSONArray("dt");
                                         } else {
                                             JSONObject busJsonObject = data
@@ -110,6 +131,7 @@ public class RtPresenterImpl implements RtPresenter {
                                                     + "]");
                                         }
                                         if (arr != null && arr.length() > 0) {
+                                            Log.i(TAG, "ARR!=NULL");
                                             int size = arr.length();
                                             List<Map<String, ?>> list = child
                                                     .getRtInfoList();
@@ -185,11 +207,13 @@ public class RtPresenterImpl implements RtPresenter {
                                     }
                                     sortGroup();
                                     mAdapter.notifyDataSetChanged();
+                                    Log.i(TAG, "未开通");
                                 }
 
                                 @Override
                                 public void onFormatError() {
                                     // TODO Auto-generated method stub
+                                    Log.i(TAG, "数据格式不对: " + child.getLineID());
                                     if (child.getOfflineID() > 0) {
                                         try {
                                             getRtInfo(child,mAdapter);
@@ -216,6 +240,7 @@ public class RtPresenterImpl implements RtPresenter {
                                 public void onDataNA(String url) {
                                     // TODO Auto-generated method stub
                                     getRtInfo(child, url,mAdapter);
+                                    Log.i(TAG, "数据过旧");
                                 }
 
                                 @Override
@@ -304,7 +329,7 @@ public class RtPresenterImpl implements RtPresenter {
                 // TODO Auto-generated method stub
                 try {
                     String response = res.body().string();
-//					Log.i("OKHTTP", "response " + response);
+					Log.i(TAG, "geRTinfo 1 response " + response);
                     JSONObject responseJson = XML.toJSONObject(response);
                     JSONObject rootJson = responseJson.getJSONObject("root");
                     int status = rootJson.getInt("status");
@@ -439,6 +464,7 @@ public class RtPresenterImpl implements RtPresenter {
                 // TODO Auto-generated method stub
                 try {
                     String response = res.body().string();
+                    Log.i(TAG, "getRTinfo2 response " + response);
                     JSONObject responseJson = XML.toJSONObject(response);
                     JSONObject rootJson = responseJson.getJSONObject("root");
                     int status = rootJson.getInt("status");

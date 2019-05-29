@@ -1,6 +1,6 @@
 package com.bnrc.busapp.model.bus;
 
-public class BusInfo {
+public class BusInfo extends BusModel{
     public int Distance;
     public int Time;
     public int Beforethis;

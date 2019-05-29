@@ -58,7 +58,7 @@ public class Child implements Cloneable, Serializable {
     private int isAlertOpen = NONE;
 
     //添加评论分数
-    private int busStatus = RandomUtil.PercentageRandom(); //乘车拥挤度
+    private int lineStatus = 0; //乘车拥挤度
 
     public int isAlertOpen() {
         return isAlertOpen;
@@ -229,11 +229,11 @@ public class Child implements Cloneable, Serializable {
     }
 
 
-    public int getBusStatus() {
-        return busStatus;
+    public int getLineStatus() {
+        return lineStatus;
     }
 
-    public void setBusStatus(int busStatus) {
-        this.busStatus = busStatus;
+    public void setLineStatus(int lineStatus) {
+        this.lineStatus = lineStatus;
     }
 }

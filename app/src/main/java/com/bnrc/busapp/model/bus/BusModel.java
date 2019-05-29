@@ -1,15 +1,18 @@
 package com.bnrc.busapp.model.bus;
 
-import com.baidu.mapapi.search.core.BusInfo;
+
+import com.bnrc.busapp.model.BaseModel;
+
+import java.util.ArrayList;
 
 /**
  * Created by apple on 2018/6/18.
  */
 
-public class BusModel {
+public class BusModel extends BaseModel {
     public int linestatus;
     public int stationstatus;
-    public BusInfo busInfo;
+    public ArrayList<BusInfo> lineinfo;
 
     //失败时返回数据
     public String msg;

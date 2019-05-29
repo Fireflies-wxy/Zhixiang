@@ -26,7 +26,7 @@ public class RateActivity extends AppCompatActivity {
     private int LineID;
     private String  StationName;
     private String LineName;
-    private int busStatusRate;
+    private int lineStatusRate;
     private int stationStatusRate;
     private Button mButton;
     private Intent intent;
@@ -72,7 +72,7 @@ public class RateActivity extends AppCompatActivity {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestCenter.submitRate(uid,LineID,busStatusRate,StationID,stationStatusRate, new DisposeDataListener() {
+                RequestCenter.submitRate(uid,LineID, lineStatusRate,StationID,stationStatusRate, new DisposeDataListener() {
                     @Override
                     public void onSuccess(Object responseObj) {
                         Log.i(TAG, "onSuccess: ");
@@ -102,13 +102,13 @@ public class RateActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 switch (radioGroup.getCheckedRadioButtonId()) {
                     case R.id.rbtn_bus_status_low:
-                        busStatusRate = 1;
+                        lineStatusRate = 1;
                         break;
                     case R.id.rbtn_bus_status_mid:
-                        busStatusRate = 2;
+                        lineStatusRate = 2;
                         break;
                     case R.id.rbtn_bus_status_high:
-                        busStatusRate = 3;
+                        lineStatusRate = 3;
                         break;
                 }
             }

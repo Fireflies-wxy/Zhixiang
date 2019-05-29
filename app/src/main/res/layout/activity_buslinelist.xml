@@ -376,7 +376,7 @@
                             android:layout_gravity="center"
                             android:text="乘车拥挤度: " />
                         <ImageView
-                            android:id="@+id/icon_busstatus"
+                            android:id="@+id/icon_linestatus"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/wait_status_low" />

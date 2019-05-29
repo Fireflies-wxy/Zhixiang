@@ -104,7 +104,7 @@ public class BuslineListActivity extends BaseActivity {
     private CoordinateConverter mCoordConventer;
 
     private TextView tv_busline_title,busline_menu_view;
-    private ImageView icon_busstatus,icon_stationstatus;
+    private ImageView icon_linestatus,icon_stationstatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,18 +177,18 @@ public class BuslineListActivity extends BaseActivity {
         tv_busline_title = findViewById(R.id.tv_busline_title);
         busline_menu_view = findViewById(R.id.busline_menu_view);
 
-        icon_busstatus = findViewById(R.id.icon_busstatus);
+        icon_linestatus = findViewById(R.id.icon_linestatus);
         icon_stationstatus = findViewById(R.id.icon_stationstatus);
 
-        switch (getIntent().getIntExtra("busStatus",0)){
+        switch (getIntent().getIntExtra("lineStatus",0)){
             case 1:
-                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_low));
+                icon_linestatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_low));
                 break;
             case 2:
-                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_mid));
+                icon_linestatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_mid));
                 break;
             case 3:
-                icon_busstatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_high));
+                icon_linestatus.setImageDrawable(getResources().getDrawable(R.drawable.wait_status_high));
                 break;
         }
 

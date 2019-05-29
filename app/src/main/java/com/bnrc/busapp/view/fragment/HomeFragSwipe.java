@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.utils.CoordinateConverter;
 import com.bnrc.busapp.R;
 import com.bnrc.busapp.adapter.CollectAdapter;
 import com.bnrc.busapp.adapter.NearAdapter;
@@ -30,7 +28,6 @@ import com.bnrc.busapp.listener.IPopWindowListener;
 import com.bnrc.busapp.model.Child;
 import com.bnrc.busapp.model.Group;
 import com.bnrc.busapp.network.MyVolley;
-import com.bnrc.busapp.network.VolleyNetwork;
 import com.bnrc.busapp.presenter.RtPresenter;
 import com.bnrc.busapp.presenter.RtPresenterImpl;
 import com.bnrc.busapp.ui.expandablelistview.SwipeMenu;
@@ -41,32 +38,10 @@ import com.bnrc.busapp.ui.pullloadmenulistview.IPullRefresh;
 import com.bnrc.busapp.ui.pullloadmenulistview.PullLoadMenuListView;
 import com.bnrc.busapp.util.AnimationUtil;
 import com.bnrc.busapp.util.LocationUtil;
-import com.bnrc.busapp.util.MyCipher;
-import com.bnrc.busapp.util.NetAndGpsUtil;
 import com.bnrc.busapp.view.activity.BuslineListActivity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class HomeFragSwipe extends BaseFragment {
 	private static final String TAG = HomeFragSwipe.class.getSimpleName();
@@ -125,7 +100,7 @@ public class HomeFragSwipe extends BaseFragment {
 			intent.putExtra("StationID", child.getStationID());
 			intent.putExtra("FullName", child.getLineFullName());
 			intent.putExtra("Sequence", child.getSequence());
-			intent.putExtra("busStatus", child.getBusStatus());
+			intent.putExtra("lineStatus", child.getLineStatus());
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			mContext.startActivity(intent);
 			AnimationUtil.activityZoomAnimation((Activity) mContext);

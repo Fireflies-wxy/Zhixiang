@@ -6,10 +6,10 @@ package com.bnrc.busapp.model.version;
 
 public class VersionModel {
 
-    public String V;
-    public String appV;
+    public double V;
+    public double appV;
     public String Info;
     public String url;
-    public String errorCode;
+    public int errorCode;
 
 }

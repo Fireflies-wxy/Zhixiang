@@ -18,7 +18,7 @@ public class Group implements Serializable {
     private String[] LNs = {};
     private String relations = "";
     private String sameNameID = "";
-    private int stationStatus = RandomUtil.PercentageRandom(); //候车拥挤度
+    private int stationStatus = 0; //候车拥挤度
 
     public String getSameNameID() {
         return sameNameID;
