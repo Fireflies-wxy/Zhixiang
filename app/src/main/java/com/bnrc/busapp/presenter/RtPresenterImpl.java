@@ -87,7 +87,10 @@ public class RtPresenterImpl implements RtPresenter {
                 final int LineID = child.getLineID();
                 int StationID = child.getStationID();
 
-                RequestCenter.requestBusData(StationID, LineID, new DisposeDataListener() {
+                String SID = String.valueOf(StationID);
+                String LID = String.valueOf(LineID);
+
+                RequestCenter.requestBusData(SID, LID, new DisposeDataListener() {
                     @Override
                     public void onSuccess(Object responseObj) {
                         BusModel busModel = (BusModel) responseObj;

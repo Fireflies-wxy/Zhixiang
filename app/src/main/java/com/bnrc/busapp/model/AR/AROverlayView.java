@@ -83,6 +83,15 @@ public class AROverlayView extends View {
             arPoints.add(arPoint);
     }
 
+    public void updatePoiResult(ArrayList<ARPoint> points){
+        arPoints.clear();
+        for(int i = 0;i<points.size();i++){
+            if(!arPoints.contains(points.get(i))){
+                arPoints.add(points.get(i));
+            }
+        }
+    }
+
     public void updateMovingPoint(int inclat){
         movingCar.setLongitude(116.3618+0.0003*inclat);
         Log.i("async", "updated moving point: "+inclat);

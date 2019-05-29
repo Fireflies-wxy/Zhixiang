@@ -181,13 +181,12 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
 
                         break;
                     case Constants.BUSLINE:
-                        if(isAR){
+                        if(!isAR){
                             Intent buslineIntent = new Intent(SearchActivity.this,
                                     BuslineListActivity.class);
                             int LineID = item.getLineID();
                             int StationID = 0;
                             int Sequence = 1;
-                            buslineIntent.putExtra("searchType",2); //2代表线路
                             buslineIntent.putExtra("LineID", LineID);
                             buslineIntent.putExtra("StationID", StationID);
                             buslineIntent.putExtra("Sequence", Sequence);
@@ -198,7 +197,19 @@ public class SearchActivity extends BaseActivity implements ItemDelListener {
                         }else {
                             Intent buslineIntent = new Intent();
                             int LineID = item.getLineID();
-                            buslineIntent.putExtra("LineID", LineID);
+                            int StationID = 0;
+                            String StationName = "";
+                            if(mSearchDB.acquireBusLinesWithKeyword(item.getLineName()).size()!=0){
+                                StationID = mSearchDB.acquireStationsWithBuslineID(LineID).get(1).getStationID();
+                                StationName = mSearchDB.acquireStationsWithBuslineID(LineID).get(0).getStationName();
+
+                            }
+
+                            Log.i(TAG, "onItemClick: LName: "+item.getLineName()+" StationName: "+StationName);
+                            Log.i(TAG, "onItemClick: LineID: "+LineID+" StationID: "+StationID);
+                            buslineIntent.putExtra("searchType",2);//2代表线路
+                            buslineIntent.putExtra("LineID", 1064500);
+                            buslineIntent.putExtra("StationID", StationID);
                             setResult(RESULT_OK, buslineIntent);
                             hidenAndFinish();
                         }

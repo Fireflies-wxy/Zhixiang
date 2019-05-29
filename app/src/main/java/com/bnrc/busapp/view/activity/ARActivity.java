@@ -50,11 +50,16 @@ import com.bnrc.busapp.listener.GetLocationListener;
 import com.bnrc.busapp.model.AR.ARCamera;
 import com.bnrc.busapp.model.AR.AROverlayView;
 import com.bnrc.busapp.model.AR.ARPoint;
+import com.bnrc.busapp.model.bus.BusInfo;
+import com.bnrc.busapp.model.bus.BusModel;
+import com.bnrc.busapp.network.RequestCenter;
+import com.bnrc.busapp.network.listener.DisposeDataListener;
 import com.bnrc.busapp.util.LocationUtil;
 import com.bnrc.busapp.util.SharedPreferenceUtil;
 import com.bnrc.busapp.view.activity.base.BaseActivity;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ARActivity extends BaseActivity implements SensorEventListener,OnGetPoiSearchResultListener {
@@ -478,25 +483,57 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
         if (resultCode != Activity.RESULT_OK)
             return;
         int searchType = intent.getIntExtra("searchType",0);
+        final LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
 
         switch (searchType) {
             case 1:
                 mARContainer.removeAllViews();
-                Log.i("oldPoiTag", "removed");
 
                 String stationName = intent.getStringExtra("stationName");
                 LatLng stationLoc = intent.getParcelableExtra("stationLoc");
-                LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
 
-                ARPoint arPoint = new ARPoint(stationName,(int)DistanceUtil.getDistance(currentLoc,stationLoc)+"m",stationLoc.latitude,stationLoc.longitude,0);
+                final ARPoint arPoint = new ARPoint(stationName,(int)DistanceUtil.getDistance(currentLoc,stationLoc)+"m",stationLoc.latitude,stationLoc.longitude,0);
                 if(arOverlayView!=null)
                     arOverlayView.updatePoiResult(arPoint);
                 break;
             case 2:
+                mARContainer.removeAllViews();
+                final ArrayList<ARPoint> arPoints = new ArrayList<>();
+                String SID = String.valueOf(intent.getIntExtra("StationID",0));
+                String LID = String.valueOf(intent.getIntExtra("LineID",0));
+                Log.i(TAG, "onActivityResult: StationID:"+SID+" LineID: "+LID);
+                RequestCenter.requestBusData(SID, LID, new DisposeDataListener() {
+                    @Override
+                    public void onSuccess(Object responseObj) {
+                        BusModel busModel = (BusModel) responseObj;
+                        ArrayList<BusInfo> busInfos = ((BusModel) responseObj).lineinfo;
+                        if(busModel.errorCode == 0){
+                            if(busInfos.size()!=0){
+                                for(int i = 0;i<busInfos.size();i++){
+                                    BusInfo info = busInfos.get(i);
+                                    arPoints.add(new ARPoint("实时公交 "+i,(int)DistanceUtil.getDistance(currentLoc,new LatLng(info.Lat,info.Lon))+"m",info.Lat,info.Lon,0));
+                                }
+                                if(arOverlayView!=null)
+                                    arOverlayView.updatePoiResult(arPoints);
+                            }else {
+                                Toast.makeText(ARActivity.this.getApplicationContext(),"该线路暂无实时信息",Toast.LENGTH_SHORT).show();
+                            }
+
+                        }else {
+                            Toast.makeText(ARActivity.this.getApplicationContext(),"该线路暂无实时信息",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Object reasonObj) {
+                        Toast.makeText(ARActivity.this.getApplicationContext(),"请求失败，请检查网络连接",Toast.LENGTH_SHORT).show();
+                    }
+                });
 
                 break;
             default:
-                Toast.makeText(ARActivity.this,"搜索发生错误，请重试",Toast.LENGTH_SHORT).show();
+                Toast.makeText(ARActivity.this.getApplicationContext(),"搜索发生错误，请重试",Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -46,11 +46,12 @@ public class RequestCenter {
         RequestCenter.dealPostRequest(HttpConstants.VERSION_URL, params, listener, VersionModel.class);
     }
 
-    public static void requestBusData(int SID,int LID, DisposeDataListener listener) {
+    public static void requestBusData(String SID,String LID, DisposeDataListener listener) {
 
         RequestParams params = new RequestParams();
         params.put("SID","1000013623");
         params.put("LID","1064500");
+//        params.put("T",Long.toString(new Date().getTime()));
         params.put("T","1525684667");
 
         RequestCenter.dealPostRequest(HttpConstants.BUS_URL, params, listener, BusModel.class);
