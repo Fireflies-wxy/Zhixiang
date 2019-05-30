@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.opengl.Matrix;
 import android.os.Build;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.ListPopupWindow;
@@ -57,6 +58,8 @@ import com.bnrc.busapp.listener.GetLocationListener;
 import com.bnrc.busapp.model.AR.ARCamera;
 import com.bnrc.busapp.model.AR.AROverlayView;
 import com.bnrc.busapp.model.AR.ARPoint;
+import com.bnrc.busapp.model.Child;
+import com.bnrc.busapp.model.Group;
 import com.bnrc.busapp.model.bus.BusInfo;
 import com.bnrc.busapp.model.bus.BusModel;
 import com.bnrc.busapp.network.RequestCenter;
@@ -229,7 +232,12 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                         initLocationService();
                         Toast.makeText(ARActivity.this,"定位错误，请重新选择关键字",Toast.LENGTH_SHORT).show();
                     }else {
-                        SearchPoi(keyword,bdLocation);
+                        if(keyword.equals("公交")){
+                            getNearStations();
+                        }else {
+                            SearchPoi(keyword,bdLocation);
+                        }
+
                     }
 
                     listPopupWindow.dismiss();
@@ -258,6 +266,25 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
 
         listPopupWindow.show();
         arrowImageView.animate().setDuration(500).rotation(180).start();
+    }
+
+    public void getNearStations(){
+         LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+
+         List<Group> mNearGroups  = PCDataBaseHelper.getInstance(
+                this.getApplicationContext()).acquireAroundStationsWithLocation(currentLoc);
+         if(mNearGroups.size()!=0){
+             for(Group group:mNearGroups){
+                 arPoints.add(new ARPoint(group.getStationName(),
+                         (int)DistanceUtil.getDistance(currentLoc,new LatLng(group.getLatitide(),group.getLongitude()))+"m",
+                         group.getLatitide(),
+                         group.getLongitude(),
+                         0,
+                         2));
+             }
+         }
+        if(arOverlayView!=null)
+            arOverlayView.updatePoiResult(arPoints);
     }
 
 
@@ -523,7 +550,7 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                 String stationName = intent.getStringExtra("stationName");
                 LatLng stationLoc = intent.getParcelableExtra("stationLoc");
 
-                final ARPoint arPoint = new ARPoint(stationName,(int)DistanceUtil.getDistance(currentLoc,stationLoc)+"m",stationLoc.latitude,stationLoc.longitude,0);
+                final ARPoint arPoint = new ARPoint(stationName,(int)DistanceUtil.getDistance(currentLoc,stationLoc)+"m",stationLoc.latitude,stationLoc.longitude,0,2);
                 if(arOverlayView!=null)
                     arOverlayView.updatePoiResult(arPoint);
                 break;
@@ -532,7 +559,7 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                 String LID = String.valueOf(intent.getIntExtra("LineID",0));
                 String LineName = intent.getStringExtra("LineName");
                 try {
-                    getRtInfo(LID);
+                    getRtInfo(LID,LineName);
                 } catch (UnsupportedEncodingException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -545,7 +572,7 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
         }
     }
 
-    private void getRtInfo(String LineID) throws JSONException,
+    private void getRtInfo(String LineID, final String LineName) throws JSONException,
             UnsupportedEncodingException {
         Log.i(TAG, "getRtInfo: ");
         Map<String, Object> LineInfo = mDataBaseManager
@@ -555,8 +582,6 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
             OfflineID = Integer.parseInt(LineInfo.get("OfflineID")
                     .toString());
         }
-        Log.i("testoffline", "ARActivity LingID: "+LineID);
-        Log.i("testoffline", "ARActivity offline: "+OfflineID);
         String Url =
                 "http://223.72.210.21:8512/ssgj/bus.php?city="
                         + URLEncoder.encode("北京", "utf-8") + "&id=" + OfflineID
@@ -586,12 +611,27 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                 try {
 
                     JSONObject responseJson = XML.toJSONObject(response);
+
                     JSONObject rootJson = responseJson.getJSONObject("root");
 
                     Log.i(TAG, "rootJson: " + rootJson.toString());
 
+                    String status = rootJson.getString("status");
+
+                    if(status.equals("502")){
+                        Looper.prepare();
+                        Toast.makeText(ARActivity.this.getApplicationContext(),"该线路暂无实时信息",Toast.LENGTH_SHORT).show();
+                        arPoints.clear();
+                        Looper.loop();
+                        if(arOverlayView!=null)
+                            arOverlayView.updatePoiResult(arPoints);
+
+                        return;
+                    }
+
                     JSONObject dataJson = rootJson
                             .getJSONObject("data");
+
                     JSONArray busJsonArray;
                     if (dataJson.toString().indexOf("[") > 0) {
                         // busJsonArray = (JSONArray) dataJson
@@ -649,7 +689,7 @@ public class ARActivity extends BaseActivity implements SensorEventListener,OnGe
                                 .from(CoordinateConverter.CoordType.COMMON)
                                 .coord(rtStationPoint).convert();
                         final LatLng currentLoc = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
-                        arPoints.add(new ARPoint("实时公交"+j,(int)DistanceUtil.getDistance(currentLoc,rtSLatLngBaidu)+"m",ylat,xLon,0));
+                        arPoints.add(new ARPoint(LineName+"公交",(int)DistanceUtil.getDistance(currentLoc,rtSLatLngBaidu)+"m",ylat,xLon,0,3));
                     }
                     if(arOverlayView!=null)
                         arOverlayView.updatePoiResult(arPoints);

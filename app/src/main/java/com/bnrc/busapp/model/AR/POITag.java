@@ -25,7 +25,7 @@ public class POITag extends FrameLayout {
         super(context, attrs, defStyleAttr);
         mContext = context;
         poi_name = findViewById(R.id.poi_name);
-        poi_distance = findViewById(R.id.poi_distance);
+        poi_distance = findViewById(R.id.poi_description);
         poi_name.setWidth(10+(poi_name.length()>poi_distance.length()?poi_name.length():poi_distance.length()));
         poi_distance.setWidth(10+(poi_name.length()>poi_distance.length()?poi_name.length():poi_distance.length()));
     }

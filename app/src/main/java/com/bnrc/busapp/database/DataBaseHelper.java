@@ -528,14 +528,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 	// while (cursor.moveToNext()) {
 	// LatLng stationPoint = new LatLng(cursor.getDouble(2),
 	// cursor.getDouble(3));
-	// double distance = DistanceUtil.getDistance(location, stationPoint);
+	// double distance = DistanceUtil.getDescription(location, stationPoint);
 	// String stationName = cursor.getString(1);
 	// String GY = cursor.getString(2) + "";
 	// String GX = cursor.getString(3) + "";
 	// String[] LNs = cursor.getString(4).split("[,;]");
 	//
 	// Group group = new Group(stationName, GY, GX);
-	// group.setDistance(distance);
+	// group.setDescription(distance);
 	// group.setLNs(LNs);
 	// Log.i(TAG, stationName);
 	// // Set<String> lineName = new HashSet<String>();
@@ -717,7 +717,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //		while (cursor.moveToNext()) {
 //			LatLng stationPoint = new LatLng(cursor.getDouble(2),
 //					cursor.getDouble(3));
-//			double distance = DistanceUtil.getDistance(location, stationPoint);
+//			double distance = DistanceUtil.getDescription(location, stationPoint);
 //			String stationName = cursor.getString(1);
 //			double GY = cursor.getDouble(2);
 //			double GX = cursor.getDouble(3);
@@ -725,7 +725,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //			String[] LNs = cursor.getString(4).split("[,;]");
 //
 //			Group group = new Group(stationName, GY, GX);
-//			group.setDistance(distance);
+//			group.setDescription(distance);
 //			group.setLNs(LNs);
 //			Log.i(TAG, stationName);
 //			Set<String> lineName = new HashSet<String>();

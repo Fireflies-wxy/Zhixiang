@@ -14,12 +14,13 @@ public class ARPoint {
     private double longitude;
     private double altitude;
     private String name;
-    private String distance;
+    private String description;
     private View poiTag;
+    private int type;  //1为普通POI，2为站点，3为线路
 
-    public ARPoint(String name, String distance, double lat, double lon, double altitude) {
+    public ARPoint(String name, String description, double lat, double lon, double altitude, int type) {
         this.name = name;
-        this.distance = distance;
+        this.description = description;
         location = new BDLocation();
         location.setLatitude(lat);
         location.setLongitude(lon);
@@ -27,6 +28,7 @@ public class ARPoint {
         latitude = lat;
         longitude = lon;
         this.altitude = altitude;
+        this.type = type;
     }
 
     public void setLocation(BDLocation location) {
@@ -38,7 +40,7 @@ public class ARPoint {
         this.name = name;
     }
 
-    public void setDistance(String distance) { this.distance = distance; }
+    public void setDescription(String description) { this.description = description; }
 
     public void setPoiTag(View poiTag) { this.poiTag = poiTag; }
 
@@ -50,7 +52,7 @@ public class ARPoint {
         return name;
     }
 
-    public String getDistance() { return distance; }
+    public String getDescription() { return description; }
 
     public View getPoiTag() {
         return poiTag;
@@ -81,5 +83,13 @@ public class ARPoint {
     public void setAltitude(double altitude) {
         location.setAltitude(altitude);
         this.altitude = altitude;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

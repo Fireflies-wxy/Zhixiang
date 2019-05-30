@@ -413,7 +413,7 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	 * ; Cursor cursor = getMyDataBase().rawQuery(sql, null); while
 	 * (cursor.moveToNext()) { LatLng stationPoint = new
 	 * LatLng(cursor.getDouble(7), cursor.getDouble(8)); double distance =
-	 * DistanceUtil.getDistance(location, stationPoint); String stationName =
+	 * DistanceUtil.getDescription(location, stationPoint); String stationName =
 	 * cursor.getString(2); String GY = cursor.getString(7) + ""; String GX =
 	 * cursor.getString(8) + ""; String startStation = cursor.getString(3) + "";
 	 * String endStation = cursor.getString(4) + ""; String startTime =
@@ -432,7 +432,7 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	 * child.setStartTime(startTime); child.setEndTime(endTime);
 	 * child.setAZ(AZ); child.setType(Type); switch (Integer.parseInt(Type)) {
 	 * case Constants.TYPE_WORK: if (!workStation.contains(stationName)) { Group
-	 * group = new Group(stationName, GY, GX); group.setDistance(distance);
+	 * group = new Group(stationName, GY, GX); group.setDescription(distance);
 	 * Log.i(TAG, stationName); workStation.add(stationName);
 	 * group.addChildrenItem(child); mWorkFavGroups.add(group); } else { for
 	 * (Group group : mWorkFavGroups) if (group.getStationTitle().trim()
@@ -441,13 +441,13 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	 * 
 	 * break; case Constants.TYPE_HOME: if (!homeStation.contains(stationName))
 	 * { Group group = new Group(stationName, GY, GX);
-	 * group.setDistance(distance); Log.i(TAG, stationName);
+	 * group.setDescription(distance); Log.i(TAG, stationName);
 	 * homeStation.add(stationName); group.addChildrenItem(child);
 	 * mHomeFavGroups.add(group); } else { for (Group group : mHomeFavGroups) if
 	 * (group.getStationTitle().trim() .equalsIgnoreCase(stationName)) {
 	 * group.addChildrenItem(child); break; } } break; default: break; } if
 	 * (!allStation.contains(stationName)) { Group group = new
-	 * Group(stationName, GY, GX); group.setDistance(distance); Log.i(TAG,
+	 * Group(stationName, GY, GX); group.setDescription(distance); Log.i(TAG,
 	 * stationName); allStation.add(stationName); group.addChildrenItem(child);
 	 * mAllFavGroups.add(group); } else { for (Group group : mAllFavGroups) if
 	 * (group.getStationTitle().trim() .equalsIgnoreCase(stationName)) {
@@ -455,7 +455,7 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	 * 
 	 * } cursor.close(); Comparator<Group> comparator = new Comparator<Group>()
 	 * { public int compare(Group s1, Group s2) { double distance1 =
-	 * s1.getDistance(); double distance2 = s2.getDistance(); if (distance1 >
+	 * s1.getDescription(); double distance2 = s2.getDescription(); if (distance1 >
 	 * distance2) { return 1; } else if (distance1 < distance2) { return -1; }
 	 * return 0; } };
 	 * 
@@ -538,7 +538,7 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	// while (cursor.moveToNext()) {
 	// LatLng stationPoint = new LatLng(cursor.getDouble(7),
 	// cursor.getDouble(8));
-	// double distance = DistanceUtil.getDistance(location, stationPoint);
+	// double distance = DistanceUtil.getDescription(location, stationPoint);
 	// String stationName = cursor.getString(2);
 	// String GY = cursor.getString(7) + "";
 	// String GX = cursor.getString(8) + "";
@@ -551,7 +551,7 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	// String Type = cursor.getString(10);
 	// if (!station.contains(stationName)) {
 	// Group group = new Group(stationName, GY, GX);
-	// group.setDistance(distance);
+	// group.setDescription(distance);
 	// Log.i(TAG, stationName);
 	//
 	// String buslineId = cursor.getString(0).substring(0, 7);// buslineId
@@ -600,9 +600,9 @@ public class UserDataDBHelper extends SQLiteOpenHelper {
 	// Comparator<Group> comparator = new Comparator<Group>() {
 	// public int compare(Group s1, Group s2) {
 	//
-	// double distance1 = s1.getDistance();
+	// double distance1 = s1.getDescription();
 	//
-	// double distance2 = s2.getDistance();
+	// double distance2 = s2.getDescription();
 	// if (distance1 > distance2) {
 	// return 1;
 	// } else if (distance1 < distance2) {
